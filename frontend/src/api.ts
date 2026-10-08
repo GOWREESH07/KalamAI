@@ -200,6 +200,13 @@ export interface InsightDetail {
   png_url?: string
   csv_url?: string
   kml_url?: string
+  kmz_url?: string
+  validation_bars?: any[]
+  validation_indep_bars?: any[]
+  site_filter_audit?: Record<string, any>
+  flood_metadata?: Record<string, any>
+  resilience_triggers?: Record<string, any>
+  category_balance_note?: string
 }
 
 export const api = {
@@ -261,6 +268,8 @@ export const api = {
     `${BASE}/insights/${insightId}/csv?study_area=${studyArea}`,
   getInsightKmlUrl: (insightId: string, studyArea: StudyAreaType = 'pilot') =>
     `${BASE}/insights/${insightId}/kml?study_area=${studyArea}`,
+  getInsightKmzUrl: (insightId: string, studyArea: StudyAreaType = 'pilot') =>
+    `${BASE}/insights/${insightId}/kmz?study_area=${studyArea}`,
   getAtlasPdfUrl: (studyArea: StudyAreaType = 'pilot') =>
     `${BASE}/insights/atlas/pdf?study_area=${studyArea}`,
   exportFile: (type: string, studyArea: StudyAreaType = 'pilot') =>

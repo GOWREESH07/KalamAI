@@ -7,26 +7,37 @@
   "canonical_analysed_ha": 3346.5,
   "study_area": "pilot",
   "model_type": "16-month",
-  "key_finding": "59.0% of the plains (1,975.1 ha) possess High or Very High groundwater potential. Pumped borewell cropland is 0.0\u00d7 more frequent in Very High than in Very Low zones. 0 high-priority artificial recharge sites identified across Thamirabarani sub-basins.",
+  "key_finding": "59.0% of the plains (1,975.1 ha) possess High or Very High groundwater potential. Pumped borewell cropland is 100.0% less frequent in Very High than in Very Low zones. 0 high-priority artificial recharge sites identified across Thamirabarani sub-basins.",
   "high_plus_very_high_ha": 1975.1,
   "high_plus_very_high_pct": 59.0,
   "candidate_sites_count": 0,
+  "site_filter_audit": {
+    "total_initial_clusters": 0,
+    "dropped_edge_distance": 0,
+    "dropped_stream_order": 0,
+    "dropped_landuse": 0,
+    "dropped_spacing": 0,
+    "surviving_count": 0
+  },
   "mean_sensitivity_pct": 9.5,
   "consistency_ratio": 0.0292,
-  "validation_ratio": 0.0,
+  "validation_wording": "100.0% less frequent in Very High than in Very Low zones",
+  "validation_indep_wording": "100.0% less frequent in Independent Very High than in Very Low zones",
+  "trend_increasing_full": false,
+  "trend_increasing_indep": false,
   "denominator_label": "canonical analysed plains within mask (3,346.5 ha)",
   "classes": [
     {
       "class_id": 1,
       "name": "Very Low",
-      "area_ha": 80.2,
+      "area_ha": 80.0,
       "pct": 2.4,
       "color": "#B23B3B"
     },
     {
       "class_id": 2,
       "name": "Low",
-      "area_ha": 449.1,
+      "area_ha": 449.3,
       "pct": 13.4,
       "color": "#E0873A"
     },
@@ -55,13 +66,13 @@
   "chart_data": [
     {
       "category": "Very Low",
-      "area_ha": 80.2,
+      "area_ha": 80.0,
       "pct": 2.4,
       "color": "#B23B3B"
     },
     {
       "category": "Low",
-      "area_ha": 449.1,
+      "area_ha": 449.3,
       "pct": 13.4,
       "color": "#E0873A"
     },
@@ -88,6 +99,7 @@
     {
       "category": "Very Low",
       "gwpi_class": 1,
+      "eligible_area_ha": 0.9,
       "proxy_area_ha": 0.0,
       "proxy_share_pct": 0.0,
       "freq_pct": 0.0,
@@ -96,6 +108,7 @@
     {
       "category": "Low",
       "gwpi_class": 2,
+      "eligible_area_ha": 23.6,
       "proxy_area_ha": 0.0,
       "proxy_share_pct": 0.0,
       "freq_pct": 0.0,
@@ -104,22 +117,72 @@
     {
       "category": "Moderate",
       "gwpi_class": 3,
+      "eligible_area_ha": 88.5,
       "proxy_area_ha": 0.0,
       "proxy_share_pct": 40.0,
+      "freq_pct": 0.02,
+      "color": "#E3C449"
+    },
+    {
+      "category": "High",
+      "gwpi_class": 4,
+      "eligible_area_ha": 324.4,
+      "proxy_area_ha": 0.0,
+      "proxy_share_pct": 60.0,
+      "freq_pct": 0.01,
+      "color": "#74B53C"
+    },
+    {
+      "category": "Very High",
+      "gwpi_class": 5,
+      "eligible_area_ha": 55.6,
+      "proxy_area_ha": 0.0,
+      "proxy_share_pct": 0.0,
+      "freq_pct": 0.0,
+      "color": "#1A7F37"
+    }
+  ],
+  "validation_indep_bars": [
+    {
+      "category": "Very Low",
+      "gwpi_class": 1,
+      "eligible_area_ha": 0.7,
+      "proxy_area_ha": 0.0,
+      "proxy_share_pct": 0.0,
+      "freq_pct": 0.0,
+      "color": "#B23B3B"
+    },
+    {
+      "category": "Low",
+      "gwpi_class": 2,
+      "eligible_area_ha": 15.9,
+      "proxy_area_ha": 0.0,
+      "proxy_share_pct": 0.0,
+      "freq_pct": 0.0,
+      "color": "#E0873A"
+    },
+    {
+      "category": "Moderate",
+      "gwpi_class": 3,
+      "eligible_area_ha": 67.9,
+      "proxy_area_ha": 0.0,
+      "proxy_share_pct": 0.0,
       "freq_pct": 0.0,
       "color": "#E3C449"
     },
     {
       "category": "High",
       "gwpi_class": 4,
-      "proxy_area_ha": 0.0,
-      "proxy_share_pct": 60.0,
-      "freq_pct": 0.0,
+      "eligible_area_ha": 341.5,
+      "proxy_area_ha": 0.1,
+      "proxy_share_pct": 100.0,
+      "freq_pct": 0.01,
       "color": "#74B53C"
     },
     {
       "category": "Very High",
       "gwpi_class": 5,
+      "eligible_area_ha": 67.0,
       "proxy_area_ha": 0.0,
       "proxy_share_pct": 0.0,
       "freq_pct": 0.0,
@@ -133,11 +196,11 @@
       "total_ha": 1402.6,
       "classes": {
         "Very Low": {
-          "area_ha": 47.3,
+          "area_ha": 47.2,
           "pct": 3.4
         },
         "Low": {
-          "area_ha": 225.4,
+          "area_ha": 225.5,
           "pct": 16.1
         },
         "Moderate": {
@@ -159,11 +222,11 @@
       "total_ha": 1944.0,
       "classes": {
         "Very Low": {
-          "area_ha": 32.9,
+          "area_ha": 32.8,
           "pct": 1.7
         },
         "Low": {
-          "area_ha": 223.7,
+          "area_ha": 223.8,
           "pct": 11.5
         },
         "Moderate": {
@@ -213,8 +276,8 @@
       "color": "#0F2850"
     }
   ],
-  "method": "Multi-Criteria Analytical Hierarchy Process (AHP) integrating 8 thematic parameters: DEM-derived geomorphology proxy, auto-extracted lineaments, slope, ISRIC SoilGrids infiltration, D8 drainage density, CHIRPS rainfall, Copernicus Sentinel-1/2 land use, and surface water proximity. Consistency Ratio CR = 0.0292 (passed < 0.10 threshold). Classified with Jenks natural breaks. Artificial recharge sites selected using multi-parameter suitability rules.",
-  "limitations": "This is a hydrogeological potential index based on surface and terrain proxies, not in-situ piezometric well levels. Lineaments are auto-extracted via Canny edge detection and filtered against roads. Geomorphology landforms are DEM-derived topographic proxies (TPI/slope), not NRSC ground geomorphology maps. Foothill recharge zones in the Western Ghats are excluded by design to focus on the farmable plains. Geology not included \u2014 GSI lithology pending.",
+  "method": "Multi-Criteria Analytical Hierarchy Process (AHP) integrating 8 thematic parameters: DEM-derived geomorphology proxy, auto-extracted lineaments, slope, ISRIC SoilGrids infiltration, D8 drainage density, CHIRPS rainfall, Copernicus Sentinel-1/2 land use, and surface water proximity. Consistency Ratio CR = 0.0292 (passed < 0.10 threshold). Independent GWPI computes potential excluding surface water proximity and land use. Candidate recharge sites enforce >=200 m mask-edge clearance, 500 m NMS spacing, stream order and land use rules.",
+  "limitations": "This is a hydrogeological potential index based on surface and terrain proxies, not in-situ piezometric well levels. Lineaments are auto-extracted via Canny edge detection and filtered against roads. Geomorphology landforms are DEM-derived topographic proxies (TPI/slope), not NRSC ground geomorphology maps. Foothill recharge zones in the Western Ghats are excluded by design to focus on the farmable plains. Geology not included \u2014 GSI lithology pending. Validation note: Borewell proxy density does not follow a strict monotonic increase across classes 1 to 5. In this canal-commanded landscape, borewells are drilled primarily in tail-end canal-deficit zones (often classified as Moderate potential) rather than strictly tracking maximum natural aquifer recharge potential.",
   "png_url": "/api/insights/groundwater_recharge/png?study_area=pilot",
   "csv_url": "/api/insights/groundwater_recharge/csv?study_area=pilot",
   "kml_url": "/api/insights/groundwater_recharge/kml?study_area=pilot"

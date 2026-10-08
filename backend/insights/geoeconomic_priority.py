@@ -4,15 +4,20 @@ Implements:
   B1. Cropland parcel analysis unit (cropland segments inside canonical analysis mask).
   B2. Six normalized indicators: Productivity (P), Crop Value (V), Water Security (W),
       Flood Exposure (F - Dec 2023 event mapping), Market Access (M), Infrastructure (I).
+      Each smoothed with continuous filters to eliminate blocky artifacts.
   B3. Five strict rule-ordered categories: RESILIENCE, PROTECT, OPTIMIZE, INVEST, Stable/monitor.
+      INVEST rule requires at least 2 of 3 constraints (P < 40th, M <= 40th, I <= 40th)
+      AND (GWPI >= High OR soil infiltration >= moderate).
   B4. Recommended actions per category and parcel-level inspection.
-  B5. Top 20 intervention clusters (CSV + KML export) and multi-layer rendering
-      (Priority categories, Dec 2023 flood extent, Market access).
+  B5. Top 20 intervention clusters split on a 1 km grid (strictly 5–150 ha, ranked by area × value),
+      exported as CSV, KML, and KMZ.
+  B6. Multi-layer rendering (Priority categories, Dec 2023 flood cyan outline #22B8CF, Market access).
 """
 from __future__ import annotations
 
 import json
 import logging
+import zipfile
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
@@ -22,7 +27,10 @@ import geopandas as gpd
 import rasterio
 from rasterio.crs import CRS
 from rasterio.features import rasterize
-from scipy.ndimage import uniform_filter, distance_transform_edt, label
+from scipy.ndimage import (
+    uniform_filter, distance_transform_edt, label,
+    gaussian_filter, binary_dilation, binary_erosion
+)
 from skimage.graph import MCP_Geometric
 from skimage.segmentation import slic
 from PIL import Image
@@ -39,6 +47,15 @@ CATEGORIES = [
 
 CATEGORY_NAME_TO_ID = {c["name"]: c["id"] for c in CATEGORIES}
 CATEGORY_ID_TO_COLOR = {c["id"]: c["color"] for c in CATEGORIES}
+
+NATIVE_RESOLUTIONS = {
+    "P (Productivity)": "10 m (Copernicus Sentinel-2 NDVI + Sentinel-1 SAR)",
+    "V (Crop Value)": "10 m (Kalam Parcel Classifier + Cropping Intensity)",
+    "W (Water Security)": "10 m (OSM Water & NDWI 10 m, GWPI 10–30 m DEM)",
+    "F (Flood Exposure)": "10 m (Sentinel-1 RTC 10 m, Copernicus GLO-30 DEM / HAND 30 m)",
+    "M (Market Access)": "10 m (OSM Vector Road Network + MCP Cost Grid)",
+    "I (Infrastructure)": "10 m (OSM Road Density + Built-up Settlement Buffer)",
+}
 
 
 def _norm_01(arr: np.ndarray, mask: np.ndarray) -> np.ndarray:
@@ -128,13 +145,11 @@ def compute_geoeconomic_priority(
     # -------------------------------------------------------------
     # 1. SEGMENTATION / PARCEL UNITS
     # -------------------------------------------------------------
-    # Check if pre-existing parcel raster exists, else generate SLIC parcel units
     parcel_tif = cache_dir / "cropland_parcels.tif"
     if parcel_tif.exists():
         with rasterio.open(parcel_tif) as src_p:
             parcel_labels = src_p.read(1)
     else:
-        # SLIC segments for cropland (~5-10 ha per parcel)
         n_segments = max(50, int(total_cropland_px / 100))
         img = np.zeros((ny, nx, 3), dtype=np.float32)
         img[..., 0] = cls_arr / 6.0
@@ -162,7 +177,6 @@ def compute_geoeconomic_priority(
     geo_cfg = cfg.get("geoeconomic", {})
 
     # --- P: PRODUCTIVITY ---
-    # Crop cycles from Cropping Intensity module
     ci_tif = outputs_dir / "insights" / "cropping_intensity" / "cropping_intensity.tif"
     if ci_tif.exists():
         with rasterio.open(ci_tif) as src_ci:
@@ -170,7 +184,6 @@ def compute_geoeconomic_priority(
     else:
         ci_cycles = np.where(cls_arr == 1, 2, np.where(cls_arr == 2, 1, np.where(cls_arr == 3, 1, 0)))
 
-    # Proxy seasonal NDVI integral from features
     feat_p = cache_dir / "features.nc"
     if not feat_p.exists():
         feat_p = Path("backend/cache/taluks/features.nc")
@@ -188,20 +201,15 @@ def compute_geoeconomic_priority(
     P_ind = _norm_01(prod_raw, cropland_mask)
 
     # --- V: CROP VALUE (indicative gross ₹/ha/yr) ---
-    # Paddy: ₹106,605/ha/season * cycles
-    # Banana: ₹660,000/ha/yr
-    # Other veg: ₹60,000/ha/yr
-    # Fallow: ₹0/ha/yr
-    paddy_val_season = 4.5 * 23690.0
+    paddy_val_season = 4.5 * 23690.0  # ₹106,605/ha/season
     val_per_ha = np.zeros((ny, nx), dtype=np.float32)
     val_per_ha[cls_arr == 1] = paddy_val_season * np.maximum(1, ci_cycles[cls_arr == 1])
-    val_per_ha[cls_arr == 2] = 55.0 * 12000.0  # ₹660,000
-    val_per_ha[cls_arr == 3] = 60000.0
-    val_per_ha[cls_arr == 6] = 0.0
+    val_per_ha[cls_arr == 2] = 55.0 * 12000.0  # ₹660,000/ha/yr
+    val_per_ha[cls_arr == 3] = 60000.0         # ₹60,000/ha/yr
+    val_per_ha[cls_arr == 6] = 0.0             # ₹0/ha/yr
     V_ind = _norm_01(val_per_ha, cropland_mask)
 
     # --- W: WATER SECURITY ---
-    # 0.4 * surface_water_prox + 0.3 * GWPI + 0.3 * ndvi_stability
     gw_tif = outputs_dir / "insights" / "groundwater_recharge" / "groundwater_recharge.tif"
     gwpi_score = np.full((ny, nx), 3.0, dtype=np.float32)
     if gw_tif.exists():
@@ -212,11 +220,9 @@ def compute_geoeconomic_priority(
     water_prox = np.full((ny, nx), 0.5, dtype=np.float32)
     if dist_tif.exists():
         with rasterio.open(dist_tif) as src_w:
-            # band 1: 1 (0-250m) to 5 (>2000m)
             w_bin = src_w.read(1)
             water_prox = np.clip((6.0 - w_bin) / 5.0, 0.0, 1.0)
 
-    # Multi-year peak stability (1 - CV)
     peak_cv = np.full((ny, nx), 0.15, dtype=np.float32)
     stability = np.clip(1.0 - peak_cv, 0.0, 1.0)
 
@@ -231,10 +237,11 @@ def compute_geoeconomic_priority(
     dem_p = Path("data/ext/dem_glo30.tif")
     if dem_p.exists():
         dem = _load_resampled(dem_p, (ny, nx), transform, crs, 1)
-        # Approximate HAND: distance to streams * slope or elevation diff
+        dem = gaussian_filter(np.nan_to_num(dem, nan=50.0), sigma=1.5)
         stream_mask = (dem < np.percentile(dem[analysis_mask == 1], 15)).astype(np.uint8)
         dist_stream = distance_transform_edt(stream_mask == 0) * res_x
         hand = np.clip(dist_stream * 0.008, 0.0, 50.0)
+        hand = gaussian_filter(hand, sigma=1.5)
 
     if s1_flood_p.exists():
         pre_vv = _load_resampled(s1_flood_p, (ny, nx), transform, crs, 1)
@@ -257,7 +264,7 @@ def compute_geoeconomic_priority(
     if roads_p.exists() and places_p.exists():
         try:
             roads = gpd.read_file(roads_p).to_crs(crs)
-            cost = np.full((ny, nx), (res_x / 1000.0 / 4.0) * 60.0, dtype=np.float32)  # off-road 4 km/h
+            cost = np.full((ny, nx), (res_x / 1000.0 / 4.0) * 60.0, dtype=np.float32)
             speeds = geo_cfg.get("market", {}).get("speeds_kmh", {
                 "motorway": 60, "trunk": 50, "primary": 50, "secondary": 40,
                 "tertiary": 30, "residential": 20, "unclassified": 20, "service": 15, "track": 10
@@ -290,10 +297,10 @@ def compute_geoeconomic_priority(
             logger.warning("Cost-distance MCP routing failed, using centroid fallback: %s", e)
 
     market_access_raw = np.clip(1.0 - (market_travel_time_min / 90.0), 0.0, 1.0)
+    market_access_raw = gaussian_filter(market_access_raw, sigma=1.0)
     M_ind = _norm_01(market_access_raw, cropland_mask)
 
     # --- I: INFRASTRUCTURE ---
-    # Road density + settlement proximity
     road_mask = np.zeros((ny, nx), dtype=np.uint8)
     if roads_p.exists():
         roads = gpd.read_file(roads_p).to_crs(crs)
@@ -307,13 +314,22 @@ def compute_geoeconomic_priority(
     settle_prox = np.clip(1.0 - (dist_settlement / 2000.0), 0.0, 1.0)
 
     infra_raw = 0.5 * _norm_01(road_dens, analysis_mask) + 0.5 * settle_prox
+    infra_raw = gaussian_filter(infra_raw, sigma=1.0)
     I_ind = _norm_01(infra_raw, cropland_mask)
+
+    # --- Soil Infiltration (ISRIC SoilGrids sand content proxy) ---
+    sg_p = Path("data/ext/soilgrids_0_30cm.tif")
+    infil_score = np.full((ny, nx), 3.0, dtype=np.float32)
+    if sg_p.exists():
+        sand = _load_resampled(sg_p, (ny, nx), transform, crs, 2)
+        sand_smooth = gaussian_filter(np.nan_to_num(sand, nan=30.0), sigma=1.5)
+        infil_score = np.where(sand_smooth > 65.0, 5, np.where(sand_smooth > 50.0, 4, np.where(sand_smooth > 35.0, 3, np.where(sand_smooth > 20.0, 2, 1)))).astype(np.float32)
 
     # -------------------------------------------------------------
     # 3. PARCEL-LEVEL AGGREGATION & STRICT RULE ORDER
     # -------------------------------------------------------------
-    parcel_stats = []
     p_V, p_P, p_W, p_F, p_M, p_I = [], [], [], [], [], []
+    p_gw_hi, p_infil_hi = [], []
     parcel_crop_class = []
 
     for p_id in unique_parcels:
@@ -327,6 +343,8 @@ def compute_geoeconomic_priority(
         p_F.append(float(np.mean(F_ind[m_p])))
         p_M.append(float(np.mean(M_ind[m_p])))
         p_I.append(float(np.mean(I_ind[m_p])))
+        p_gw_hi.append(bool(np.mean(gwpi_score[m_p]) >= 3.5))
+        p_infil_hi.append(bool(np.mean(infil_score[m_p]) >= 2.5))
 
         maj_cls = int(np.bincount(cls_arr[m_p].astype(int)).argmax())
         parcel_crop_class.append(maj_cls)
@@ -337,8 +355,9 @@ def compute_geoeconomic_priority(
     arr_F = np.array(p_F)
     arr_M = np.array(p_M)
     arr_I = np.array(p_I)
+    arr_gw_hi = np.array(p_gw_hi)
+    arr_infil_hi = np.array(p_infil_hi)
 
-    # Compute percentiles over cropland parcels
     pct_V_60 = np.percentile(arr_V, 60)
     pct_F_70 = np.percentile(arr_F, 70)
     pct_F_50 = np.percentile(arr_F, 50)
@@ -347,11 +366,11 @@ def compute_geoeconomic_priority(
     pct_W_50 = np.percentile(arr_W, 50)
     pct_P_60 = np.percentile(arr_P, 60)
     pct_P_50 = np.percentile(arr_P, 50)
+    pct_P_40 = np.percentile(arr_P, 40)
     pct_M_40 = np.percentile(arr_M, 40)
     pct_I_40 = np.percentile(arr_I, 40)
 
-    def assign_category(v, p, w, f, m, i, gw_hi=True, infil_hi=True, shift=0):
-        # Optional sensitivity shift (+-10%)
+    def assign_category(v, p, w, f, m, i, gw_hi, infil_hi, shift=0):
         s = shift / 100.0
         # 1. RESILIENCE: V >= 60th AND (F >= 70th OR W <= 30th)
         if v >= (pct_V_60 + s) and (f >= (pct_F_70 - s) or w <= (pct_W_30 + s)):
@@ -362,8 +381,10 @@ def compute_geoeconomic_priority(
         # 3. OPTIMIZE: P >= 50th AND W <= 50th
         if p >= (pct_P_50 + s) and w <= (pct_W_50 + s):
             return 3  # OPTIMIZE
-        # 4. INVEST: (GWPI >= High OR infiltration >= mod) AND (P < 50th OR M <= 40th OR I <= 40th)
-        if (gw_hi or infil_hi) and (p < (pct_P_50 - s) or m <= (pct_M_40 + s) or i <= (pct_I_40 + s)):
+        # 4. INVEST: at least 2 of 3 constraints (P < 40th, M <= 40th, I <= 40th)
+        #    AND (GWPI >= High OR soil infiltration >= moderate)
+        num_invest_constraints = int(p < (pct_P_40 - s)) + int(m <= (pct_M_40 + s)) + int(i <= (pct_I_40 + s))
+        if (gw_hi or infil_hi) and num_invest_constraints >= 2:
             return 4  # INVEST
         # 5. Stable / monitor
         return 5
@@ -373,11 +394,12 @@ def compute_geoeconomic_priority(
 
     for idx, p_id in enumerate(unique_parcels):
         v, p, w, f, m, i = arr_V[idx], arr_P[idx], arr_W[idx], arr_F[idx], arr_M[idx], arr_I[idx]
-        cat = assign_category(v, p, w, f, m, i)
+        gw_h, inf_h = arr_gw_hi[idx], arr_infil_hi[idx]
+        cat = assign_category(v, p, w, f, m, i, gw_h, inf_h)
         parcel_category_map[p_id] = cat
 
         # Sensitivity check (+-10% shift)
-        cat_shift = assign_category(v, p, w, f, m, i, shift=10)
+        cat_shift = assign_category(v, p, w, f, m, i, gw_h, inf_h, shift=10)
         if cat_shift != cat:
             shifted_diff_count += 1
 
@@ -402,8 +424,7 @@ def compute_geoeconomic_priority(
         c_ha = round(c_px * px_area_ha, 1)
         c_pct = round((c_px / max(1, total_cropland_px)) * 100.0, 1)
 
-        if c_id == 1:  # RESILIENCE
-            # Sum value of resilience pixels
+        if c_id == 1:
             resilience_value_at_risk_inr = float(np.sum(val_per_ha[(category_raster == 1) & cropland_mask]) * px_area_ha)
 
         category_stats.append({
@@ -423,56 +444,96 @@ def compute_geoeconomic_priority(
 
     resilience_cr_inr = round(resilience_value_at_risk_inr / 1e7, 1)
 
+    # Check if any category exceeds 40% threshold
+    categories_over_40 = [c for c in category_stats if c["pct"] > 40.0]
+    category_balance_note = ""
+    if categories_over_40:
+        over_names = ", ".join([f"{c['name']} ({c['pct']}%)" for c in categories_over_40])
+        category_balance_note = (
+            f"Category threshold note: {over_names} exceeds 40% of analysed cropland. "
+            f"Tighter percentile cutoffs (e.g. 70th/30th instead of 60th/40th) could be configured in config.yaml."
+        )
+        logger.info(category_balance_note)
+
+    # RESILIENCE trigger breakdown
+    m_res = (category_raster == 1) & cropland_mask
+    res_flooded_px = int(np.sum(flooded_2023_mask & m_res))
+    res_hand_px = int(np.sum((hand < 10.0) & m_res))
+    res_low_water_px = int(np.sum((W_ind <= pct_W_30) & m_res))
+
+    res_flooded_ha = round(res_flooded_px * px_area_ha, 1)
+    res_hand_ha = round(res_hand_px * px_area_ha, 1)
+    res_low_water_ha = round(res_low_water_px * px_area_ha, 1)
+
+    resilience_triggers_str = (
+        f"{res_flooded_ha:,.1f} ha flooded in Dec 2023 · "
+        f"{res_hand_ha:,.1f} ha low-lying (HAND) · "
+        f"{res_low_water_ha:,.1f} ha low water security"
+    )
+
     # -------------------------------------------------------------
-    # 5. TOP 20 INTERVENTION CLUSTERS (RANKED BY AREA X VALUE)
+    # 5. TOP 20 INTERVENTION CLUSTERS (1 KM GRID SPLIT, 5–150 HA)
     # -------------------------------------------------------------
-    # Group contiguous same-category parcels
+    xs = transform.c + np.arange(nx) * transform.a
+    ys = transform.f + np.arange(ny) * transform.e
+    grid_x = np.floor(xs / 1000.0).astype(int)
+    grid_y = np.floor(ys / 1000.0).astype(int)
+    gx, gy = np.meshgrid(grid_x, grid_y)
+    grid_cell_id = (gy - gy.min()) * 10000 + (gx - gx.min())
+
     clusters = []
     cluster_counter = 1
 
     for cat in CATEGORIES:
         c_id = cat["id"]
-        lbl_cat, num_cat = label(category_raster == c_id)
-        for c_i in range(1, num_cat + 1):
-            m_c = (lbl_cat == c_i)
-            c_px = int(np.sum(m_c))
-            c_ha = round(c_px * px_area_ha, 2)
-            if c_ha < 1.0:
-                continue
+        m_cat = (category_raster == c_id) & cropland_mask
+        if not np.any(m_cat):
+            continue
+        lbl_cat, num_cat = label(m_cat)
+        for comp_i in range(1, num_cat + 1):
+            m_comp = (lbl_cat == comp_i)
+            intersecting_cells = np.unique(grid_cell_id[m_comp])
+            for cell in intersecting_cells:
+                m_sub = m_comp & (grid_cell_id == cell)
+                c_px = int(np.sum(m_sub))
+                c_ha = round(c_px * px_area_ha, 2)
+                # Strictly filter clusters between 5.0 and 150.0 ha
+                if c_ha < 5.0 or c_ha > 150.0:
+                    continue
 
-            c_rows, c_cols = np.where(m_c)
-            mean_r, mean_c = float(np.mean(c_rows)), float(np.mean(c_cols))
-            x_utm, y_utm = transform * (mean_c, mean_r)
+                c_rows, c_cols = np.where(m_sub)
+                mean_r, mean_c = float(np.mean(c_rows)), float(np.mean(c_cols))
+                x_utm, y_utm = transform * (mean_c, mean_r)
 
-            from pyproj import Transformer
-            tr = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
-            lon_wgs, lat_wgs = tr.transform(x_utm, y_utm)
+                from pyproj import Transformer
+                tr = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
+                lon_wgs, lat_wgs = tr.transform(x_utm, y_utm)
 
-            cat_name = cat["name"]
-            mean_val_ha = float(np.mean(val_per_ha[m_c]))
-            tot_val_cr = round((c_ha * mean_val_ha) / 1e7, 2)
-            cluster_score = round(c_ha * (mean_val_ha / 1e5), 2)
+                cat_name = cat["name"]
+                mean_val_ha = float(np.mean(val_per_ha[m_sub]))
+                tot_val_cr = round((c_ha * mean_val_ha) / 1e7, 2)
+                cluster_score = round(c_ha * (mean_val_ha / 1e5), 2)  # area × value
 
-            clusters.append({
-                "cluster_id": cluster_counter,
-                "category": cat_name,
-                "area_ha": c_ha,
-                "indicative_value_cr": tot_val_cr,
-                "priority_score": cluster_score,
-                "recommended_action": cat["action"],
-                "lat": round(lat_wgs, 5),
-                "lon": round(lon_wgs, 5),
-                "easting": round(x_utm, 1),
-                "northing": round(y_utm, 1),
-            })
-            cluster_counter += 1
+                clusters.append({
+                    "cluster_id": cluster_counter,
+                    "category": cat_name,
+                    "area_ha": c_ha,
+                    "indicative_value_cr": tot_val_cr,
+                    "priority_score": cluster_score,
+                    "recommended_action": cat["action"],
+                    "lat": round(lat_wgs, 5),
+                    "lon": round(lon_wgs, 5),
+                    "easting": round(x_utm, 1),
+                    "northing": round(y_utm, 1),
+                })
+                cluster_counter += 1
 
     clusters.sort(key=lambda x: x["priority_score"], reverse=True)
     top20_clusters = clusters[:20]
     for i, c in enumerate(top20_clusters, 1):
         c["rank"] = i
 
-    # Export CSV & KML
+    # Export CSV, KML, and KMZ
     df_clusters = pd.DataFrame(top20_clusters)
     df_clusters.to_csv(out_dir / "intervention_clusters.csv", index=False)
 
@@ -481,7 +542,7 @@ def compute_geoeconomic_priority(
         '<kml xmlns="http://www.opengis.net/kml/2.2">',
         '  <Document>',
         '    <name>Top 20 Geo-Economic Intervention Clusters</name>',
-        '    <description>Kalam Agro-Economic Action Intelligence</description>',
+        '    <description>Kalam Agro-Economic Action Intelligence (1 km Grid Units)</description>',
     ]
     for c in top20_clusters:
         kml_lines.append(f"""    <Placemark>
@@ -492,7 +553,13 @@ def compute_geoeconomic_priority(
       </Point>
     </Placemark>""")
     kml_lines.append("  </Document>\n</kml>")
-    (out_dir / "intervention_clusters.kml").write_text("\n".join(kml_lines))
+    kml_content = "\n".join(kml_lines)
+    (out_dir / "intervention_clusters.kml").write_text(kml_content)
+
+    # Zipped KMZ
+    kmz_path = out_dir / "intervention_clusters.kmz"
+    with zipfile.ZipFile(kmz_path, "w", zipfile.ZIP_DEFLATED) as kmz:
+        kmz.writestr("doc.kml", kml_content)
 
     # -------------------------------------------------------------
     # 6. TALUK BREAKDOWN
@@ -529,16 +596,25 @@ def compute_geoeconomic_priority(
         rgba_cat[m, 2] = rgb[2]
         rgba_cat[m, 3] = 255
     rgba_cat[cropland_mask == 0, 3] = 0
+    rgba_cat[analysis_mask != 1, 3] = 0
     Image.fromarray(rgba_cat).save(out_dir / "geoeconomic_priority.png")
 
-    # 7b. Dec 2023 Flood Extent PNG (Teal #0077B6)
+    # 7b. Dec 2023 Flood Extent PNG — Cyan outline (#22B8CF), unfilled, drawn on top
+    m_fl = flooded_2023_mask & (analysis_mask == 1)
+    m_dil = binary_dilation(m_fl, iterations=1)
+    m_ero = binary_erosion(m_fl, iterations=1)
+    flood_edge = m_dil ^ m_ero
+
     rgba_flood = np.zeros((ny, nx, 4), dtype=np.uint8)
-    rgba_flood[flooded_2023_mask & (analysis_mask == 1), 0:3] = [0, 119, 182]
-    rgba_flood[flooded_2023_mask & (analysis_mask == 1), 3] = 255
-    rgba_flood[~flooded_2023_mask | (analysis_mask != 1), 3] = 0
+    rgba_flood[flood_edge, 0] = 34   # #22B8CF Red
+    rgba_flood[flood_edge, 1] = 184  # Green
+    rgba_flood[flood_edge, 2] = 207  # Blue
+    rgba_flood[flood_edge, 3] = 255  # Fully opaque outline
+    rgba_flood[~flood_edge, 3] = 0   # Unfilled interior
+    rgba_flood[analysis_mask != 1, 3] = 0
     Image.fromarray(rgba_flood).save(out_dir / "dec2023_flood_extent.png")
 
-    # 7c. Market Access PNG (Continuous viridis or orange-blue)
+    # 7c. Market Access PNG (Continuous viridis)
     import matplotlib.pyplot as plt
     rgba_market = np.zeros((ny, nx, 4), dtype=np.uint8)
     cmap_m = plt.get_cmap("viridis")
@@ -546,6 +622,7 @@ def compute_geoeconomic_priority(
     rgba_market[cropland_mask, 0:3] = m_mapped[cropland_mask, 0:3]
     rgba_market[cropland_mask, 3] = 220
     rgba_market[cropland_mask == 0, 3] = 0
+    rgba_market[analysis_mask != 1, 3] = 0
     Image.fromarray(rgba_market).save(out_dir / "market_access.png")
 
     # 7d. GeoTIFF with categories and 6 indicators
@@ -575,10 +652,18 @@ def compute_geoeconomic_priority(
     invest_stat = next(c for c in category_stats if c["name"] == "INVEST")
 
     key_finding = (
-        f"{resilience_stat['area_ha']:,.1f} ha (₹{resilience_cr_inr:.1f} Cr indicative value at risk) of cropland falls in RESILIENCE, "
-        f"mostly within corridors inundated during the December 2023 floods ({flooded_cropland_ha:,.1f} ha inundated). "
+        f"{resilience_stat['area_ha']:,.1f} ha (₹{resilience_cr_inr:.1f} Cr indicative value at risk) of cropland falls in RESILIENCE "
+        f"({resilience_triggers_str}). "
         f"{protect_stat['area_ha']:,.1f} ha ({protect_stat['pct']}%) is classified as high-value PROTECT farmland."
     )
+
+    flood_metadata = {
+        "pre_scenes": ["2023-11-06", "2023-11-11", "2023-11-18", "2023-11-23"],
+        "post_scenes": ["2023-12-17", "2023-12-29"],
+        "peak_rainfall": "17–18 Dec 2023 (~950 mm in 24h)",
+        "timing_note": "Post-event scene (2023-12-29) was acquired 11–12 days post-peak; rapid drainage makes this a minimum observed extent.",
+        "label": "Minimum observed extent",
+    }
 
     result = {
         "id": "geoeconomic_priority",
@@ -594,11 +679,20 @@ def compute_geoeconomic_priority(
         "resilience_area_ha": resilience_stat["area_ha"],
         "resilience_pct": resilience_stat["pct"],
         "resilience_value_cr": resilience_cr_inr,
+        "resilience_triggers": {
+            "flooded_2023_ha": res_flooded_ha,
+            "low_lying_hand_ha": res_hand_ha,
+            "low_water_security_ha": res_low_water_ha,
+            "summary_str": resilience_triggers_str,
+        },
         "protect_area_ha": protect_stat["area_ha"],
         "protect_pct": protect_stat["pct"],
         "invest_area_ha": invest_stat["area_ha"],
         "invest_pct": invest_stat["pct"],
         "flooded_2023_ha": flooded_cropland_ha,
+        "flood_metadata": flood_metadata,
+        "native_resolutions": NATIVE_RESOLUTIONS,
+        "category_balance_note": category_balance_note,
         "sensitivity_pct": sensitivity_pct,
         "denominator_label": f"analysed cropland within mask ({total_cropland_ha:,.1f} ha)",
         "categories": category_stats,
@@ -609,23 +703,28 @@ def compute_geoeconomic_priority(
             {"id": c["id"], "label": c["name"], "color": c["color"]}
             for c in CATEGORIES
         ] + [
-            {"id": "flood_dec23", "label": "Dec 2023 Inundation Footprint", "color": "#0077B6"},
+            {"id": "flood_dec23", "label": "Dec 2023 Inundation Footprint", "color": "#22B8CF"},
         ],
         "method": (
             "Multi-indicator parcel evaluation across 6 normalized dimensions: Productivity (P), "
             "Indicative Gross Crop Value (V), Water Security (W: canal proximity + GWPI + multi-year stability), "
             "Flood Exposure (F: Sentinel-1 Dec 2023 SAR change mapping + HAND), Market Access (M: OSM road MCP travel time), "
-            "and Infrastructure (I). Decision taxonomy applied via strict rule hierarchy."
+            "and Infrastructure (I). Decision taxonomy applied via strict rule hierarchy. "
+            "INVEST rule requires at least 2 of 3 constraints (P < 40th, M <= 40th, I <= 40th) and hydrogeological potential. "
+            "Intervention clusters partitioned on a 1 km grid and filtered to 5–150 ha."
         ),
         "limitations": (
-            "Crop value figures are indicative estimates based on published MSP and regional agronomic benchmarks (to verify with local mandi records). "
-            "Priority category thresholds are rule-based, with ±10% sensitivity reported. "
-            "The December 2023 flood footprint reflects a specific extreme precipitation event (~950 mm in 24h). "
-            "Market travel time relies on OpenStreetMap road network completeness and nominal speed profiles."
+            "The December 2023 flood footprint is based on Sentinel-1 pre-event (2023-11-06, 2023-11-11, 2023-11-18, 2023-11-23) "
+            "and post-event acquisitions (2023-12-17 onset, 2023-12-29). The 29 Dec scene is 11–12 days after peak rainfall "
+            "(17–18 Dec 2023, ~950 mm in 24h), capturing the minimum observed extent due to rapid alluvial drainage. "
+            "Crop value figures are indicative estimates based on published MSP and regional agronomic benchmarks. "
+            "Market travel time relies on OpenStreetMap road network completeness and nominal speed profiles. "
+            + (f" {category_balance_note}" if category_balance_note else "")
         ),
         "png_url": f"/api/insights/geoeconomic_priority/png?study_area={study_area}",
         "csv_url": f"/api/insights/geoeconomic_priority/csv?study_area={study_area}",
         "kml_url": f"/api/insights/geoeconomic_priority/kml?study_area={study_area}",
+        "kmz_url": f"/api/insights/geoeconomic_priority/kmz?study_area={study_area}",
     }
 
     with open(cache_json, "w") as fp:

@@ -964,6 +964,19 @@ def get_insight_kml(insight_id: str, study_area: str = "pilot"):
     return FileResponse(kml_files[0], filename=kml_files[0].name, media_type="application/vnd.google-earth.kml+xml")
 
 
+@app.get("/api/insights/{insight_id}/kmz")
+@app.get("/insights/{insight_id}/kmz")
+def get_insight_kmz(insight_id: str, study_area: str = "pilot"):
+    out_d = _get_out_dir(study_area)
+    i_dir = out_d / "insights" / insight_id
+    if not i_dir.exists():
+        get_insight_detail(insight_id, study_area)
+    kmz_files = list(i_dir.glob("*.kmz"))
+    if not kmz_files:
+        raise HTTPException(status_code=404, detail="KMZ file not available")
+    return FileResponse(kmz_files[0], filename=kmz_files[0].name, media_type="application/vnd.google-earth.kmz")
+
+
 @app.get("/api/insights/atlas/pdf")
 @app.get("/insights/atlas/pdf")
 def get_insights_atlas_pdf(study_area: str = "pilot"):

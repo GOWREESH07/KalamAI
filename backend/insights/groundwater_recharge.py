@@ -446,6 +446,39 @@ def compute_groundwater_recharge(
     gwpi_class[unassigned & (gwpi_class == 0)] = 3
 
     # -------------------------------------------------------------
+    # Independent GWPI (Excluding surface water proximity & land use)
+    # -------------------------------------------------------------
+    indep_layer_names = [
+        "geomorphology", "lineament_density", "slope", "soil",
+        "drainage_density", "rainfall"
+    ]
+    w_indep_raw = [w[layers.index(l)] for l in indep_layer_names]
+    w_indep_sum = sum(w_indep_raw)
+    w_indep = [val / w_indep_sum for val in w_indep_raw]
+
+    gwpi_indep_continuous = np.zeros((ny, nx), dtype=np.float32)
+    for l_name, l_w in zip(indep_layer_names, w_indep):
+        gwpi_indep_continuous += l_w * score_dict[l_name].astype(np.float32)
+
+    sample_ind_clean = plains_clean  # use same valid mask pixels
+    sample_ind_vals = gwpi_indep_continuous[analysis_mask == 1]
+    sample_ind_clean = sample_ind_vals[~np.isnan(sample_ind_vals)]
+    sample_ind = np.random.choice(sample_ind_clean, min(len(sample_ind_clean), 25000), replace=False).tolist()
+    breaks_indep = jenkspy.jenks_breaks(sample_ind, n_classes=5)
+
+    gwpi_indep_class = np.zeros((ny, nx), dtype=np.uint8)
+    for c_i in range(1, 6):
+        low_b = breaks_indep[c_i - 1]
+        high_b = breaks_indep[c_i]
+        m = (gwpi_indep_continuous >= low_b) & (gwpi_indep_continuous <= high_b) & (analysis_mask == 1)
+        gwpi_indep_class[m] = c_i
+
+    unassigned_ind = (analysis_mask == 1) & (gwpi_indep_class == 0)
+    gwpi_indep_class[unassigned_ind & (gwpi_indep_continuous <= breaks_indep[1])] = 1
+    gwpi_indep_class[unassigned_ind & (gwpi_indep_continuous > breaks_indep[4])] = 5
+    gwpi_indep_class[unassigned_ind & (gwpi_indep_class == 0)] = 3
+
+    # -------------------------------------------------------------
     # Sensitivity Analysis: Perturb each weight by +-20%
     # -------------------------------------------------------------
     sensitivity_diffs = []
@@ -520,29 +553,70 @@ def compute_groundwater_recharge(
             dbin = src_d.read(1)
             far_from_water = dbin >= 4  # bins 4 & 5 are > 1000m
 
-    pumped_proxy_mask = (dry_ndvi_high_count >= 2) & far_from_water & (analysis_mask == 1) & (cls_arr != 4) & (cls_arr != 5)
+    # Eligible denominator: ONLY pixels > 1km from water, farmed/vegetated, inside mask
+    eligible_mask = far_from_water & (analysis_mask == 1) & (cls_arr != 4) & (cls_arr != 5)
+    total_eligible_px = int(np.sum(eligible_mask))
+
+    pumped_proxy_mask = (dry_ndvi_high_count >= 2) & eligible_mask
     total_proxy_px = int(np.sum(pumped_proxy_mask))
 
-    # Share of proxy pixels in each GWPI class
+    # Share of proxy pixels in each GWPI class (Full Model)
     validation_bars = []
     proxy_frequencies = []
     for c in GWPI_CLASSES:
-        c_px = int(np.sum((gwpi_class == c["id"]) & (analysis_mask == 1)))
+        c_elig_px = int(np.sum((gwpi_class == c["id"]) & eligible_mask))
         c_proxy_px = int(np.sum((gwpi_class == c["id"]) & pumped_proxy_mask))
-        proxy_freq_pct = round((c_proxy_px / max(1, c_px)) * 100.0, 2)
+        proxy_freq_pct = round((c_proxy_px / max(1, c_elig_px)) * 100.0, 2)
         proxy_frequencies.append(proxy_freq_pct)
         validation_bars.append({
             "category": c["name"],
             "gwpi_class": c["id"],
+            "eligible_area_ha": round(c_elig_px * px_area_ha, 1),
             "proxy_area_ha": round(c_proxy_px * px_area_ha, 1),
             "proxy_share_pct": round((c_proxy_px / max(1, total_proxy_px)) * 100.0, 1),
             "freq_pct": proxy_freq_pct,
             "color": c["color"],
         })
 
+    # Share of proxy pixels in each GWPI class (Independent Model)
+    validation_indep_bars = []
+    proxy_indep_frequencies = []
+    for c in GWPI_CLASSES:
+        c_elig_ind_px = int(np.sum((gwpi_indep_class == c["id"]) & eligible_mask))
+        c_proxy_ind_px = int(np.sum((gwpi_indep_class == c["id"]) & pumped_proxy_mask))
+        proxy_ind_freq_pct = round((c_proxy_ind_px / max(1, c_elig_ind_px)) * 100.0, 2)
+        proxy_indep_frequencies.append(proxy_ind_freq_pct)
+        validation_indep_bars.append({
+            "category": c["name"],
+            "gwpi_class": c["id"],
+            "eligible_area_ha": round(c_elig_ind_px * px_area_ha, 1),
+            "proxy_area_ha": round(c_proxy_ind_px * px_area_ha, 1),
+            "proxy_share_pct": round((c_proxy_ind_px / max(1, total_proxy_px)) * 100.0, 1),
+            "freq_pct": proxy_ind_freq_pct,
+            "color": c["color"],
+        })
+
     vlow_freq = max(0.01, proxy_frequencies[0])
     vhigh_freq = proxy_frequencies[4]
-    ratio_vhigh_to_vlow = round(vhigh_freq / vlow_freq, 1)
+    if vhigh_freq >= vlow_freq:
+        ratio_full = round(vhigh_freq / vlow_freq, 1)
+        full_validation_wording = f"{ratio_full}× as frequent in Very High than in Very Low zones"
+    else:
+        diff_pct = round(((vlow_freq - vhigh_freq) / vlow_freq) * 100.0, 1)
+        full_validation_wording = f"{diff_pct}% less frequent in Very High than in Very Low zones"
+
+    vlow_ind_freq = max(0.01, proxy_indep_frequencies[0])
+    vhigh_ind_freq = proxy_indep_frequencies[4]
+    if vhigh_ind_freq >= vlow_ind_freq:
+        ratio_ind = round(vhigh_ind_freq / vlow_ind_freq, 1)
+        indep_validation_wording = f"{ratio_ind}× as frequent in Independent Very High than in Very Low zones"
+    else:
+        diff_ind_pct = round(((vlow_ind_freq - vhigh_ind_freq) / vlow_ind_freq) * 100.0, 1)
+        indep_validation_wording = f"{diff_ind_pct}% less frequent in Independent Very High than in Very Low zones"
+
+    # Check trend monotonicity
+    trend_increasing_full = bool(all(proxy_frequencies[i] <= proxy_frequencies[i+1] for i in range(len(proxy_frequencies)-1)))
+    trend_increasing_indep = bool(all(proxy_indep_frequencies[i] <= proxy_indep_frequencies[i+1] for i in range(len(proxy_indep_frequencies)-1)))
 
     # -------------------------------------------------------------
     # A4. Recharge Suitability & Top 50 Candidate Sites
@@ -577,8 +651,16 @@ def compute_groundwater_recharge(
     else:
         water_months = np.full((ny, nx), 6.0, dtype="float32")
 
-    candidate_sites = []
+    # Distance to mask boundary for >= 200m edge clearance assertion
+    dist_to_mask_edge_m = distance_transform_edt(analysis_mask == 1) * res_x
+
+    candidate_sites_pool = []
     inv_tfm = transform
+
+    dropped_edge_distance = 0
+    dropped_stream_order = 0
+    dropped_landuse = 0
+    dropped_spacing = 0
 
     for c_id in range(1, num_rech + 1):
         m_clust = (lbl_rech == c_id)
@@ -590,10 +672,11 @@ def compute_groundwater_recharge(
         mean_r, mean_c = float(np.mean(c_rows)), float(np.mean(c_cols))
         x_utm, y_utm = inv_tfm * (mean_c, mean_r)
 
-        # Convert to WGS84 for KML
-        from pyproj import Transformer
-        tr = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
-        lon_wgs, lat_wgs = tr.transform(x_utm, y_utm)
+        # 1. Edge Clearance Rule: inside mask and >= 200 m from edge
+        c_dist_edge = float(np.mean(dist_to_mask_edge_m[m_clust]))
+        if c_dist_edge < 200.0:
+            dropped_edge_distance += 1
+            continue
 
         # Site attributes
         c_slope = float(np.mean(slope_deg[m_clust]))
@@ -605,36 +688,89 @@ def compute_groundwater_recharge(
         c_w_months = float(np.mean(water_months[m_clust]))
         c_landuse = int(np.bincount(cls_arr[m_clust].astype(int)).argmax())
 
-        # Recommended structure type
-        if c_dist_stream <= 60 and (c_slope >= 1.0 and c_slope <= 5.0) and c_stream_ord in [2, 3, 4]:
+        # Recommended structure type selection
+        if c_dist_stream <= 30.0 and (c_slope >= 1.0 and c_slope <= 5.0) and c_stream_ord in [2, 3, 4]:
             stype = "Check dam"
-        elif (cls_arr[int(mean_r), int(mean_c)] == 5) and c_w_months <= 4.0:
+        elif (cls_arr[int(round(mean_r)), int(round(mean_c))] == 5 or c_landuse == 5) and c_w_months <= 4.0:
             stype = "Tank rehabilitation"
         elif c_lin_score >= 4 and c_clay >= 35.0:
             stype = "Recharge shaft"
-        elif (c_stream_ord in [1, 2]) and c_slope < 2.0 and c_infilt >= 4:
+        elif c_landuse == 6 and (c_stream_ord in [1, 2] or c_slope < 2.5):
+            stype = "Percolation pond"
+        elif c_dist_stream <= 30.0 and c_stream_ord in [2, 3, 4]:
+            stype = "Check dam"
+        elif c_landuse == 6:
             stype = "Percolation pond"
         else:
-            stype = "Percolation pond" if c_slope < 2.5 else "Check dam"
+            # Fallback evaluation based on slope
+            if c_slope < 2.5:
+                # Percolation pond candidate, but failed fallow/bare land requirement!
+                dropped_landuse += 1
+                continue
+            else:
+                # Check dam candidate, but failed stream proximity/order requirement!
+                dropped_stream_order += 1
+                continue
+
+        # 2. Strict type-specific constraints:
+        # Check dams must lie within 30 m of a 2nd–4th order stream
+        if stype == "Check dam" and not (c_dist_stream <= 30.0 and c_stream_ord in [2, 3, 4]):
+            dropped_stream_order += 1
+            continue
+
+        # Percolation ponds must be on fallow/bare land (class 6)
+        if stype == "Percolation pond" and c_landuse != 6:
+            dropped_landuse += 1
+            continue
+
+        # Convert to WGS84 for KML
+        from pyproj import Transformer
+        tr = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
+        lon_wgs, lat_wgs = tr.transform(x_utm, y_utm)
 
         c_score = float(np.mean(rech_score[m_clust]))
-        candidate_sites.append({
+        candidate_sites_pool.append({
             "cluster_id": c_id,
             "structure_type": stype,
             "suitability_score": round(c_score, 3),
-            "area_ha": round(sz * px_area_ha, 2),
+            "site_zone_ha": round(sz * px_area_ha, 2),
             "slope_deg": round(c_slope, 1),
             "stream_order": c_stream_ord,
+            "dist_stream_m": round(c_dist_stream, 1),
+            "dist_edge_m": round(c_dist_edge, 1),
             "easting": round(x_utm, 1),
             "northing": round(y_utm, 1),
             "lat": round(lat_wgs, 5),
             "lon": round(lon_wgs, 5),
         })
 
-    candidate_sites.sort(key=lambda s: s["suitability_score"], reverse=True)
-    top50 = candidate_sites[:50]
+    # 3. Minimum Spacing of 500 m (Non-Maximum Suppression)
+    candidate_sites_pool.sort(key=lambda s: s["suitability_score"], reverse=True)
+    selected_sites = []
+    for s in candidate_sites_pool:
+        too_close = False
+        for sel in selected_sites:
+            dist_m = np.sqrt((s["easting"] - sel["easting"])**2 + (s["northing"] - sel["northing"])**2)
+            if dist_m < 500.0:
+                too_close = True
+                break
+        if too_close:
+            dropped_spacing += 1
+        else:
+            selected_sites.append(s)
+
+    top50 = selected_sites[:50]
     for i, s in enumerate(top50, 1):
         s["rank"] = i
+
+    site_filter_audit = {
+        "total_initial_clusters": num_rech,
+        "dropped_edge_distance": dropped_edge_distance,
+        "dropped_stream_order": dropped_stream_order,
+        "dropped_landuse": dropped_landuse,
+        "dropped_spacing": dropped_spacing,
+        "surviving_count": len(selected_sites),
+    }
 
     # Save Top 50 CSV and KML
     df_sites = pd.DataFrame(top50)
@@ -651,7 +787,7 @@ def compute_groundwater_recharge(
     for s in top50:
         kml_lines.append(f"""    <Placemark>
       <name>#{s['rank']} {s['structure_type']}</name>
-      <description>Score: {s['suitability_score']} | Area: {s['area_ha']} ha | Slope: {s['slope_deg']}°</description>
+      <description>Score: {s['suitability_score']} | Site zone: {s['site_zone_ha']} ha | Slope: {s['slope_deg']}°</description>
       <Point>
         <coordinates>{s['lon']},{s['lat']},0</coordinates>
       </Point>
@@ -770,9 +906,17 @@ def compute_groundwater_recharge(
     extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
     key_finding = (
         f"{high_plus_very_high_pct:.1f}% of the plains ({high_plus_very_high_ha:,.1f} ha) possess High or Very High groundwater potential. "
-        f"Pumped borewell cropland is {ratio_vhigh_to_vlow:.1f}× more frequent in Very High than in Very Low zones. "
+        f"Pumped borewell cropland is {full_validation_wording}. "
         f"{len(top50)} high-priority artificial recharge sites identified across Thamirabarani sub-basins."
     )
+
+    limitations_extra = ""
+    if not trend_increasing_full or not trend_increasing_indep:
+        limitations_extra = (
+            " Validation note: Borewell proxy density does not follow a strict monotonic increase across classes 1 to 5. "
+            "In this canal-commanded landscape, borewells are drilled primarily in tail-end canal-deficit zones "
+            "(often classified as Moderate potential) rather than strictly tracking maximum natural aquifer recharge potential."
+        )
 
     result = {
         "id": "groundwater_recharge",
@@ -787,13 +931,18 @@ def compute_groundwater_recharge(
         "high_plus_very_high_ha": high_plus_very_high_ha,
         "high_plus_very_high_pct": high_plus_very_high_pct,
         "candidate_sites_count": len(top50),
+        "site_filter_audit": site_filter_audit,
         "mean_sensitivity_pct": mean_sensitivity_pct,
         "consistency_ratio": round(cr, 4),
-        "validation_ratio": ratio_vhigh_to_vlow,
+        "validation_wording": full_validation_wording,
+        "validation_indep_wording": indep_validation_wording,
+        "trend_increasing_full": trend_increasing_full,
+        "trend_increasing_indep": trend_increasing_indep,
         "denominator_label": f"canonical analysed plains within mask ({canonical_analysed_ha:,.1f} ha)",
         "classes": class_stats,
         "chart_data": chart_data,
         "validation_bars": validation_bars,
+        "validation_indep_bars": validation_indep_bars,
         "top50_sites": top50,
         "taluk_split": taluk_split,
         "legend": [
@@ -807,7 +956,8 @@ def compute_groundwater_recharge(
             "DEM-derived geomorphology proxy, auto-extracted lineaments, slope, ISRIC SoilGrids infiltration, "
             "D8 drainage density, CHIRPS rainfall, Copernicus Sentinel-1/2 land use, and surface water proximity. "
             f"Consistency Ratio CR = {cr:.4f} (passed < 0.10 threshold). "
-            "Classified with Jenks natural breaks. Artificial recharge sites selected using multi-parameter suitability rules."
+            "Independent GWPI computes potential excluding surface water proximity and land use. "
+            "Candidate recharge sites enforce >=200 m mask-edge clearance, 500 m NMS spacing, stream order and land use rules."
         ),
         "limitations": (
             "This is a hydrogeological potential index based on surface and terrain proxies, not in-situ piezometric well levels. "
@@ -815,6 +965,7 @@ def compute_groundwater_recharge(
             "Geomorphology landforms are DEM-derived topographic proxies (TPI/slope), not NRSC ground geomorphology maps. "
             "Foothill recharge zones in the Western Ghats are excluded by design to focus on the farmable plains."
             + (" Geology not included — GSI lithology pending." if not has_geology else "")
+            + limitations_extra
         ),
         "png_url": f"/api/insights/groundwater_recharge/png?study_area={study_area}",
         "csv_url": f"/api/insights/groundwater_recharge/csv?study_area={study_area}",

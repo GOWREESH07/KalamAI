@@ -2,145 +2,145 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>Top 20 Geo-Economic Intervention Clusters</name>
-    <description>Kalam Agro-Economic Action Intelligence</description>
+    <description>Kalam Agro-Economic Action Intelligence (1 km Grid Units)</description>
     <Placemark>
-      <name>#1 INVEST (1574.78 ha)</name>
-      <description>Value: ₹12.4 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
+      <name>#1 RESILIENCE (67.46 ha)</name>
+      <description>Value: ₹1.18 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
       <Point>
-        <coordinates>77.49453,8.70144,0</coordinates>
+        <coordinates>77.52289,8.70887,0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>#2 RESILIENCE (394.1 ha)</name>
-      <description>Value: ₹6.77 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
+      <name>#2 RESILIENCE (65.1 ha)</name>
+      <description>Value: ₹1.13 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
       <Point>
-        <coordinates>77.51647,8.7154,0</coordinates>
+        <coordinates>77.51238,8.71734,0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>#3 PROTECT (59.45 ha)</name>
-      <description>Value: ₹0.9 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
+      <name>#3 RESILIENCE (59.63 ha)</name>
+      <description>Value: ₹1.07 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
       <Point>
-        <coordinates>77.48212,8.68296,0</coordinates>
+        <coordinates>77.50444,8.71875,0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>#4 PROTECT (32.32 ha)</name>
-      <description>Value: ₹0.51 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
+      <name>#4 RESILIENCE (41.0 ha)</name>
+      <description>Value: ₹0.8 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
       <Point>
-        <coordinates>77.47453,8.70386,0</coordinates>
+        <coordinates>77.52829,8.70796,0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>#5 PROTECT (27.14 ha)</name>
-      <description>Value: ₹0.47 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
+      <name>#5 INVEST (69.67 ha)</name>
+      <description>Value: ₹0.75 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
       <Point>
-        <coordinates>77.49069,8.70025,0</coordinates>
+        <coordinates>77.48534,8.70811,0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>#6 RESILIENCE (30.83 ha)</name>
+      <name>#6 RESILIENCE (37.6 ha)</name>
+      <description>Value: ₹0.67 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
+      <Point>
+        <coordinates>77.51268,8.7234,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#7 INVEST (63.52 ha)</name>
+      <description>Value: ₹0.65 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
+      <Point>
+        <coordinates>77.48476,8.69924,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#8 RESILIENCE (41.4 ha)</name>
+      <description>Value: ₹0.63 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
+      <Point>
+        <coordinates>77.52214,8.71474,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#9 INVEST (51.34 ha)</name>
+      <description>Value: ₹0.59 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
+      <Point>
+        <coordinates>77.47743,8.70861,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#10 Stable / monitor (78.53 ha)</name>
+      <description>Value: ₹0.59 Cr | Action: No priority intervention; continue routine monitoring.</description>
+      <Point>
+        <coordinates>77.49471,8.708,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#11 PROTECT (36.81 ha)</name>
+      <description>Value: ₹0.58 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
+      <Point>
+        <coordinates>77.48443,8.68272,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#12 Stable / monitor (74.3 ha)</name>
+      <description>Value: ₹0.56 Cr | Action: No priority intervention; continue routine monitoring.</description>
+      <Point>
+        <coordinates>77.5039,8.70846,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#13 INVEST (56.88 ha)</name>
+      <description>Value: ₹0.54 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
+      <Point>
+        <coordinates>77.47591,8.71777,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#14 Stable / monitor (62.46 ha)</name>
+      <description>Value: ₹0.53 Cr | Action: No priority intervention; continue routine monitoring.</description>
+      <Point>
+        <coordinates>77.51211,8.70736,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#15 INVEST (43.31 ha)</name>
+      <description>Value: ₹0.5 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
+      <Point>
+        <coordinates>77.47763,8.69958,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#16 Stable / monitor (48.36 ha)</name>
+      <description>Value: ₹0.49 Cr | Action: No priority intervention; continue routine monitoring.</description>
+      <Point>
+        <coordinates>77.49343,8.71684,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#17 Stable / monitor (44.33 ha)</name>
+      <description>Value: ₹0.47 Cr | Action: No priority intervention; continue routine monitoring.</description>
+      <Point>
+        <coordinates>77.52269,8.69924,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#18 RESILIENCE (29.75 ha)</name>
+      <description>Value: ₹0.46 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
+      <Point>
+        <coordinates>77.50405,8.7234,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>#19 RESILIENCE (27.97 ha)</name>
       <description>Value: ₹0.45 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
       <Point>
-        <coordinates>77.52316,8.72332,0</coordinates>
+        <coordinates>77.52861,8.71626,0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>#7 INVEST (51.77 ha)</name>
-      <description>Value: ₹0.44 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
+      <name>#20 Stable / monitor (74.84 ha)</name>
+      <description>Value: ₹0.44 Cr | Action: No priority intervention; continue routine monitoring.</description>
       <Point>
-        <coordinates>77.52114,8.71937,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#8 INVEST (43.76 ha)</name>
-      <description>Value: ₹0.41 Cr | Action: Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.</description>
-      <Point>
-        <coordinates>77.47459,8.68469,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#9 PROTECT (19.64 ha)</name>
-      <description>Value: ₹0.39 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
-      <Point>
-        <coordinates>77.52294,8.6814,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#10 Stable / monitor (24.9 ha)</name>
-      <description>Value: ₹0.32 Cr | Action: No priority intervention; continue routine monitoring.</description>
-      <Point>
-        <coordinates>77.52667,8.69315,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#11 PROTECT (17.63 ha)</name>
-      <description>Value: ₹0.29 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
-      <Point>
-        <coordinates>77.51799,8.70202,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#12 PROTECT (14.12 ha)</name>
-      <description>Value: ₹0.28 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
-      <Point>
-        <coordinates>77.52378,8.68479,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#13 Stable / monitor (18.69 ha)</name>
-      <description>Value: ₹0.28 Cr | Action: No priority intervention; continue routine monitoring.</description>
-      <Point>
-        <coordinates>77.52048,8.70311,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#14 PROTECT (18.88 ha)</name>
-      <description>Value: ₹0.27 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
-      <Point>
-        <coordinates>77.47537,8.68903,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#15 PROTECT (17.37 ha)</name>
-      <description>Value: ₹0.27 Cr | Action: Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.</description>
-      <Point>
-        <coordinates>77.49584,8.68209,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#16 RESILIENCE (16.0 ha)</name>
-      <description>Value: ₹0.26 Cr | Action: Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.</description>
-      <Point>
-        <coordinates>77.52761,8.69566,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#17 OPTIMIZE (6.3 ha)</name>
-      <description>Value: ₹0.25 Cr | Action: Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.</description>
-      <Point>
-        <coordinates>77.48128,8.7015,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#18 OPTIMIZE (19.73 ha)</name>
-      <description>Value: ₹0.24 Cr | Action: Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.</description>
-      <Point>
-        <coordinates>77.47711,8.71508,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#19 OPTIMIZE (18.74 ha)</name>
-      <description>Value: ₹0.24 Cr | Action: Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.</description>
-      <Point>
-        <coordinates>77.48222,8.68632,0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <name>#20 Stable / monitor (12.02 ha)</name>
-      <description>Value: ₹0.21 Cr | Action: No priority intervention; continue routine monitoring.</description>
-      <Point>
-        <coordinates>77.48898,8.69497,0</coordinates>
+        <coordinates>77.51256,8.68999,0</coordinates>
       </Point>
     </Placemark>
   </Document>

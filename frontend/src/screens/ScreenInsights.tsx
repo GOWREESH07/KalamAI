@@ -311,7 +311,7 @@ export default function ScreenInsights({ studyArea }: Props) {
           {getSubLayers(selectedId).length > 0 && (
             <div style={{
               position: 'absolute',
-              top: 12,
+              top: 52,
               left: 12,
               background: 'var(--panel)',
               border: '1px solid var(--border)',
@@ -625,6 +625,49 @@ export default function ScreenInsights({ studyArea }: Props) {
                       </div>
                     </div>
                   </div>
+
+                  {/* Borewell Proxy Validation Table (Eligible Cropland >1 km from surface water) */}
+                  {detail.validation_bars && detail.validation_bars.length > 0 && (
+                    <div style={{ marginBottom: 12 }}>
+                      <div className="section-label" style={{ marginBottom: 4 }}>
+                        Borewell Validation (Cropland &gt; 1 km from water)
+                      </div>
+                      <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: 4 }}>
+                        <table className="data-table" style={{ margin: 0, fontSize: 10 }}>
+                          <thead>
+                            <tr>
+                              <th>GWPI Zone</th>
+                              <th className="num">Eligible ha</th>
+                              <th className="num">Proxy ha</th>
+                              <th className="num">Full GWPI %</th>
+                              {detail.validation_indep_bars && <th className="num">Indep. %</th>}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {detail.validation_bars.map((vb: any, idx: number) => {
+                              const indep = detail.validation_indep_bars ? detail.validation_indep_bars[idx] : null
+                              return (
+                                <tr key={idx}>
+                                  <td style={{ fontWeight: 600 }}>{vb.category}</td>
+                                  <td className="num mono">{vb.eligible_area_ha}</td>
+                                  <td className="num mono">{vb.proxy_area_ha}</td>
+                                  <td className="num mono" style={{ color: vb.color }}>{vb.freq_pct}%</td>
+                                  {indep && <td className="num mono" style={{ color: indep.color }}>{indep.freq_pct}%</td>}
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Site Filter Audit */}
+                  {detail.site_filter_audit && (
+                    <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 12, padding: '6px 8px', background: 'var(--bg)', borderRadius: 4, lineHeight: 1.5 }}>
+                      <strong>Recharge Filter Audit:</strong> {detail.site_filter_audit.total_initial_clusters} clusters → {detail.site_filter_audit.dropped_edge_distance} dropped (&lt;200m from mask edge) · {detail.site_filter_audit.dropped_stream_order} dropped (stream order &gt;30m) · {detail.site_filter_audit.dropped_landuse} dropped (non-fallow pond) · {detail.site_filter_audit.dropped_spacing} dropped (&lt;500m NMS) → <strong>{detail.site_filter_audit.surviving_count} valid sites</strong>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -650,7 +693,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                       </div>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
                     <div className="metric-tile" style={{ padding: '8px 10px' }}>
                       <div className="metric-label">Dec 2023 Flooded Cropland</div>
                       <div className="metric-value" style={{ fontSize: 18, color: '#0077B6' }}>
@@ -667,6 +710,22 @@ export default function ScreenInsights({ studyArea }: Props) {
                       </div>
                     </div>
                   </div>
+
+                  {/* Flood Scenes Metadata */}
+                  {detail.flood_metadata && (
+                    <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 10, padding: '6px 8px', background: 'var(--bg)', borderRadius: 4, lineHeight: 1.5 }}>
+                      <strong>Sentinel-1 Scenes:</strong> Pre: {detail.flood_metadata.pre_scenes?.join(', ')} · Post: {detail.flood_metadata.post_scenes?.join(', ')}<br/>
+                      <em>{detail.flood_metadata.timing_note}</em> (Footprint: <strong>{detail.flood_metadata.label}</strong>)
+                    </div>
+                  )}
+
+                  {/* RESILIENCE Trigger Breakdown */}
+                  {detail.resilience_triggers && (
+                    <div style={{ fontSize: 11, marginBottom: 12, padding: '6px 8px', background: 'rgba(178, 59, 59, 0.08)', borderLeft: '3px solid #B23B3B', borderRadius: '0 4px 4px 0' }}>
+                      <div style={{ fontWeight: 600, color: '#B23B3B', fontSize: 10, textTransform: 'uppercase', marginBottom: 2 }}>Resilience Triggers Breakdown</div>
+                      <div style={{ color: 'var(--text-primary)', fontSize: 11 }}>{detail.resilience_triggers.summary_str}</div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -724,7 +783,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                           <th>#</th>
                           <th>Structure</th>
                           <th className="num">Score</th>
-                          <th className="num">Area (ha)</th>
+                          <th className="num">Site zone (ha)</th>
                           <th>Coords</th>
                         </tr>
                       </thead>
@@ -734,7 +793,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                             <td className="mono">{s.rank || idx + 1}</td>
                             <td>{s.structure_type}</td>
                             <td className="num mono">{(s.suitability_score || 0).toFixed(2)}</td>
-                            <td className="num mono">{(s.area_ha || 0).toFixed(2)}</td>
+                            <td className="num mono">{(s.site_zone_ha || s.area_ha || 0).toFixed(2)}</td>
                             <td className="mono" style={{ fontSize: 10 }}>{s.lat?.toFixed(3)}, {s.lon?.toFixed(3)}</td>
                           </tr>
                         ))}
@@ -751,7 +810,7 @@ export default function ScreenInsights({ studyArea }: Props) {
               {detail.id === 'geoeconomic_priority' && detail.top20_clusters && detail.top20_clusters.length > 0 && (
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <div className="section-label" style={{ margin: 0 }}>Top Action Intervention Clusters (Top 10)</div>
+                    <div className="section-label" style={{ margin: 0 }}>Top Action Intervention Clusters (1 km Grid, 5–150 ha)</div>
                     <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
                       Total {detail.top20_clusters.length} ranked
                     </span>
@@ -781,7 +840,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                     </table>
                   </div>
                   <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginTop: 4 }}>
-                    Ranked by area × crop value. Full polygon coordinates available in CSV and KML export.
+                    Ranked by area × crop value. Full polygon coordinates available in CSV, KML, and KMZ export.
                   </div>
                 </div>
               )}
@@ -847,6 +906,16 @@ export default function ScreenInsights({ studyArea }: Props) {
                     style={{ textDecoration: 'none', gap: 4 }}
                   >
                     <MapPin size={12} /> KML / Earth
+                  </a>
+                )}
+                {(detail.kmz_url || detail.id === 'geoeconomic_priority') && (
+                  <a
+                    href={api.getInsightKmzUrl(detail.id, studyArea)}
+                    download={`${detail.id}_clusters.kmz`}
+                    className="btn btn-secondary btn-sm"
+                    style={{ textDecoration: 'none', gap: 4 }}
+                  >
+                    <MapPin size={12} /> KMZ / Earth
                   </a>
                 )}
               </div>
