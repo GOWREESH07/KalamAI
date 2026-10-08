@@ -459,19 +459,6 @@ export default function ScreenInsights({ studyArea }: Props) {
                 </div>
               )}
 
-              {detail.id === 'field_size' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
-                  <div className="metric-tile" style={{ padding: '8px 10px' }}>
-                    <div className="metric-label">Smallholders (&lt;1 ha)</div>
-                    <div className="metric-value" style={{ fontSize: 20, color: '#2A9D8F' }}>{detail.smallholder_count_pct}%</div>
-                  </div>
-                  <div className="metric-tile" style={{ padding: '8px 10px' }}>
-                    <div className="metric-label">Mean Parcel Size</div>
-                    <div className="metric-value" style={{ fontSize: 20, color: '#1F3A5F' }}>{detail.average_parcel_ha} <span style={{ fontSize: 11 }}>ha</span></div>
-                  </div>
-                </div>
-              )}
-
               {detail.id === 'crop_health' && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>
@@ -481,19 +468,6 @@ export default function ScreenInsights({ studyArea }: Props) {
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>
                     <div className="metric-label">Moisture / Vigour Stress</div>
                     <div className="metric-value" style={{ fontSize: 20, color: '#E76F51' }}>{detail.stressed_share_pct}%</div>
-                  </div>
-                </div>
-              )}
-
-              {detail.id === 'verification_priority' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
-                  <div className="metric-tile" style={{ padding: '8px 10px' }}>
-                    <div className="metric-label">Critical Audit Parcels</div>
-                    <div className="metric-value" style={{ fontSize: 20, color: '#B4554B' }}>{detail.critical_parcels}</div>
-                  </div>
-                  <div className="metric-tile" style={{ padding: '8px 10px' }}>
-                    <div className="metric-label">High Priority</div>
-                    <div className="metric-value" style={{ fontSize: 20, color: '#E76F51' }}>{detail.high_priority_parcels}</div>
                   </div>
                 </div>
               )}
@@ -535,71 +509,6 @@ export default function ScreenInsights({ studyArea }: Props) {
                   </div>
                 </div>
               )}
-
-              {/* TOP 50 VERIFICATION TABLE */}
-              {detail.id === 'verification_priority' && detail.top50 && detail.top50.length > 0 && (
-                <div style={{ marginBottom: 14 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <div className="section-label" style={{ margin: 0 }}>Top Field Audit Targets</div>
-                    <span className="mono" style={{ fontSize: 10, color: 'var(--text-secondary)' }}>{detail.top50.length} flagged</span>
-                  </div>
-                  <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 4, marginTop: 6 }}>
-                    <table className="data-table" style={{ margin: 0, fontSize: 11 }}>
-                      <thead>
-                        <tr>
-                          <th>#ID</th>
-                          <th>Class</th>
-                          <th>Score</th>
-                          <th>GPS Centroid</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {detail.top50.slice(0, 15).map((r: any, i: number) => (
-                          <tr key={i}>
-                            <td className="mono">#{r.parcel_id}</td>
-                            <td>{r.predicted_class}</td>
-                            <td className="mono num" style={{ color: r.priority_score > 0.4 ? '#B4554B' : '#E76F51' }}>
-                              {r.priority_score}
-                            </td>
-                            <td className="mono" style={{ fontSize: 10 }}>{r.lon.toFixed(4)}, {r.lat.toFixed(4)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {/* VILLAGES TABLE */}
-              {detail.id === 'village_stats' && detail.villages && detail.villages.length > 0 && (
-                <div style={{ marginBottom: 14 }}>
-                  <div className="section-label" style={{ marginBottom: 6 }}>Settlement Cropland Summary</div>
-                  <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 4 }}>
-                    <table className="data-table" style={{ margin: 0, fontSize: 11 }}>
-                      <thead>
-                        <tr>
-                          <th>Village</th>
-                          <th className="num">Paddy (ha)</th>
-                          <th className="num">Banana (ha)</th>
-                          <th>Dominant Crop</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {detail.villages.slice(0, 10).map((v: any, i: number) => (
-                          <tr key={i}>
-                            <td>{v.village}</td>
-                            <td className="num mono">{v.paddy_ha}</td>
-                            <td className="num mono">{v.banana_ha}</td>
-                            <td style={{ fontSize: 10 }}>{v.dominant_type}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              <div className="sep" />
 
               {/* COLLAPSIBLE METHODOLOGY */}
               <div style={{ marginBottom: 8 }}>
@@ -654,16 +563,6 @@ export default function ScreenInsights({ studyArea }: Props) {
                 >
                   <Download size={12} /> CSV Stats
                 </a>
-                {detail.id === 'verification_priority' && (
-                  <a
-                    href={api.getInsightKmlUrl(detail.id, studyArea)}
-                    download="field_audit_priority.kml"
-                    className="btn btn-secondary btn-sm"
-                    style={{ textDecoration: 'none', gap: 4 }}
-                  >
-                    <MapPin size={12} /> KML (GPS)
-                  </a>
-                )}
               </div>
             </div>
           ) : (

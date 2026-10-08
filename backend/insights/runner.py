@@ -11,26 +11,20 @@ from typing import Dict, Any
 
 from .cropping_intensity import compute_cropping_intensity
 from .transplanting_calendar import compute_transplanting_calendar
-from .verification_priority import compute_verification_priority
-from .village_stats import compute_village_stats
 from .irrigation_dependency import compute_irrigation_dependency
 from .crop_change import compute_crop_change
 from .crop_health import compute_crop_health
 from .water_demand import compute_water_demand
-from .field_size import compute_field_size
 
 logger = logging.getLogger(__name__)
 
 INSIGHT_MODULES = [
     ("cropping_intensity", "01. Cropping Intensity", "Multi-cycle harvest frequency & fallow dynamics", compute_cropping_intensity),
     ("transplanting_calendar", "02. Transplanting Calendar", "SAR-derived inundation & Kar/Pishanam shift detection", compute_transplanting_calendar),
-    ("verification_priority", "03. Field Verification Priority", "GPS-ready priority ranking for mobile ground audit", compute_verification_priority),
-    ("village_stats", "04. Village-Level Statistics", "Panchayat & revenue settlement acreage breakdown", compute_village_stats),
-    ("irrigation_dependency", "05. Irrigation Dependency", "Canal & Thamirabarani river buffer decay analysis", compute_irrigation_dependency),
-    ("crop_change", "06. Crop Change & Farmland Loss", "Multi-year transition matrix (AY 23-24 vs AY 25-26)", compute_crop_change),
-    ("crop_health", "07. Crop Health & Anomaly", "Multi-year NDVI z-score deviation & stress tracking", compute_crop_health),
-    ("water_demand", "08. Irrigation Water Demand", "TNAU/FAO agronomic water budgeting (MCM)", compute_water_demand),
-    ("field_size", "09. Field Size & Fragmentation", "Agrarian parcel morphology & smallholder distribution", compute_field_size),
+    ("irrigation_dependency", "03. Irrigation Dependency", "Canal & Thamirabarani river buffer decay analysis", compute_irrigation_dependency),
+    ("crop_change", "04. Crop Change & Farmland Loss", "Multi-year transition matrix (AY 23-24 vs AY 25-26)", compute_crop_change),
+    ("crop_health", "05. Crop Health & Anomaly", "Multi-year NDVI z-score deviation & stress tracking", compute_crop_health),
+    ("water_demand", "06. Irrigation Water Demand", "TNAU/FAO agronomic water budgeting (MCM)", compute_water_demand),
 ]
 
 
