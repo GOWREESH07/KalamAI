@@ -1,0 +1,7 @@
+category,area_ha,pct,color
+Stable Paddy,1298.2,26.9,#8DB33F
+Stable Banana,39.8,0.8,#2E6B3F
+Paddy → Banana,97.9,2.0,#E76F51
+Banana → Paddy,1.9,0.0,#2A9D8F
+Cropland → Fallow/Loss,0.0,0.0,#B4554B
+Other Stable Cropland,3387.2,70.2,#BFCB8F

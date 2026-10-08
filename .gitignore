@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.pytest_cache/
+
+# Large satellite cache and netcdf
+backend/cache/*.nc
+backend/cache/**/*.nc
+backend/cache/taluks/tiles/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+.DS_Store

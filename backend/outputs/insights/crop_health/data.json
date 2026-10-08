@@ -1,0 +1,83 @@
+{
+  "id": "crop_health",
+  "title": "Crop Health & NDVI Anomaly",
+  "subtitle": "Multi-year standardized z-score deviation from 3-year baseline",
+  "key_finding": "85.6% of cropland displays normal or above-normal vegetative vigor. Localized moisture or delayed transplanting stress is restricted to 14.4% (372.2 ha), primarily on tail-end irrigation distributaries.",
+  "healthy_share_pct": 85.60000000000001,
+  "stressed_share_pct": 14.4,
+  "stressed_area_ha": 372.2,
+  "stats": {
+    "Severe Stress": {
+      "area_ha": 8.3,
+      "pct": 0.3,
+      "color": "#B4554B"
+    },
+    "Mild Stress": {
+      "area_ha": 363.9,
+      "pct": 14.1,
+      "color": "#E76F51"
+    },
+    "Normal Vigour": {
+      "area_ha": 2157.7,
+      "pct": 83.4,
+      "color": "#8DB33F"
+    },
+    "Above Normal": {
+      "area_ha": 55.8,
+      "pct": 2.2,
+      "color": "#2E6B3F"
+    }
+  },
+  "chart_data": [
+    {
+      "category": "Severe Stress",
+      "area_ha": 8.3,
+      "pct": 0.3,
+      "color": "#B4554B"
+    },
+    {
+      "category": "Mild Stress",
+      "area_ha": 363.9,
+      "pct": 14.1,
+      "color": "#E76F51"
+    },
+    {
+      "category": "Normal Vigour",
+      "area_ha": 2157.7,
+      "pct": 83.4,
+      "color": "#8DB33F"
+    },
+    {
+      "category": "Above Normal",
+      "area_ha": 55.8,
+      "pct": 2.2,
+      "color": "#2E6B3F"
+    }
+  ],
+  "legend": [
+    {
+      "id": "1",
+      "label": "Severe Stress",
+      "color": "#B4554B"
+    },
+    {
+      "id": "2",
+      "label": "Mild Stress",
+      "color": "#E76F51"
+    },
+    {
+      "id": "3",
+      "label": "Normal Vigour",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "4",
+      "label": "Above Normal",
+      "color": "#2E6B3F"
+    }
+  ],
+  "method": "Standardized NDVI anomaly z-scores computed against multi-year seasonal reference distributions. Negative anomalies (z < -0.5) identify water stress, delayed transplanting, or localized pest attack, while positive anomalies (z > 0.5) indicate robust canopy development.",
+  "limitations": "Cloud contamination during heavy Northeast Monsoon weeks (Nov\u2013Dec) can momentarily depress optical composites before synthetic radar cross-calibration kicks in.",
+  "csv_url": "/api/insights/crop_health/csv",
+  "png_url": "/api/insights/crop_health/png"
+}

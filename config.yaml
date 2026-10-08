@@ -1,0 +1,147 @@
+# Kalam — Paddy & Banana Parcel Mapping System
+# VIT Mapathon 2026, Problem Statement 1
+
+aoi:
+  lon_min: 77.47
+  lon_max: 77.53
+  lat_min: 8.680
+  lat_max: 8.725
+  epsg: 32643
+  min_area_km2: 20.0
+
+time:
+  start: "2025-06-01"
+  end: "2026-09-30"
+
+sentinel2:
+  collection: "sentinel-2-l2a"
+  bands: ["B02", "B03", "B04", "B08", "B11", "SCL"]
+  cloud_cover_max: 80
+  scl_mask_classes: [3, 8, 9, 10]
+  resolution_m: 10
+
+sentinel1:
+  collection: "sentinel-1-rtc"
+  bands: ["vv", "vh"]
+  resolution_m: 10
+
+preprocessing:
+  grid_epsg: 32643
+  grid_resolution_m: 10
+  s1_filter_size: 3
+
+features:
+  ndvi_high_threshold: 0.6
+
+weak_labels:
+  paddy:
+    vh_min_db: -19.0
+    ndvi_peak_threshold: 0.6
+    ndvi_trough_max: 0.3
+    ndvi_rise_months: 4
+  banana:
+    rolling_months: 12
+    ndvi_months_above: 7
+    ndvi_threshold: 0.50
+    ndvi_std_max: 0.15
+    vh_min_threshold_db: -18.0
+  water:
+    ndwi_threshold: 0.10
+    ndwi_months_above: 4
+  builtup:
+    ndvi_max_threshold: 0.3
+    ndwi_max_threshold: 0.0
+  fallow:
+    ndvi_max_threshold: 0.35
+  other_veg:
+    ndvi_mean_threshold: 0.4
+  max_pixels_per_class: 2000
+
+segmentation:
+  n_segments: 3000
+  compactness: 0.1
+  min_segment_ha: 0.1
+
+classification:
+  n_estimators: 300
+  test_split: 0.3
+  random_state: 42
+  block_size_m: 1000
+
+classes:
+  paddy:
+    id: 1
+    color: "#8DB33F"
+  banana:
+    id: 2
+    color: "#2E6B3F"
+  other_veg:
+    id: 3
+    color: "#BFCB8F"
+  builtup:
+    id: 4
+    color: "#B4554B"
+  water:
+    id: 5
+    color: "#3A7CA5"
+  fallow:
+    id: 6
+    color: "#CBA670"
+
+export:
+  map_title: "Paddy & Banana Land Parcel Classification"
+  map_subtitle: "Ambasamudram & Cheranmahadevi Taluks, Tirunelveli District"
+  credits: "Contains modified Copernicus Sentinel data 2025–26 | களம் 🌾 · VIT Mapathon 2026"
+  dpi: 150
+
+mask:
+  max_elev: 250
+  max_slope: 8.0
+  tree_elev_threshold: 120
+  exclude_classes: [10]
+
+tiling:
+  tile_size_m: 5000
+  n_workers: 4
+
+taluks:
+  geojson: "data/taluks.geojson"
+  mask_tif: "data/analysis_mask.tif"
+
+cache_dir: "backend/cache"
+outputs_dir: "backend/outputs"
+
+insights:
+  cropping_intensity:
+    smooth_window: 3
+    peak_min_height: 0.50
+    peak_prominence: 0.20
+    peak_min_distance_months: 3
+  transplanting_calendar:
+    kar_window: [5, 8] # May-Aug
+    pishanam_window: [9, 12] # Sep-Dec
+    delayed_threshold_months: 1
+  verification_priority:
+    weights:
+      confidence: 0.5
+      consistency: 0.3
+      disagreement: 0.2
+    critical_percentile: 90
+    high_percentile: 70
+    medium_percentile: 40
+  village_stats:
+    admin_levels: [8, 9]
+  irrigation_dependency:
+    distance_bins_m: [250, 500, 1000, 2000]
+  crop_change:
+    confidence_threshold: 0.60
+  crop_health:
+    z_stressed: -1.0
+    z_above_normal: 1.0
+  water_demand:
+    paddy_water_mm_per_season: 1200 # TNAU / FAO guidance for irrigated lowland rice
+    banana_water_mm_per_year: 2000   # TNAU guidance for perennial wetland banana
+  field_size:
+    bins_ha: [0.5, 1.0, 2.0, 5.0]
+
+

@@ -1,0 +1,62 @@
+{
+  "id": "water_demand",
+  "title": "Irrigation Water Demand",
+  "subtitle": "Agronomic water budgeting & canal allocation estimates",
+  "key_finding": "Total estimated crop water requirement is 347.0 MCM/year. Dual-season paddy accounts for 73.9% (256.3 MCM) of agricultural water demand, while high-intensity perennial banana accounts for 2.2% (7.5 MCM).",
+  "total_water_mcm": 346.97,
+  "paddy_water_mcm": 256.32,
+  "banana_water_mcm": 7.51,
+  "paddy_water_share_pct": 73.9,
+  "banana_water_share_pct": 2.2,
+  "chart_data": [
+    {
+      "component": "Paddy (Kar)",
+      "water_mcm": 105.54,
+      "area_ha": 8795.4,
+      "color": "#8DB33F"
+    },
+    {
+      "component": "Paddy (Pishanam)",
+      "water_mcm": 150.78,
+      "area_ha": 12564.9,
+      "color": "#457B9D"
+    },
+    {
+      "component": "Banana (Annual)",
+      "water_mcm": 7.51,
+      "area_ha": 375.7,
+      "color": "#2E6B3F"
+    },
+    {
+      "component": "Other Crops",
+      "water_mcm": 83.14,
+      "area_ha": 16627.1,
+      "color": "#BFCB8F"
+    }
+  ],
+  "legend": [
+    {
+      "id": "Paddy (Kar)",
+      "label": "Paddy (Kar)",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "Paddy (Pishanam)",
+      "label": "Paddy (Pishanam)",
+      "color": "#457B9D"
+    },
+    {
+      "id": "Banana (Annual)",
+      "label": "Banana (Annual)",
+      "color": "#2E6B3F"
+    },
+    {
+      "id": "Other Crops",
+      "label": "Other Crops",
+      "color": "#BFCB8F"
+    }
+  ],
+  "method": "Agronomic crop evapotranspiration (ETc) and percolation budgeting using Tamil Nadu Agricultural University (TNAU) and FAO-56 irrigation standards. Wetland paddy requires ~1,200 mm/season including land preparation soaking; perennial banana requires ~2,000 mm/year under tropical wetland regimes.",
+  "limitations": "Effective monsoon rainfall offset (typically 400\u2013600 mm during NE Monsoon) reduces net canal irrigation draft requirements during peak November\u2013December flows.",
+  "csv_url": "/api/insights/water_demand/csv"
+}

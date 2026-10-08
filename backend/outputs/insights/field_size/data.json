@@ -1,0 +1,130 @@
+{
+  "id": "field_size",
+  "title": "Field Size & Land Fragmentation",
+  "subtitle": "Agrarian parcel morphology & smallholder distribution",
+  "key_finding": "Extreme land fragmentation: 19.8% of agricultural parcels are smallholder plots (< 1.0 ha), covering 9.9% of total farmland. The mean parcel size is 1.64 ha (median: 1.41 ha).",
+  "total_parcels": 2042,
+  "total_area_ha": 3346.6,
+  "average_parcel_ha": 1.64,
+  "median_parcel_ha": 1.41,
+  "smallholder_share_pct": 19.8,
+  "bins": [
+    {
+      "bin": "Marginal (< 0.5 ha)",
+      "count": 0,
+      "area_ha": 0.0,
+      "count_pct": 0.0,
+      "area_pct": 0.0,
+      "dominant_crop": "Paddy",
+      "color": "#2A9D8F"
+    },
+    {
+      "bin": "Small (0.5 \u2013 1.0 ha)",
+      "count": 404,
+      "area_ha": 330.3,
+      "count_pct": 19.8,
+      "area_pct": 9.9,
+      "dominant_crop": "Paddy",
+      "color": "#E9C46A"
+    },
+    {
+      "bin": "Semi-Medium (1.0 \u2013 2.0 ha)",
+      "count": 1187,
+      "area_ha": 1691.9,
+      "count_pct": 58.1,
+      "area_pct": 50.6,
+      "dominant_crop": "Paddy",
+      "color": "#F4A261"
+    },
+    {
+      "bin": "Medium (2.0 \u2013 5.0 ha)",
+      "count": 423,
+      "area_ha": 1140.9,
+      "count_pct": 20.7,
+      "area_pct": 34.1,
+      "dominant_crop": "Paddy",
+      "color": "#E76F51"
+    },
+    {
+      "bin": "Large (> 5.0 ha)",
+      "count": 28,
+      "area_ha": 183.4,
+      "count_pct": 1.4,
+      "area_pct": 5.5,
+      "dominant_crop": "Other Veg",
+      "color": "#B4554B"
+    }
+  ],
+  "chart_data": [
+    {
+      "category": "Marginal (< 0.5 ha)",
+      "count": 0,
+      "area_ha": 0.0,
+      "count_pct": 0.0,
+      "area_pct": 0.0,
+      "color": "#2A9D8F"
+    },
+    {
+      "category": "Small (0.5 \u2013 1.0 ha)",
+      "count": 404,
+      "area_ha": 330.3,
+      "count_pct": 19.8,
+      "area_pct": 9.9,
+      "color": "#E9C46A"
+    },
+    {
+      "category": "Semi-Medium (1.0 \u2013 2.0 ha)",
+      "count": 1187,
+      "area_ha": 1691.9,
+      "count_pct": 58.1,
+      "area_pct": 50.6,
+      "color": "#F4A261"
+    },
+    {
+      "category": "Medium (2.0 \u2013 5.0 ha)",
+      "count": 423,
+      "area_ha": 1140.9,
+      "count_pct": 20.7,
+      "area_pct": 34.1,
+      "color": "#E76F51"
+    },
+    {
+      "category": "Large (> 5.0 ha)",
+      "count": 28,
+      "area_ha": 183.4,
+      "count_pct": 1.4,
+      "area_pct": 5.5,
+      "color": "#B4554B"
+    }
+  ],
+  "legend": [
+    {
+      "id": "marginal",
+      "label": "Marginal (< 0.5 ha)",
+      "color": "#2A9D8F"
+    },
+    {
+      "id": "small",
+      "label": "Small (0.5 \u2013 1.0 ha)",
+      "color": "#E9C46A"
+    },
+    {
+      "id": "semi_medium",
+      "label": "Semi-Medium (1.0 \u2013 2.0 ha)",
+      "color": "#F4A261"
+    },
+    {
+      "id": "medium",
+      "label": "Medium (2.0 \u2013 5.0 ha)",
+      "color": "#E76F51"
+    },
+    {
+      "id": "large",
+      "label": "Large (> 5.0 ha)",
+      "color": "#B4554B"
+    }
+  ],
+  "method": "Vector parcel boundaries derived from SLIC spatial-spectral superpixel segmentation are measured in projected UTM coordinates (EPSG:32643). Parcels are categorized into national agricultural census size brackets.",
+  "limitations": "Cadastral boundaries within contiguous multi-plot family ownership holdings with identical crop sowing dates may be grouped into a single agronomic parcel.",
+  "csv_url": "/api/insights/field_size/csv"
+}

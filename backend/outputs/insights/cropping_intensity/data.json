@@ -1,0 +1,101 @@
+{
+  "id": "cropping_intensity",
+  "title": "Cropping Intensity",
+  "subtitle": "Multi-cycle harvest frequency (AY 2025-26 (12-month baseline))",
+  "key_finding": "0.2% of pilot cropland is double-cropped (Kar & Pishanam paddy cycles), supported by perennial banana (1.4%) and single-crop systems (10.3%).",
+  "ay_label": "AY 2025-26 (12-month baseline)",
+  "total_cropland_ha": 3011.2,
+  "double_cropped_pct": 0.2,
+  "single_cropped_pct": 10.3,
+  "perennial_pct": 1.4,
+  "stats": {
+    "Fallow / Uncultivated": {
+      "area_ha": 2989.4,
+      "pct": 99.3,
+      "color": "#CBA670"
+    },
+    "Single Crop": {
+      "area_ha": 309.4,
+      "pct": 10.3,
+      "color": "#A8DADC"
+    },
+    "Double Crop": {
+      "area_ha": 5.5,
+      "pct": 0.2,
+      "color": "#457B9D"
+    },
+    "Triple Crop": {
+      "area_ha": 0.0,
+      "pct": 0.0,
+      "color": "#1D3557"
+    },
+    "Perennial (Banana/Tree)": {
+      "area_ha": 42.2,
+      "pct": 1.4,
+      "color": "#2E6B3F"
+    }
+  },
+  "chart_data": [
+    {
+      "category": "Fallow / Uncultivated",
+      "area_ha": 2989.4,
+      "pct": 99.3,
+      "color": "#CBA670"
+    },
+    {
+      "category": "Single Crop",
+      "area_ha": 309.4,
+      "pct": 10.3,
+      "color": "#A8DADC"
+    },
+    {
+      "category": "Double Crop",
+      "area_ha": 5.5,
+      "pct": 0.2,
+      "color": "#457B9D"
+    },
+    {
+      "category": "Triple Crop",
+      "area_ha": 0.0,
+      "pct": 0.0,
+      "color": "#1D3557"
+    },
+    {
+      "category": "Perennial (Banana/Tree)",
+      "area_ha": 42.2,
+      "pct": 1.4,
+      "color": "#2E6B3F"
+    }
+  ],
+  "legend": [
+    {
+      "id": 0,
+      "label": "Fallow / Uncultivated",
+      "color": "#CBA670"
+    },
+    {
+      "id": 1,
+      "label": "Single Crop",
+      "color": "#A8DADC"
+    },
+    {
+      "id": 2,
+      "label": "Double Crop",
+      "color": "#457B9D"
+    },
+    {
+      "id": 3,
+      "label": "Triple Crop",
+      "color": "#1D3557"
+    },
+    {
+      "id": 4,
+      "label": "Perennial (Banana/Tree)",
+      "color": "#2E6B3F"
+    }
+  ],
+  "method": "Per-pixel phenological peak detection across 12 monthly NDVI composites (Jun\u2013May). NDVI is smoothed using a 3-month triangular filter (weights [0.25, 0.50, 0.25]). Crop cycles are resolved using scipy.signal.find_peaks with peak height \u2265 0.5, prominence \u2265 0.2, and inter-peak distance \u2265 3 months. Non-cropland (urban, open water, upland forest) is strictly excluded.",
+  "limitations": "Inter-cropping with short-duration pulses (under 60 days) between major seasons may not reach the 10-day satellite composite threshold and is not counted as a separate cycle.",
+  "raster_url": "/api/insights/cropping_intensity/raster",
+  "png_url": "/api/insights/cropping_intensity/png"
+}

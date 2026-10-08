@@ -1,0 +1,117 @@
+{
+  "id": "transplanting_calendar",
+  "title": "Transplanting Calendar",
+  "subtitle": "Kar (Jun\u2013Sep) and Pishanam (Oct\u2013Feb) crop initiation schedules",
+  "key_finding": "Peak Kar transplanting occurs in Jul (18.6% of fields), while main Pishanam sowing peaks in Nov. 0.0% of Pishanam acreage experiences delayed transplanting beyond November.",
+  "kar_median_month": "Jul",
+  "pishanam_median_month": "Nov",
+  "kar_delayed_pct": 0.0,
+  "pishanam_delayed_pct": 0.0,
+  "total_paddy_ha": 1728.1,
+  "kar_histogram": [
+    {
+      "month": "May",
+      "month_num": 5,
+      "share_pct": 3.5,
+      "is_median": false,
+      "is_delayed": false,
+      "color": "#E9D8A6"
+    },
+    {
+      "month": "Jun",
+      "month_num": 6,
+      "share_pct": 18.6,
+      "is_median": false,
+      "is_delayed": false,
+      "color": "#EE9B00"
+    },
+    {
+      "month": "Jul",
+      "month_num": 7,
+      "share_pct": 55.6,
+      "is_median": true,
+      "is_delayed": false,
+      "color": "#CA6702"
+    },
+    {
+      "month": "Aug",
+      "month_num": 8,
+      "share_pct": 22.2,
+      "is_median": false,
+      "is_delayed": false,
+      "color": "#BB3E03"
+    }
+  ],
+  "pishanam_histogram": [
+    {
+      "month": "Sep",
+      "month_num": 9,
+      "share_pct": 6.6,
+      "is_median": false,
+      "is_delayed": false,
+      "color": "#0A9396"
+    },
+    {
+      "month": "Oct",
+      "month_num": 10,
+      "share_pct": 7.1,
+      "is_median": false,
+      "is_delayed": false,
+      "color": "#94D2BD"
+    },
+    {
+      "month": "Nov",
+      "month_num": 11,
+      "share_pct": 76.6,
+      "is_median": true,
+      "is_delayed": false,
+      "color": "#005F73"
+    },
+    {
+      "month": "Dec",
+      "month_num": 12,
+      "share_pct": 9.7,
+      "is_median": false,
+      "is_delayed": false,
+      "color": "#0A2472"
+    }
+  ],
+  "legend_kar": [
+    {
+      "month": "May",
+      "color": "#E9D8A6"
+    },
+    {
+      "month": "Jun",
+      "color": "#EE9B00"
+    },
+    {
+      "month": "Jul",
+      "color": "#CA6702"
+    },
+    {
+      "month": "Aug",
+      "color": "#BB3E03"
+    }
+  ],
+  "legend_pishanam": [
+    {
+      "month": "Sep",
+      "color": "#0A9396"
+    },
+    {
+      "month": "Oct",
+      "color": "#94D2BD"
+    },
+    {
+      "month": "Nov",
+      "color": "#005F73"
+    },
+    {
+      "month": "Dec",
+      "color": "#0A2472"
+    }
+  ],
+  "method": "Transplanting timing is resolved per paddy parcel from the SAR VH backscatter trough (specular reflectance in flooded soil < -18 dB), cross-checked with peak LSWI. Timing is classified into standard Kar (May\u2013Aug) and Pishanam (Sep\u2013Dec) windows.",
+  "limitations": "Monthly composites provide month-level timing; per-scene Sentinel-1 acquisitions can refine transplanting date precision to ~12-day orbital intervals."
+}

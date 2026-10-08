@@ -1,0 +1,119 @@
+{
+  "id": "crop_change",
+  "title": "Crop Change & Farmland Dynamics",
+  "subtitle": "Inter-annual parcel transitions (AY 2023-24 vs AY 2025-26)",
+  "key_finding": "26.9% of paddy and 0.8% of banana parcels remained stable between 2023 and 2026. A net 97.9 ha (2.0%) transitioned from paddy to commercial banana, reflecting high-value crop diversification.",
+  "total_analyzed_ha": 4825.0,
+  "stats": {
+    "Stable Paddy": {
+      "area_ha": 1298.2,
+      "pct": 26.9,
+      "color": "#8DB33F",
+      "desc": "Paddy in both AY 23-24 and AY 25-26"
+    },
+    "Stable Banana": {
+      "area_ha": 39.8,
+      "pct": 0.8,
+      "color": "#2E6B3F",
+      "desc": "Continuous perennial banana plantation"
+    },
+    "Paddy \u2192 Banana": {
+      "area_ha": 97.9,
+      "pct": 2.0,
+      "color": "#E76F51",
+      "desc": "Diversification from annual paddy to perennial banana"
+    },
+    "Banana \u2192 Paddy": {
+      "area_ha": 1.9,
+      "pct": 0.0,
+      "color": "#2A9D8F",
+      "desc": "Banana replanting cycle / rotation back to paddy"
+    },
+    "Cropland \u2192 Fallow/Loss": {
+      "area_ha": 0.0,
+      "pct": 0.0,
+      "color": "#B4554B",
+      "desc": "Cultivated land converted to fallow or non-agricultural use"
+    },
+    "Other Stable Cropland": {
+      "area_ha": 3387.2,
+      "pct": 70.2,
+      "color": "#BFCB8F",
+      "desc": "Other vegetation / seasonal horticulture"
+    }
+  },
+  "chart_data": [
+    {
+      "category": "Stable Paddy",
+      "area_ha": 1298.2,
+      "pct": 26.9,
+      "color": "#8DB33F"
+    },
+    {
+      "category": "Stable Banana",
+      "area_ha": 39.8,
+      "pct": 0.8,
+      "color": "#2E6B3F"
+    },
+    {
+      "category": "Paddy \u2192 Banana",
+      "area_ha": 97.9,
+      "pct": 2.0,
+      "color": "#E76F51"
+    },
+    {
+      "category": "Banana \u2192 Paddy",
+      "area_ha": 1.9,
+      "pct": 0.0,
+      "color": "#2A9D8F"
+    },
+    {
+      "category": "Cropland \u2192 Fallow/Loss",
+      "area_ha": 0.0,
+      "pct": 0.0,
+      "color": "#B4554B"
+    },
+    {
+      "category": "Other Stable Cropland",
+      "area_ha": 3387.2,
+      "pct": 70.2,
+      "color": "#BFCB8F"
+    }
+  ],
+  "legend": [
+    {
+      "id": "1",
+      "label": "Stable Paddy",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "2",
+      "label": "Stable Banana",
+      "color": "#2E6B3F"
+    },
+    {
+      "id": "3",
+      "label": "Paddy \u2192 Banana",
+      "color": "#E76F51"
+    },
+    {
+      "id": "4",
+      "label": "Banana \u2192 Paddy",
+      "color": "#2A9D8F"
+    },
+    {
+      "id": "5",
+      "label": "Cropland \u2192 Fallow/Loss",
+      "color": "#B4554B"
+    },
+    {
+      "id": "6",
+      "label": "Other Stable Cropland",
+      "color": "#BFCB8F"
+    }
+  ],
+  "method": "Cross-tabulation of independent Random Forest predictions for AY 2023-24 and AY 2025-26. Only pixels with posterior class probability \u2265 0.6 in both agricultural years are evaluated to prevent spurious noise and artifact-induced transitions.",
+  "limitations": "Banana plantations with ratoon cycles lasting 3\u20134 years may show slight optical reflectance dips during desuckering/pseudostem harvest without genuine crop change.",
+  "csv_url": "/api/insights/crop_change/csv",
+  "png_url": "/api/insights/crop_change/png"
+}

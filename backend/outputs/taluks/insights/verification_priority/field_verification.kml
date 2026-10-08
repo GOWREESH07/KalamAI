@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Field Audit Priority Parcels — Kalam</name>
+        <Placemark>
+          <name>Parcel #1232 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 28%&#10;Cons: 80%&#10;Reason: Low classifier confidence (28%)</description>
+          <Point><coordinates>77.49365,8.69943,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #229 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 35%&#10;Cons: 80%&#10;Reason: Low classifier confidence (35%)</description>
+          <Point><coordinates>77.48835,8.7195,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1674 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 36%&#10;Cons: 80%&#10;Reason: Low classifier confidence (36%)</description>
+          <Point><coordinates>77.49894,8.6885,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #2019 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 36%&#10;Cons: 80%&#10;Reason: Low classifier confidence (36%)</description>
+          <Point><coordinates>77.50158,8.6804,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1511 (High)</name>
+          <description>Class: Paddy&#10;Conf: 37%&#10;Cons: 80%&#10;Reason: Low classifier confidence (37%)</description>
+          <Point><coordinates>77.50681,8.69322,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1831 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 37%&#10;Cons: 80%&#10;Reason: Low classifier confidence (37%)</description>
+          <Point><coordinates>77.51683,8.68431,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #331 (High)</name>
+          <description>Class: Paddy&#10;Conf: 37%&#10;Cons: 80%&#10;Reason: Low classifier confidence (37%)</description>
+          <Point><coordinates>77.47975,8.71921,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1579 (High)</name>
+          <description>Class: Built-up&#10;Conf: 37%&#10;Cons: 80%&#10;Reason: Low classifier confidence (37%)</description>
+          <Point><coordinates>77.5143,8.68988,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1198 (High)</name>
+          <description>Class: Built-up&#10;Conf: 37%&#10;Cons: 80%&#10;Reason: Low classifier confidence (37%)</description>
+          <Point><coordinates>77.47021,8.7006,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1190 (High)</name>
+          <description>Class: Paddy&#10;Conf: 38%&#10;Cons: 80%&#10;Reason: Low classifier confidence (38%)</description>
+          <Point><coordinates>77.47314,8.70106,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1502 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 38%&#10;Cons: 80%&#10;Reason: Low classifier confidence (38%)</description>
+          <Point><coordinates>77.49661,8.69284,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #915 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 38%&#10;Cons: 80%&#10;Reason: Low classifier confidence (38%)</description>
+          <Point><coordinates>77.48223,8.70632,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1641 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.50364,8.68931,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #686 (High)</name>
+          <description>Class: Built-up&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.50412,8.71149,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1402 (High)</name>
+          <description>Class: Built-up&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.47895,8.69482,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #157 (High)</name>
+          <description>Class: Paddy&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.51848,8.72174,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1683 (High)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.52079,8.68835,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1591 (High)</name>
+          <description>Class: Paddy&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.47193,8.69084,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1423 (High)</name>
+          <description>Class: Built-up&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.47105,8.6948,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1528 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.5104,8.69233,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #18 (High)</name>
+          <description>Class: Built-up&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.49324,8.72458,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #436 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 39%&#10;Cons: 80%&#10;Reason: Low classifier confidence (39%)</description>
+          <Point><coordinates>77.47531,8.71678,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1516 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 40%&#10;Cons: 80%&#10;Reason: Low classifier confidence (40%)</description>
+          <Point><coordinates>77.50762,8.69287,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1509 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 40%&#10;Cons: 80%&#10;Reason: Low classifier confidence (40%)</description>
+          <Point><coordinates>77.51643,8.69232,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #366 (High)</name>
+          <description>Class: Paddy&#10;Conf: 40%&#10;Cons: 80%&#10;Reason: Low classifier confidence (40%)</description>
+          <Point><coordinates>77.52331,8.71785,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #276 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 40%&#10;Cons: 80%&#10;Reason: Low classifier confidence (40%)</description>
+          <Point><coordinates>77.4768,8.72011,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #649 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 40%&#10;Cons: 80%&#10;Reason: Low classifier confidence (40%)</description>
+          <Point><coordinates>77.47814,8.71278,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1133 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 40%&#10;Cons: 80%&#10;Reason: Low classifier confidence (40%)</description>
+          <Point><coordinates>77.51135,8.70205,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #487 (High)</name>
+          <description>Class: Paddy&#10;Conf: 41%&#10;Cons: 80%&#10;Reason: Low classifier confidence (41%)</description>
+          <Point><coordinates>77.47639,8.71616,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1439 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 41%&#10;Cons: 80%&#10;Reason: Low classifier confidence (41%)</description>
+          <Point><coordinates>77.49054,8.6939,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1923 (High)</name>
+          <description>Class: Paddy&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.49798,8.68239,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1919 (High)</name>
+          <description>Class: Paddy&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.50997,8.68262,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1416 (High)</name>
+          <description>Class: Other Veg&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.50734,8.69502,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1663 (High)</name>
+          <description>Class: Built-up&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.51908,8.68772,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #2022 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.48975,8.68019,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1816 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.49993,8.68372,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #554 (Medium)</name>
+          <description>Class: Paddy&#10;Conf: 42%&#10;Cons: 80%&#10;Reason: Low classifier confidence (42%)</description>
+          <Point><coordinates>77.47958,8.71477,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1453 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.47369,8.69423,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1781 (Medium)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.47282,8.68543,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1276 (Medium)</name>
+          <description>Class: Built-up&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.51371,8.69831,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1288 (Medium)</name>
+          <description>Class: Built-up&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.49871,8.69752,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #825 (Medium)</name>
+          <description>Class: Paddy&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.49952,8.70857,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #738 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.48363,8.70957,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1813 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.51628,8.68495,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #279 (Medium)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.49459,8.7197,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #601 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.50324,8.71368,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1186 (Medium)</name>
+          <description>Class: Paddy&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.52159,8.70001,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #2009 (Medium)</name>
+          <description>Class: Fallow/Bare&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.48542,8.68103,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #1878 (Medium)</name>
+          <description>Class: Other Veg&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.47415,8.68254,0</coordinates></Point>
+        </Placemark>
+        <Placemark>
+          <name>Parcel #114 (Medium)</name>
+          <description>Class: Paddy&#10;Conf: 43%&#10;Cons: 80%&#10;Reason: Low classifier confidence (43%)</description>
+          <Point><coordinates>77.48057,8.72297,0</coordinates></Point>
+        </Placemark></Document></kml>

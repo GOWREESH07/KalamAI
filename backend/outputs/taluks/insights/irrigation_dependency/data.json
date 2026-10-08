@@ -1,0 +1,141 @@
+{
+  "id": "irrigation_dependency",
+  "title": "Irrigation Dependency & Water Access",
+  "subtitle": "Crop composition decay across Thamirabarani canal buffers",
+  "key_finding": "Banana shows sharp spatial decay from surface water channels: 1.0% of cropland within 250m is planted with banana, dropping to 0.3% beyond 2 km where paddy (21.9%) and rainfed crops dominate.",
+  "bins": [
+    {
+      "bin": "0 \u2013 250 m",
+      "total_cropland_ha": 905.6999999999999,
+      "paddy_ha": 238.7,
+      "banana_ha": 9.2,
+      "other_ha": 657.8,
+      "paddy_pct": 26.4,
+      "banana_pct": 1.0,
+      "other_pct": 72.6,
+      "color": "#0077B6"
+    },
+    {
+      "bin": "250 \u2013 500 m",
+      "total_cropland_ha": 1370.9,
+      "paddy_ha": 410.9,
+      "banana_ha": 14.3,
+      "other_ha": 945.7,
+      "paddy_pct": 30.0,
+      "banana_pct": 1.0,
+      "other_pct": 69.0,
+      "color": "#0096C7"
+    },
+    {
+      "bin": "500 \u2013 1,000 m",
+      "total_cropland_ha": 1684.0,
+      "paddy_ha": 520.0,
+      "banana_ha": 13.8,
+      "other_ha": 1150.2,
+      "paddy_pct": 30.9,
+      "banana_pct": 0.8,
+      "other_pct": 68.3,
+      "color": "#48CAE4"
+    },
+    {
+      "bin": "1,000 \u2013 2,000 m",
+      "total_cropland_ha": 787.0999999999999,
+      "paddy_ha": 209.6,
+      "banana_ha": 4.1,
+      "other_ha": 573.4,
+      "paddy_pct": 26.6,
+      "banana_pct": 0.5,
+      "other_pct": 72.8,
+      "color": "#90E0EF"
+    },
+    {
+      "bin": "> 2,000 m",
+      "total_cropland_ha": 77.3,
+      "paddy_ha": 16.9,
+      "banana_ha": 0.2,
+      "other_ha": 60.2,
+      "paddy_pct": 21.9,
+      "banana_pct": 0.3,
+      "other_pct": 77.9,
+      "color": "#ADE8F4"
+    }
+  ],
+  "chart_data": [
+    {
+      "distance": "0 \u2013 250 m",
+      "paddy_pct": 26.4,
+      "banana_pct": 1.0,
+      "other_pct": 72.6,
+      "paddy_ha": 238.7,
+      "banana_ha": 9.2
+    },
+    {
+      "distance": "250 \u2013 500 m",
+      "paddy_pct": 30.0,
+      "banana_pct": 1.0,
+      "other_pct": 69.0,
+      "paddy_ha": 410.9,
+      "banana_ha": 14.3
+    },
+    {
+      "distance": "500 \u2013 1,000 m",
+      "paddy_pct": 30.9,
+      "banana_pct": 0.8,
+      "other_pct": 68.3,
+      "paddy_ha": 520.0,
+      "banana_ha": 13.8
+    },
+    {
+      "distance": "1,000 \u2013 2,000 m",
+      "paddy_pct": 26.6,
+      "banana_pct": 0.5,
+      "other_pct": 72.8,
+      "paddy_ha": 209.6,
+      "banana_ha": 4.1
+    },
+    {
+      "distance": "> 2,000 m",
+      "paddy_pct": 21.9,
+      "banana_pct": 0.3,
+      "other_pct": 77.9,
+      "paddy_ha": 16.9,
+      "banana_ha": 0.2
+    }
+  ],
+  "legend": [
+    {
+      "id": "bin_0_250",
+      "label": "0 \u2013 250 m",
+      "color": "#0077B6"
+    },
+    {
+      "id": "bin_250_500",
+      "label": "250 \u2013 500 m",
+      "color": "#0096C7"
+    },
+    {
+      "id": "bin_500_1000",
+      "label": "500 \u2013 1,000 m",
+      "color": "#48CAE4"
+    },
+    {
+      "id": "bin_1000_2000",
+      "label": "1,000 \u2013 2,000 m",
+      "color": "#90E0EF"
+    },
+    {
+      "id": "bin_gt_2000",
+      "label": "> 2,000 m",
+      "color": "#ADE8F4"
+    },
+    {
+      "id": "water",
+      "label": "Canal / Tank Network",
+      "color": "#0F2850"
+    }
+  ],
+  "method": "Euclidean Distance Transformation (EDT) computed at 10m pixel resolution from all surface water features (Thamirabarani river channels, branch canals, and irrigation tanks). Crop parcel composition is statistically aggregated across concentric distance buffers.",
+  "limitations": "Underground borewells and lift-irrigation pumps allow localized banana cultivation in deeper buffers, which does not rely on direct surface canal frontage.",
+  "csv_url": "/api/insights/irrigation_dependency/csv",
+  "png_url": "/api/insights/irrigation_dependency/png"
+}

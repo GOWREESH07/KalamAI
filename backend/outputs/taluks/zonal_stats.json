@@ -1,0 +1,70 @@
+{
+  "classes": [
+    {
+      "name": "Paddy",
+      "color": "#8DB33F",
+      "total_ha": 12564.9,
+      "total_pct": 27.9,
+      "ambasamudram_ha": 7148.1,
+      "ambasamudram_pct": 27.8,
+      "cheranmahadevi_ha": 5416.8,
+      "cheranmahadevi_pct": 27.9
+    },
+    {
+      "name": "Banana",
+      "color": "#2E6B3F",
+      "total_ha": 375.7,
+      "total_pct": 0.8,
+      "ambasamudram_ha": 261.4,
+      "ambasamudram_pct": 1.0,
+      "cheranmahadevi_ha": 114.2,
+      "cheranmahadevi_pct": 0.6
+    },
+    {
+      "name": "Other Veg",
+      "color": "#BFCB8F",
+      "total_ha": 16627.1,
+      "total_pct": 36.9,
+      "ambasamudram_ha": 10362.7,
+      "ambasamudram_pct": 40.4,
+      "cheranmahadevi_ha": 6264.4,
+      "cheranmahadevi_pct": 32.3
+    },
+    {
+      "name": "Built-up",
+      "color": "#B4554B",
+      "total_ha": 1588.3,
+      "total_pct": 3.5,
+      "ambasamudram_ha": 1142.1,
+      "ambasamudram_pct": 4.4,
+      "cheranmahadevi_ha": 446.2,
+      "cheranmahadevi_pct": 2.3
+    },
+    {
+      "name": "Water",
+      "color": "#3A7CA5",
+      "total_ha": 80.9,
+      "total_pct": 0.2,
+      "ambasamudram_ha": 73.1,
+      "ambasamudram_pct": 0.3,
+      "cheranmahadevi_ha": 7.8,
+      "cheranmahadevi_pct": 0.0
+    },
+    {
+      "name": "Fallow/Bare",
+      "color": "#CBA670",
+      "total_ha": 13857.6,
+      "total_pct": 30.7,
+      "ambasamudram_ha": 6686.0,
+      "ambasamudram_pct": 26.0,
+      "cheranmahadevi_ha": 7171.6,
+      "cheranmahadevi_pct": 36.9
+    }
+  ],
+  "classified_ha": {
+    "Ambasamudram": 25673.4,
+    "Cheranmahadevi": 19421.1,
+    "Total": 45094.5
+  },
+  "source": "taluks re-run 2026-10-08 13:42:50"
+}

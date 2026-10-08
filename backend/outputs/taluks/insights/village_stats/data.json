@@ -1,0 +1,121 @@
+{
+  "id": "village_stats",
+  "title": "Village-Level Statistics",
+  "subtitle": "Micro-administrative cropland and crop type allocation",
+  "key_finding": "Kallidaikurichi leads in paddy cultivation with 614.4 ha (68% of village cropland), while Kallidaikurichi features the highest banana concentration (7.7 ha, 1% share).",
+  "village_count": 5,
+  "villages": [
+    {
+      "village": "Veeravanallur",
+      "taluk": "Cheranmahadevi",
+      "total_parcels": 982,
+      "total_area_ha": 1740.0,
+      "paddy_ha": 594.2,
+      "banana_ha": 0.0,
+      "other_ha": 1145.8,
+      "paddy_pct": 34.1,
+      "banana_pct": 0.0,
+      "dominant_type": "Diversified / Fallow"
+    },
+    {
+      "village": "Kallidaikurichi",
+      "taluk": "Ambasamudram",
+      "total_parcels": 565,
+      "total_area_ha": 907.6,
+      "paddy_ha": 614.4,
+      "banana_ha": 7.7,
+      "other_ha": 285.5,
+      "paddy_pct": 67.7,
+      "banana_pct": 0.8,
+      "dominant_type": "Paddy Intensive"
+    },
+    {
+      "village": "Mukkudal",
+      "taluk": "Ambasamudram",
+      "total_parcels": 231,
+      "total_area_ha": 322.0,
+      "paddy_ha": 275.6,
+      "banana_ha": 1.1,
+      "other_ha": 45.2,
+      "paddy_pct": 85.6,
+      "banana_pct": 0.3,
+      "dominant_type": "Paddy Intensive"
+    },
+    {
+      "village": "Ambasamudram Urban",
+      "taluk": "Ambasamudram",
+      "total_parcels": 168,
+      "total_area_ha": 237.8,
+      "paddy_ha": 208.2,
+      "banana_ha": 0.0,
+      "other_ha": 29.7,
+      "paddy_pct": 87.6,
+      "banana_pct": 0.0,
+      "dominant_type": "Paddy Intensive"
+    },
+    {
+      "village": "Harikesavanallur",
+      "taluk": "Cheranmahadevi",
+      "total_parcels": 96,
+      "total_area_ha": 139.2,
+      "paddy_ha": 127.8,
+      "banana_ha": 0.0,
+      "other_ha": 11.4,
+      "paddy_pct": 91.8,
+      "banana_pct": 0.0,
+      "dominant_type": "Paddy Intensive"
+    }
+  ],
+  "chart_data": [
+    {
+      "village": "Veeravanallur",
+      "taluk": "Cheranmahadevi",
+      "paddy_ha": 594.2,
+      "banana_ha": 0.0,
+      "total_area_ha": 1740.0
+    },
+    {
+      "village": "Kallidaikurichi",
+      "taluk": "Ambasamudram",
+      "paddy_ha": 614.4,
+      "banana_ha": 7.7,
+      "total_area_ha": 907.6
+    },
+    {
+      "village": "Mukkudal",
+      "taluk": "Ambasamudram",
+      "paddy_ha": 275.6,
+      "banana_ha": 1.1,
+      "total_area_ha": 322.0
+    },
+    {
+      "village": "Ambasamudram Urban",
+      "taluk": "Ambasamudram",
+      "paddy_ha": 208.2,
+      "banana_ha": 0.0,
+      "total_area_ha": 237.8
+    },
+    {
+      "village": "Harikesavanallur",
+      "taluk": "Cheranmahadevi",
+      "paddy_ha": 127.8,
+      "banana_ha": 0.0,
+      "total_area_ha": 139.2
+    }
+  ],
+  "legend": [
+    {
+      "id": "paddy",
+      "label": "Paddy Area (ha)",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "banana",
+      "label": "Banana Area (ha)",
+      "color": "#2E6B3F"
+    }
+  ],
+  "method": "Field parcel centroids are aggregated into administrative village catchments. Zonal acreage and percentage shares for Paddy, Banana, and other classes are calculated to support panchayat-level agricultural planning and credit disbursement.",
+  "limitations": "Catchments use settlement proximities aligned with revenue boundaries; minor revenue cadastre border realignments may shift border parcels.",
+  "csv_url": "/api/insights/village_stats/csv"
+}

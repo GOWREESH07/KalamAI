@@ -1,0 +1,124 @@
+[
+  {
+    "name": "acquire",
+    "status": "done",
+    "started_at": 1791442316.22676,
+    "finished_at": 1791442320.3082392,
+    "duration": 4.1,
+    "log_tail": [
+      "[12:21:56] Building 5 km tiles over the analysed farmed plains...",
+      "[12:21:56] 48 tiles, sorted by farmed-plains fraction (desc)",
+      "[12:22:00] S2 monthly composites: 16 | S1 months: 16",
+      "[12:22:00] Step done in 4.1s"
+    ],
+    "error": null
+  },
+  {
+    "name": "preprocess",
+    "status": "done",
+    "started_at": 1791442320.308536,
+    "finished_at": 1791445140.158474,
+    "duration": 2819.8,
+    "log_tail": [
+      "[13:09:00] Tile T_760000_980000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_755000_965000 FAILED: Chunk and warp failed",
+      "[13:09:00] Tile T_780000_970000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_790000_960000 FAILED: Chunk and warp failed",
+      "[13:09:00] Tile T_750000_955000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_785000_945000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_750000_970000 FAILED: Chunk and warp failed",
+      "[13:09:00] Tile T_760000_950000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_755000_960000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_765000_975000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_750000_960000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_755000_955000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_755000_950000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_780000_945000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_750000_975000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_765000_950000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_750000_950000 FAILED: Read failed. See previous exception for details.",
+      "[13:09:00] Tile T_770000_975000 FAILED: Chunk and warp failed",
+      "[13:09:00] Pass 1 complete: 22 ok, 26 failed",
+      "[13:09:00] Step done in 2819.8s"
+    ],
+    "error": null
+  },
+  {
+    "name": "features",
+    "status": "done",
+    "started_at": 1791445140.159169,
+    "finished_at": 1791445140.837265,
+    "duration": 0.7,
+    "log_tail": [
+      "[13:09:00] Loaded 22 tile feature stacks (5.6 M pixels)",
+      "[13:09:00] Step done in 0.7s"
+    ],
+    "error": null
+  },
+  {
+    "name": "labels",
+    "status": "done",
+    "started_at": 1791445140.837541,
+    "finished_at": 1791445144.374249,
+    "duration": 3.5,
+    "log_tail": [
+      "[13:09:04] Seeds Paddy: 13,200",
+      "[13:09:04] Seeds Banana: 4,461",
+      "[13:09:04] Seeds Other Veg: 13,200",
+      "[13:09:04] Seeds Built-up: 13,200",
+      "[13:09:04] Seeds Water: 2,247",
+      "[13:09:04] Seeds Fallow/Bare: 13,200",
+      "[13:09:04] Training pixels after cap: 22,247 (manual 3x-weighted: 3,750)",
+      "[13:09:04] Step done in 3.5s"
+    ],
+    "error": null
+  },
+  {
+    "name": "segment",
+    "status": "skipped",
+    "started_at": 1791445144.3745248,
+    "finished_at": 1791445144.3751009,
+    "duration": 0.0,
+    "log_tail": [
+      "[13:09:04] Skipped for full extent: raster classification only (parcel segmentation is available for the pilot)",
+      "[13:09:04] Step skipped in 0.0s"
+    ],
+    "error": null
+  },
+  {
+    "name": "classify",
+    "status": "done",
+    "started_at": 1791445144.375346,
+    "finished_at": 1791445164.709387,
+    "duration": 20.3,
+    "log_tail": [
+      "[13:09:04] Training ONE global RF (300 trees) on 15,572 px",
+      "[13:09:07] Evaluating on 225,328 manual validation px",
+      "[13:09:07] OA=0.017 kappa=0.000",
+      "[13:09:11] Predicted 5/22 tiles",
+      "[13:09:15] Predicted 10/22 tiles",
+      "[13:09:19] Predicted 15/22 tiles",
+      "[13:09:23] Predicted 20/22 tiles",
+      "[13:09:24] Predicted 22/22 tiles",
+      "[13:09:24] Step done in 20.3s"
+    ],
+    "error": null
+  },
+  {
+    "name": "export",
+    "status": "done",
+    "started_at": 1791445164.709741,
+    "finished_at": 1791445165.035682,
+    "duration": 0.3,
+    "log_tail": [
+      "[13:09:25] Paddy: 23,608 ha",
+      "[13:09:25] Banana: 228 ha",
+      "[13:09:25] Other Veg: 2,948 ha",
+      "[13:09:25] Built-up: 1,011 ha",
+      "[13:09:25] Water: 37 ha",
+      "[13:09:25] Fallow/Bare: 17,263 ha",
+      "[13:09:25] Step done in 0.3s"
+    ],
+    "error": null
+  }
+]

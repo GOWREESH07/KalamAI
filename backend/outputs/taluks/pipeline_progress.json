@@ -1,0 +1,20 @@
+{
+  "status": "idle",
+  "current_step": "idle",
+  "tiles_total": 48,
+  "tiles_done_features": 0,
+  "tiles_done_classify": 0,
+  "current_tile": null,
+  "tile_durations": [],
+  "avg_tile_sec": null,
+  "estimated_completion_sec": null,
+  "estimated_finish_time": null,
+  "exceeded_1230": false,
+  "error": null,
+  "logs": [
+    "[12:21:56] Searching Sentinel-2 items across full taluks extent (2025-06-01 to 2026-09-30)...",
+    "[12:21:58] Found 80 raw S2 scenes -> filtered to 16 monthly best composites.",
+    "[12:21:58] Searching Sentinel-1 RTC items across full taluks extent (both orbits, S1A/S1C)...",
+    "[12:22:00] Found 158 S1 scenes across 16 months."
+  ]
+}
