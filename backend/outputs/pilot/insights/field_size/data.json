@@ -1,0 +1,146 @@
+{
+  "id": "field_size",
+  "title": "Segment Size Distribution (Image-Derived)",
+  "subtitle": "Agrarian parcel morphology & smallholder distribution",
+  "extent_label": "Extent: 3,346.6 ha \u00b7 Pilot \u00b7 Model: multi-year",
+  "study_area": "pilot",
+  "model_type": "multi-year",
+  "key_finding": "19.8% of image-derived field segments (9.9% of agricultural area) are below 1.0 ha. The mean segment size is 1.64 ha with a median of 1.41 ha.",
+  "total_parcels": 2042,
+  "total_area_ha": 3346.6,
+  "average_parcel_ha": 1.64,
+  "median_parcel_ha": 1.41,
+  "smallholder_count_pct": 19.8,
+  "smallholder_area_pct": 9.9,
+  "denominator_label": "total agricultural area (3,346.6 ha)",
+  "bins": [
+    {
+      "id": "marginal",
+      "bin": "Marginal (< 0.5 ha)",
+      "count": 0,
+      "area_ha": 0.0,
+      "count_pct": 0.0,
+      "area_pct": 0.0,
+      "dominant_crop": "Paddy",
+      "color": "#2A9D8F"
+    },
+    {
+      "id": "small",
+      "bin": "Small (0.5 \u2013 1.0 ha)",
+      "count": 404,
+      "area_ha": 330.3,
+      "count_pct": 19.8,
+      "area_pct": 9.9,
+      "dominant_crop": "Paddy",
+      "color": "#E9C46A"
+    },
+    {
+      "id": "semi_medium",
+      "bin": "Semi-Medium (1.0 \u2013 2.0 ha)",
+      "count": 1187,
+      "area_ha": 1691.9,
+      "count_pct": 58.1,
+      "area_pct": 50.6,
+      "dominant_crop": "Paddy",
+      "color": "#F4A261"
+    },
+    {
+      "id": "medium",
+      "bin": "Medium (2.0 \u2013 5.0 ha)",
+      "count": 423,
+      "area_ha": 1140.9,
+      "count_pct": 20.7,
+      "area_pct": 34.1,
+      "dominant_crop": "Paddy",
+      "color": "#E76F51"
+    },
+    {
+      "id": "large",
+      "bin": "Large (> 5.0 ha)",
+      "count": 28,
+      "area_ha": 183.4,
+      "count_pct": 1.4,
+      "area_pct": 5.5,
+      "dominant_crop": "Other Veg",
+      "color": "#B4554B"
+    }
+  ],
+  "chart_data": [
+    {
+      "category": "Marginal (< 0.5 ha)",
+      "area_ha": 0.0,
+      "count": 0,
+      "pct": 0.0,
+      "count_pct": 0.0,
+      "area_pct": 0.0,
+      "color": "#2A9D8F"
+    },
+    {
+      "category": "Small (0.5 \u2013 1.0 ha)",
+      "area_ha": 330.3,
+      "count": 404,
+      "pct": 9.9,
+      "count_pct": 19.8,
+      "area_pct": 9.9,
+      "color": "#E9C46A"
+    },
+    {
+      "category": "Semi-Medium (1.0 \u2013 2.0 ha)",
+      "area_ha": 1691.9,
+      "count": 1187,
+      "pct": 50.6,
+      "count_pct": 58.1,
+      "area_pct": 50.6,
+      "color": "#F4A261"
+    },
+    {
+      "category": "Medium (2.0 \u2013 5.0 ha)",
+      "area_ha": 1140.9,
+      "count": 423,
+      "pct": 34.1,
+      "count_pct": 20.7,
+      "area_pct": 34.1,
+      "color": "#E76F51"
+    },
+    {
+      "category": "Large (> 5.0 ha)",
+      "area_ha": 183.4,
+      "count": 28,
+      "pct": 5.5,
+      "count_pct": 1.4,
+      "area_pct": 5.5,
+      "color": "#B4554B"
+    }
+  ],
+  "legend": [
+    {
+      "id": "marginal",
+      "label": "Marginal (< 0.5 ha) (0.0% area, 0.0% count)",
+      "color": "#2A9D8F"
+    },
+    {
+      "id": "small",
+      "label": "Small (0.5 \u2013 1.0 ha) (9.9% area, 19.8% count)",
+      "color": "#E9C46A"
+    },
+    {
+      "id": "semi_medium",
+      "label": "Semi-Medium (1.0 \u2013 2.0 ha) (50.6% area, 58.1% count)",
+      "color": "#F4A261"
+    },
+    {
+      "id": "medium",
+      "label": "Medium (2.0 \u2013 5.0 ha) (34.1% area, 20.7% count)",
+      "color": "#E76F51"
+    },
+    {
+      "id": "large",
+      "label": "Large (> 5.0 ha) (5.5% area, 1.4% count)",
+      "color": "#B4554B"
+    }
+  ],
+  "method": "Vector parcel boundaries derived from SLIC spatial-spectral superpixel segmentation are measured in projected UTM coordinates (EPSG:32643). Parcels are categorized into national agricultural census holding size brackets.",
+  "limitations": "Segment sizes depend on the SLIC segmentation scale and are not cadastral holdings.",
+  "csv_url": "/api/insights/field_size/csv?study_area=pilot",
+  "png_url": "/api/insights/field_size/png?study_area=pilot"
+}

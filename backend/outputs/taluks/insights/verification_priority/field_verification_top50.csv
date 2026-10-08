@@ -1,51 +1,51 @@
 parcel_id,area_ha,predicted_class,confidence,consistency,priority_score,priority_level,reason,lon,lat
-1232,2.0,Fallow/Bare,0.28,0.8,0.422,High,Low classifier confidence (28%),77.49365,8.69943
-229,3.26,Fallow/Bare,0.35,0.8,0.385,High,Low classifier confidence (35%),77.48835,8.7195
-1674,3.41,Other Veg,0.36,0.8,0.381,High,Low classifier confidence (36%),77.49894,8.6885
-2019,2.48,Fallow/Bare,0.36,0.8,0.381,High,Low classifier confidence (36%),77.50158,8.6804
-1511,0.63,Paddy,0.37,0.8,0.378,High,Low classifier confidence (37%),77.50681,8.69322
-1831,2.93,Fallow/Bare,0.37,0.8,0.377,High,Low classifier confidence (37%),77.51683,8.68431
-331,1.09,Paddy,0.37,0.8,0.377,High,Low classifier confidence (37%),77.47975,8.71921
-1579,5.44,Built-up,0.37,0.8,0.375,High,Low classifier confidence (37%),77.5143,8.68988
-1198,1.46,Built-up,0.37,0.8,0.375,High,Low classifier confidence (37%),77.47021,8.7006
-1190,1.36,Paddy,0.38,0.8,0.372,High,Low classifier confidence (38%),77.47314,8.70106
-1502,3.54,Fallow/Bare,0.38,0.8,0.372,High,Low classifier confidence (38%),77.49661,8.69284
-915,2.01,Fallow/Bare,0.38,0.8,0.368,High,Low classifier confidence (38%),77.48223,8.70632
-1641,3.06,Fallow/Bare,0.39,0.8,0.367,High,Low classifier confidence (39%),77.50364,8.68931
-686,2.19,Built-up,0.39,0.8,0.366,High,Low classifier confidence (39%),77.50412,8.71149
-1402,1.75,Built-up,0.39,0.8,0.366,High,Low classifier confidence (39%),77.47895,8.69482
-157,0.9,Paddy,0.39,0.8,0.366,High,Low classifier confidence (39%),77.51848,8.72174
-1683,1.85,Fallow/Bare,0.39,0.8,0.365,High,Low classifier confidence (39%),77.52079,8.68835
-1591,1.28,Paddy,0.39,0.8,0.365,High,Low classifier confidence (39%),77.47193,8.69084
-1423,1.78,Built-up,0.39,0.8,0.363,High,Low classifier confidence (39%),77.47105,8.6948
-1528,1.6,Other Veg,0.39,0.8,0.363,High,Low classifier confidence (39%),77.5104,8.69233
-18,1.8,Built-up,0.39,0.8,0.363,High,Low classifier confidence (39%),77.49324,8.72458
-436,1.14,Other Veg,0.39,0.8,0.363,High,Low classifier confidence (39%),77.47531,8.71678
-1516,1.16,Other Veg,0.4,0.8,0.362,High,Low classifier confidence (40%),77.50762,8.69287
-1509,3.68,Other Veg,0.4,0.8,0.362,High,Low classifier confidence (40%),77.51643,8.69232
-366,1.66,Paddy,0.4,0.8,0.361,High,Low classifier confidence (40%),77.52331,8.71785
-276,1.13,Other Veg,0.4,0.8,0.361,High,Low classifier confidence (40%),77.4768,8.72011
-649,3.03,Other Veg,0.4,0.8,0.36,High,Low classifier confidence (40%),77.47814,8.71278
-1133,3.28,Other Veg,0.4,0.8,0.36,High,Low classifier confidence (40%),77.51135,8.70205
-487,0.93,Paddy,0.41,0.8,0.356,High,Low classifier confidence (41%),77.47639,8.71616
-1439,2.71,Other Veg,0.41,0.8,0.353,High,Low classifier confidence (41%),77.49054,8.6939
-1923,3.94,Paddy,0.42,0.8,0.352,High,Low classifier confidence (42%),77.49798,8.68239
-1919,0.72,Paddy,0.42,0.8,0.352,High,Low classifier confidence (42%),77.50997,8.68262
-1416,1.15,Other Veg,0.42,0.8,0.351,High,Low classifier confidence (42%),77.50734,8.69502
-1663,4.54,Built-up,0.42,0.8,0.351,High,Low classifier confidence (42%),77.51908,8.68772
-2022,1.26,Other Veg,0.42,0.8,0.35,Medium,Low classifier confidence (42%),77.48975,8.68019
-1816,4.2,Other Veg,0.42,0.8,0.349,Medium,Low classifier confidence (42%),77.49993,8.68372
-554,1.37,Paddy,0.42,0.8,0.348,Medium,Low classifier confidence (42%),77.47958,8.71477
-1453,1.34,Other Veg,0.43,0.8,0.347,Medium,Low classifier confidence (43%),77.47369,8.69423
-1781,1.57,Fallow/Bare,0.43,0.8,0.347,Medium,Low classifier confidence (43%),77.47282,8.68543
-1276,2.67,Built-up,0.43,0.8,0.346,Medium,Low classifier confidence (43%),77.51371,8.69831
-1288,1.61,Built-up,0.43,0.8,0.346,Medium,Low classifier confidence (43%),77.49871,8.69752
-825,1.63,Paddy,0.43,0.8,0.345,Medium,Low classifier confidence (43%),77.49952,8.70857
-738,1.93,Other Veg,0.43,0.8,0.345,Medium,Low classifier confidence (43%),77.48363,8.70957
-1813,0.86,Other Veg,0.43,0.8,0.345,Medium,Low classifier confidence (43%),77.51628,8.68495
-279,1.65,Fallow/Bare,0.43,0.8,0.345,Medium,Low classifier confidence (43%),77.49459,8.7197
-601,0.95,Other Veg,0.43,0.8,0.344,Medium,Low classifier confidence (43%),77.50324,8.71368
-1186,4.03,Paddy,0.43,0.8,0.344,Medium,Low classifier confidence (43%),77.52159,8.70001
-2009,1.04,Fallow/Bare,0.43,0.8,0.344,Medium,Low classifier confidence (43%),77.48542,8.68103
-1878,5.46,Other Veg,0.43,0.8,0.343,Medium,Low classifier confidence (43%),77.47415,8.68254
-114,1.29,Paddy,0.43,0.8,0.343,Medium,Low classifier confidence (43%),77.48057,8.72297
+1232,2.0,Fallow/Bare,0.28,0.8,0.422,Critical,Low classifier confidence (28%),77.49365,8.69943
+229,3.26,Fallow/Bare,0.35,0.8,0.385,Critical,Low classifier confidence (35%),77.48835,8.7195
+1674,3.41,Other Veg,0.36,0.8,0.381,Critical,Low classifier confidence (36%),77.49894,8.6885
+2019,2.48,Fallow/Bare,0.36,0.8,0.381,Critical,Low classifier confidence (36%),77.50158,8.6804
+1511,0.63,Paddy,0.37,0.8,0.378,Critical,Low classifier confidence (37%),77.50681,8.69322
+1831,2.93,Fallow/Bare,0.37,0.8,0.377,Critical,Low classifier confidence (37%),77.51683,8.68431
+331,1.09,Paddy,0.37,0.8,0.377,Critical,Low classifier confidence (37%),77.47975,8.71921
+1579,5.44,Built-up,0.37,0.8,0.375,Critical,Low classifier confidence (37%),77.5143,8.68988
+1198,1.46,Built-up,0.37,0.8,0.375,Critical,Low classifier confidence (37%),77.47021,8.7006
+1190,1.36,Paddy,0.38,0.8,0.372,Critical,Low classifier confidence (38%),77.47314,8.70106
+1502,3.54,Fallow/Bare,0.38,0.8,0.372,Critical,Low classifier confidence (38%),77.49661,8.69284
+915,2.01,Fallow/Bare,0.38,0.8,0.368,Critical,Low classifier confidence (38%),77.48223,8.70632
+1641,3.06,Fallow/Bare,0.39,0.8,0.367,Critical,Low classifier confidence (39%),77.50364,8.68931
+686,2.19,Built-up,0.39,0.8,0.366,Critical,Low classifier confidence (39%),77.50412,8.71149
+1402,1.75,Built-up,0.39,0.8,0.366,Critical,Low classifier confidence (39%),77.47895,8.69482
+157,0.9,Paddy,0.39,0.8,0.366,Critical,Low classifier confidence (39%),77.51848,8.72174
+1683,1.85,Fallow/Bare,0.39,0.8,0.365,Critical,Low classifier confidence (39%),77.52079,8.68835
+1591,1.28,Paddy,0.39,0.8,0.365,Critical,Low classifier confidence (39%),77.47193,8.69084
+1423,1.78,Built-up,0.39,0.8,0.363,Critical,Low classifier confidence (39%),77.47105,8.6948
+1528,1.6,Other Veg,0.39,0.8,0.363,Critical,Low classifier confidence (39%),77.5104,8.69233
+18,1.8,Built-up,0.39,0.8,0.363,Critical,Low classifier confidence (39%),77.49324,8.72458
+436,1.14,Other Veg,0.39,0.8,0.363,Critical,Low classifier confidence (39%),77.47531,8.71678
+1516,1.16,Other Veg,0.4,0.8,0.362,Critical,Low classifier confidence (40%),77.50762,8.69287
+1509,3.68,Other Veg,0.4,0.8,0.362,Critical,Low classifier confidence (40%),77.51643,8.69232
+366,1.66,Paddy,0.4,0.8,0.361,Critical,Low classifier confidence (40%),77.52331,8.71785
+276,1.13,Other Veg,0.4,0.8,0.361,Critical,Low classifier confidence (40%),77.4768,8.72011
+649,3.03,Other Veg,0.4,0.8,0.36,Critical,Low classifier confidence (40%),77.47814,8.71278
+1133,3.28,Other Veg,0.4,0.8,0.36,Critical,Low classifier confidence (40%),77.51135,8.70205
+487,0.93,Paddy,0.41,0.8,0.356,Critical,Low classifier confidence (41%),77.47639,8.71616
+1439,2.71,Other Veg,0.41,0.8,0.353,Critical,Low classifier confidence (41%),77.49054,8.6939
+1923,3.94,Paddy,0.42,0.8,0.352,Critical,Low classifier confidence (42%),77.49798,8.68239
+1919,0.72,Paddy,0.42,0.8,0.352,Critical,Low classifier confidence (42%),77.50997,8.68262
+1416,1.15,Other Veg,0.42,0.8,0.351,Critical,Low classifier confidence (42%),77.50734,8.69502
+1663,4.54,Built-up,0.42,0.8,0.351,Critical,Low classifier confidence (42%),77.51908,8.68772
+2022,1.26,Other Veg,0.42,0.8,0.35,Critical,Low classifier confidence (42%),77.48975,8.68019
+1816,4.2,Other Veg,0.42,0.8,0.349,Critical,Low classifier confidence (42%),77.49993,8.68372
+554,1.37,Paddy,0.42,0.8,0.348,Critical,Low classifier confidence (42%),77.47958,8.71477
+1453,1.34,Other Veg,0.43,0.8,0.347,Critical,Low classifier confidence (43%),77.47369,8.69423
+1781,1.57,Fallow/Bare,0.43,0.8,0.347,Critical,Low classifier confidence (43%),77.47282,8.68543
+1276,2.67,Built-up,0.43,0.8,0.346,Critical,Low classifier confidence (43%),77.51371,8.69831
+1288,1.61,Built-up,0.43,0.8,0.346,Critical,Low classifier confidence (43%),77.49871,8.69752
+825,1.63,Paddy,0.43,0.8,0.345,Critical,Low classifier confidence (43%),77.49952,8.70857
+738,1.93,Other Veg,0.43,0.8,0.345,Critical,Low classifier confidence (43%),77.48363,8.70957
+1813,0.86,Other Veg,0.43,0.8,0.345,Critical,Low classifier confidence (43%),77.51628,8.68495
+279,1.65,Fallow/Bare,0.43,0.8,0.345,Critical,Low classifier confidence (43%),77.49459,8.7197
+601,0.95,Other Veg,0.43,0.8,0.344,Critical,Low classifier confidence (43%),77.50324,8.71368
+1186,4.03,Paddy,0.43,0.8,0.344,Critical,Low classifier confidence (43%),77.52159,8.70001
+2009,1.04,Fallow/Bare,0.43,0.8,0.344,Critical,Low classifier confidence (43%),77.48542,8.68103
+1878,5.46,Other Veg,0.43,0.8,0.343,Critical,Low classifier confidence (43%),77.47415,8.68254
+114,1.29,Paddy,0.43,0.8,0.343,Critical,Low classifier confidence (43%),77.48057,8.72297

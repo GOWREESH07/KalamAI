@@ -2,116 +2,116 @@
   "id": "transplanting_calendar",
   "title": "Transplanting Calendar",
   "subtitle": "Kar (Jun\u2013Sep) and Pishanam (Oct\u2013Feb) crop initiation schedules",
-  "key_finding": "Peak Kar transplanting occurs in Jun (71.4% of fields), while main Pishanam sowing peaks in Nov. 0.0% of Pishanam acreage experiences delayed transplanting beyond November.",
+  "extent_label": "Extent: 114,677.0 ha \u00b7 Taluks \u00b7 Model: 16-month \u00b7 Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "study_area": "taluks",
+  "model_type": "16-month",
+  "coverage_note": "Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "key_finding": "Peak Kar transplanting occurs in Jun (31.9% of fields), while main Pishanam sowing peaks in Nov. 0.0% of Pishanam acreage experiences delayed transplanting beyond November.",
+  "ay_label": "AY 2025-26 (16-month baseline)",
   "kar_median_month": "Jun",
   "pishanam_median_month": "Nov",
-  "kar_delayed_pct": 6.9,
+  "kar_delayed_pct": 15.5,
   "pishanam_delayed_pct": 0.0,
-  "total_paddy_ha": 1396.1,
-  "kar_histogram": [
+  "total_paddy_ha": 114677.0,
+  "denominator_label": "total paddy area (114,677.0 ha)",
+  "chart_data": [
     {
+      "category": "Kar May (Early/Mid)",
+      "area_ha": 53422.6,
+      "pct": 46.6,
       "month": "May",
-      "month_num": 5,
-      "share_pct": 11.1,
+      "season": "Kar",
       "is_median": false,
-      "is_delayed": false,
       "color": "#E9D8A6"
     },
     {
+      "category": "Kar Jun (Early/Mid)",
+      "area_ha": 36586.5,
+      "pct": 31.9,
       "month": "Jun",
-      "month_num": 6,
-      "share_pct": 71.4,
+      "season": "Kar",
       "is_median": true,
-      "is_delayed": false,
       "color": "#EE9B00"
     },
     {
+      "category": "Kar Jul (Early/Mid)",
+      "area_ha": 6938.8,
+      "pct": 6.1,
       "month": "Jul",
-      "month_num": 7,
-      "share_pct": 10.6,
+      "season": "Kar",
       "is_median": false,
-      "is_delayed": false,
       "color": "#CA6702"
     },
     {
+      "category": "Kar Aug (Early/Mid)",
+      "area_ha": 17729.1,
+      "pct": 15.5,
       "month": "Aug",
-      "month_num": 8,
-      "share_pct": 6.9,
+      "season": "Kar",
       "is_median": false,
-      "is_delayed": true,
       "color": "#BB3E03"
-    }
-  ],
-  "pishanam_histogram": [
+    },
     {
+      "category": "Pishanam Sep",
+      "area_ha": 27856.7,
+      "pct": 24.3,
       "month": "Sep",
-      "month_num": 9,
-      "share_pct": 9.0,
+      "season": "Pishanam",
       "is_median": false,
-      "is_delayed": false,
       "color": "#0A9396"
     },
     {
+      "category": "Pishanam Oct",
+      "area_ha": 15538.8,
+      "pct": 13.6,
       "month": "Oct",
-      "month_num": 10,
-      "share_pct": 11.9,
+      "season": "Pishanam",
       "is_median": false,
-      "is_delayed": false,
       "color": "#94D2BD"
     },
     {
+      "category": "Pishanam Nov (Delayed)",
+      "area_ha": 45342.4,
+      "pct": 39.5,
       "month": "Nov",
-      "month_num": 11,
-      "share_pct": 69.8,
+      "season": "Pishanam",
       "is_median": true,
-      "is_delayed": false,
       "color": "#005F73"
     },
     {
+      "category": "Pishanam Dec (Delayed)",
+      "area_ha": 25939.1,
+      "pct": 22.6,
       "month": "Dec",
-      "month_num": 12,
-      "share_pct": 9.3,
+      "season": "Pishanam",
       "is_median": false,
-      "is_delayed": false,
       "color": "#0A2472"
     }
   ],
-  "legend_kar": [
+  "legend": [
     {
-      "month": "May",
-      "color": "#E9D8A6"
-    },
-    {
-      "month": "Jun",
+      "id": "kar_jun",
+      "label": "Kar Peak (Jun\u2013Jul)",
       "color": "#EE9B00"
     },
     {
-      "month": "Jul",
-      "color": "#CA6702"
-    },
-    {
-      "month": "Aug",
+      "id": "kar_late",
+      "label": "Kar Late (Aug)",
       "color": "#BB3E03"
-    }
-  ],
-  "legend_pishanam": [
-    {
-      "month": "Sep",
-      "color": "#0A9396"
     },
     {
-      "month": "Oct",
+      "id": "pish_oct",
+      "label": "Pishanam Peak (Oct)",
       "color": "#94D2BD"
     },
     {
-      "month": "Nov",
-      "color": "#005F73"
-    },
-    {
-      "month": "Dec",
+      "id": "pish_delayed",
+      "label": "Pishanam Delayed (Nov\u2013Dec)",
       "color": "#0A2472"
     }
   ],
   "method": "Transplanting timing is resolved per paddy parcel from the SAR VH backscatter trough (specular reflectance in flooded soil < -18 dB), cross-checked with peak LSWI. Timing is classified into standard Kar (May\u2013Aug) and Pishanam (Sep\u2013Dec) windows.",
-  "limitations": "Monthly composites provide month-level timing; per-scene Sentinel-1 acquisitions can refine transplanting date precision to ~12-day orbital intervals."
+  "limitations": "Monthly composites provide month-level timing; per-scene Sentinel-1 acquisitions can refine transplanting date precision to ~12-day orbital intervals.",
+  "png_url": "/api/insights/transplanting_calendar/png?study_area=taluks",
+  "csv_url": "/api/insights/transplanting_calendar/csv?study_area=taluks"
 }

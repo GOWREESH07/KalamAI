@@ -1,6 +1,6 @@
-bin,count,area_ha,count_pct,area_pct,dominant_crop,color
-Marginal (< 0.5 ha),0,0.0,0.0,0.0,Paddy,#2A9D8F
-Small (0.5 – 1.0 ha),404,330.3,19.8,9.9,Paddy,#E9C46A
-Semi-Medium (1.0 – 2.0 ha),1187,1691.9,58.1,50.6,Paddy,#F4A261
-Medium (2.0 – 5.0 ha),423,1140.9,20.7,34.1,Paddy,#E76F51
-Large (> 5.0 ha),28,183.4,1.4,5.5,Other Veg,#B4554B
+id,bin,count,area_ha,count_pct,area_pct,dominant_crop,color
+marginal,Marginal (< 0.5 ha),0,0.0,0.0,0.0,Paddy,#2A9D8F
+small,Small (0.5 – 1.0 ha),404,330.3,19.8,9.9,Paddy,#E9C46A
+semi_medium,Semi-Medium (1.0 – 2.0 ha),1187,1691.9,58.1,50.6,Paddy,#F4A261
+medium,Medium (2.0 – 5.0 ha),423,1140.9,20.7,34.1,Paddy,#E76F51
+large,Large (> 5.0 ha),28,183.4,1.4,5.5,Other Veg,#B4554B

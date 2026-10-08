@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { id: '01', label: 'Overview', icon: Activity },
   { id: '02', label: 'Study Area & Data', icon: Map },
   { id: '03', label: 'Crop Signatures', icon: BarChart2 },
+  { id: '04', label: 'Training Data', icon: Tag },
   { id: '05', label: 'Classification', icon: Layers },
   { id: '06', label: 'Export', icon: Download },
   { id: '07', label: 'Insights', icon: Sparkles },
@@ -23,10 +24,11 @@ const STEP_TO_NAV: Record<string, string> = {
   acquire: '02',
   preprocess: '02',
   features: '03',
-  labels: '05',
+  labels: '04',
   segment: '05',
   classify: '05',
   export: '06',
+  insights: '07',
 }
 
 export default function App() {

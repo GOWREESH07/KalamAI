@@ -1,0 +1,76 @@
+{
+  "id": "water_demand",
+  "title": "Indicative Gross Irrigation Requirement",
+  "subtitle": "Agronomic volumetric water budgeting & canal allocation estimates",
+  "extent_label": "Extent: 2,585.7 ha \u00b7 Pilot \u00b7 Model: 16-month",
+  "study_area": "pilot",
+  "model_type": "16-month",
+  "key_finding": "Total indicative gross irrigation water requirement is 39.1 MCM/year. Dual-season paddy accounts for 87.5% (34.2 MCM) of total demand, while perennial banana accounts for 2.1% (0.8 MCM).",
+  "total_water_mcm": 39.12,
+  "paddy_water_mcm": 34.22,
+  "banana_water_mcm": 0.81,
+  "paddy_water_share_pct": 87.5,
+  "banana_water_share_pct": 2.1,
+  "total_cropland_ha": 2585.7,
+  "denominator_label": "total gross irrigation requirement (39.1 MCM)",
+  "chart_data": [
+    {
+      "category": "Paddy (Kar Season)",
+      "water_mcm": 13.48,
+      "area_ha": 1123.3,
+      "pct": 34.5,
+      "color": "#8DB33F",
+      "rate_desc": "1,200 mm (12,000 m\u00b3/ha)"
+    },
+    {
+      "category": "Paddy (Pishanam Season)",
+      "water_mcm": 20.74,
+      "area_ha": 1728.1,
+      "pct": 53.0,
+      "color": "#457B9D",
+      "rate_desc": "1,200 mm (12,000 m\u00b3/ha)"
+    },
+    {
+      "category": "Banana (Annual Perennial)",
+      "water_mcm": 0.81,
+      "area_ha": 40.4,
+      "pct": 2.1,
+      "color": "#2E6B3F",
+      "rate_desc": "2,000 mm (20,000 m\u00b3/ha/yr)"
+    },
+    {
+      "category": "Other Crops / Pulses",
+      "water_mcm": 4.09,
+      "area_ha": 817.2,
+      "pct": 10.5,
+      "color": "#BFCB8F",
+      "rate_desc": "500 mm (5,000 m\u00b3/ha)"
+    }
+  ],
+  "legend": [
+    {
+      "id": "Paddy (Kar Season)",
+      "label": "Paddy (Kar Season) (34.5%)",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "Paddy (Pishanam Season)",
+      "label": "Paddy (Pishanam Season) (53.0%)",
+      "color": "#457B9D"
+    },
+    {
+      "id": "Banana (Annual Perennial)",
+      "label": "Banana (Annual Perennial) (2.1%)",
+      "color": "#2E6B3F"
+    },
+    {
+      "id": "Other Crops / Pulses",
+      "label": "Other Crops / Pulses (10.5%)",
+      "color": "#BFCB8F"
+    }
+  ],
+  "method": "area \u00d7 standard seasonal water requirement (config values, to be verified against TNAU/FAO-56); rainfall offset not applied. Wetland paddy: 1,200 mm/season; perennial banana: 2,000 mm/year; other crops: 500 mm.",
+  "limitations": "Rainfall offset (effective precipitation during Northeast Monsoon) and groundwater conjunctive use are not subtracted in this gross baseline estimate.",
+  "csv_url": "/api/insights/water_demand/csv?study_area=pilot",
+  "png_url": "/api/insights/water_demand/png?study_area=pilot"
+}

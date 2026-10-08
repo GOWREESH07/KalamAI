@@ -1,0 +1,125 @@
+{
+  "id": "crop_change",
+  "title": "Crop Change & Farmland Dynamics",
+  "subtitle": "Inter-annual parcel transitions (AY 2023-24 vs AY 2025-26)",
+  "extent_label": "Extent: 3,011.2 ha \u00b7 Pilot \u00b7 Model: 16-month",
+  "study_area": "pilot",
+  "model_type": "16-month",
+  "key_finding": "Evaluated 3,011.2 ha of 3,011.2 ha cropland (confidence \u2265 0.60): 52.9% of paddy and 1.3% of banana parcels remained stable across 2023\u20132026, with 100.5 ha (3.3%) identified as candidate paddy-to-banana diversification.",
+  "evaluated_ha": 3011.2,
+  "total_cropland_ha": 3011.2,
+  "coverage_note": "Evaluated 3,011.2 ha of 3,011.2 ha (both years with probability \u2265 0.6)",
+  "denominator_label": "evaluated confident area (3,011.2 ha)",
+  "stats": {
+    "Stable Paddy": {
+      "area_ha": 1593.0,
+      "pct": 52.9,
+      "color": "#8DB33F",
+      "desc": "Paddy in both AY 23-24 and AY 25-26"
+    },
+    "Stable Banana": {
+      "area_ha": 38.6,
+      "pct": 1.3,
+      "color": "#2E6B3F",
+      "desc": "Continuous perennial banana plantation"
+    },
+    "Candidate Paddy \u2192 Banana": {
+      "area_ha": 100.5,
+      "pct": 3.3,
+      "color": "#E76F51",
+      "desc": "Potential diversification from annual paddy to perennial banana"
+    },
+    "Banana \u2192 Paddy": {
+      "area_ha": 1.8,
+      "pct": 0.1,
+      "color": "#2A9D8F",
+      "desc": "Banana replanting cycle / rotation back to paddy"
+    },
+    "Cropland \u2192 Fallow/Loss": {
+      "area_ha": 34.5,
+      "pct": 1.1,
+      "color": "#B4554B",
+      "desc": "Cultivated land converted to fallow or non-agricultural use"
+    },
+    "Other Stable Cropland": {
+      "area_ha": 1242.7,
+      "pct": 41.3,
+      "color": "#BFCB8F",
+      "desc": "Other vegetation / seasonal horticulture"
+    }
+  },
+  "chart_data": [
+    {
+      "category": "Stable Paddy",
+      "area_ha": 1593.0,
+      "pct": 52.9,
+      "color": "#8DB33F"
+    },
+    {
+      "category": "Stable Banana",
+      "area_ha": 38.6,
+      "pct": 1.3,
+      "color": "#2E6B3F"
+    },
+    {
+      "category": "Candidate Paddy \u2192 Banana",
+      "area_ha": 100.5,
+      "pct": 3.3,
+      "color": "#E76F51"
+    },
+    {
+      "category": "Banana \u2192 Paddy",
+      "area_ha": 1.8,
+      "pct": 0.1,
+      "color": "#2A9D8F"
+    },
+    {
+      "category": "Cropland \u2192 Fallow/Loss",
+      "area_ha": 34.5,
+      "pct": 1.1,
+      "color": "#B4554B"
+    },
+    {
+      "category": "Other Stable Cropland",
+      "area_ha": 1242.7,
+      "pct": 41.3,
+      "color": "#BFCB8F"
+    }
+  ],
+  "legend": [
+    {
+      "id": "1",
+      "label": "Stable Paddy",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "2",
+      "label": "Stable Banana",
+      "color": "#2E6B3F"
+    },
+    {
+      "id": "3",
+      "label": "Candidate Paddy \u2192 Banana",
+      "color": "#E76F51"
+    },
+    {
+      "id": "4",
+      "label": "Banana \u2192 Paddy",
+      "color": "#2A9D8F"
+    },
+    {
+      "id": "5",
+      "label": "Cropland \u2192 Fallow/Loss",
+      "color": "#B4554B"
+    },
+    {
+      "id": "6",
+      "label": "Other Stable Cropland",
+      "color": "#BFCB8F"
+    }
+  ],
+  "method": "Cross-tabulation of independent Random Forest predictions for AY 2023-24 and AY 2025-26. Only pixels with posterior class probability \u2265 0.6 in both agricultural years are evaluated to prevent artifact-induced spurious transitions.",
+  "limitations": "AY 2023-24 relies on single-satellite Sentinel-1 (S1A); banana may be under-detected in that year.",
+  "csv_url": "/api/insights/crop_change/csv?study_area=pilot",
+  "png_url": "/api/insights/crop_change/png?study_area=pilot"
+}

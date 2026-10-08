@@ -1,0 +1,89 @@
+{
+  "id": "crop_health",
+  "title": "Crop Health & NDVI Anomaly",
+  "subtitle": "Multi-year standardized z-score deviation from 3-year baseline",
+  "extent_label": "Extent: 2,891.8 ha \u00b7 Taluks \u00b7 Model: 16-month \u00b7 Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "study_area": "taluks",
+  "model_type": "16-month",
+  "coverage_note": "Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "key_finding": "74.6% of analyzed cropland displays normal or above-normal vegetative vigour. Localized moisture or transplanting delay stress affects 38.2% (1104.0 ha), predominantly along tail-end distributaries.",
+  "total_cropland_ha": 2891.8,
+  "healthy_share_pct": 74.6,
+  "stressed_share_pct": 38.2,
+  "stressed_area_ha": 1104.0,
+  "denominator_label": "total analyzed cropland (2,891.8 ha)",
+  "stats": {
+    "Severe Stress": {
+      "area_ha": 25.0,
+      "pct": 0.9,
+      "color": "#B4554B"
+    },
+    "Mild Stress": {
+      "area_ha": 1079.0,
+      "pct": 37.3,
+      "color": "#E76F51"
+    },
+    "Normal Vigour": {
+      "area_ha": 2032.3,
+      "pct": 70.3,
+      "color": "#8DB33F"
+    },
+    "Above Normal": {
+      "area_ha": 123.9,
+      "pct": 4.3,
+      "color": "#2E6B3F"
+    }
+  },
+  "chart_data": [
+    {
+      "category": "Severe Stress",
+      "area_ha": 25.0,
+      "pct": 0.9,
+      "color": "#B4554B"
+    },
+    {
+      "category": "Mild Stress",
+      "area_ha": 1079.0,
+      "pct": 37.3,
+      "color": "#E76F51"
+    },
+    {
+      "category": "Normal Vigour",
+      "area_ha": 2032.3,
+      "pct": 70.3,
+      "color": "#8DB33F"
+    },
+    {
+      "category": "Above Normal",
+      "area_ha": 123.9,
+      "pct": 4.3,
+      "color": "#2E6B3F"
+    }
+  ],
+  "legend": [
+    {
+      "id": "1",
+      "label": "Severe Stress (25.0 ha, 0.9%)",
+      "color": "#B4554B"
+    },
+    {
+      "id": "2",
+      "label": "Mild Stress (1079.0 ha, 37.3%)",
+      "color": "#E76F51"
+    },
+    {
+      "id": "3",
+      "label": "Normal Vigour (2032.3 ha, 70.3%)",
+      "color": "#8DB33F"
+    },
+    {
+      "id": "4",
+      "label": "Above Normal (123.9 ha, 4.3%)",
+      "color": "#2E6B3F"
+    }
+  ],
+  "method": "Standardized NDVI anomaly z-scores computed against multi-year seasonal reference distributions. Negative anomalies (z < -0.5) identify water stress, delayed transplanting, or localized pest attack, while positive anomalies (z > 0.5) indicate robust canopy development.",
+  "limitations": "Cloud contamination during heavy Northeast Monsoon weeks (Nov\u2013Dec) can momentarily depress optical composites before synthetic radar cross-calibration kicks in.",
+  "csv_url": "/api/insights/crop_health/csv?study_area=taluks",
+  "png_url": "/api/insights/crop_health/png?study_area=taluks"
+}

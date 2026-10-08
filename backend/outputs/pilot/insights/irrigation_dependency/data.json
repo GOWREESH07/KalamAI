@@ -1,0 +1,162 @@
+{
+  "id": "irrigation_dependency",
+  "title": "Irrigation Dependency & Water Access",
+  "subtitle": "Crop composition decay across Thamirabarani canal buffers",
+  "extent_label": "Extent: 3,011.2 ha \u00b7 Pilot \u00b7 Model: 16-month",
+  "study_area": "pilot",
+  "model_type": "16-month",
+  "key_finding": "14.7% of paddy acreage is concentrated within 500 m of a river channel, canal or irrigation tank. Banana accounts for 1.4% of cropland in the immediate 0\u2013250 m corridor, decaying sharply beyond 1 km.",
+  "paddy_within_500m_pct": 14.7,
+  "total_cropland_ha": 3011.2,
+  "denominator_label": "total analyzed cropland (3,011.2 ha)",
+  "bins": [
+    {
+      "bin": "0 \u2013 250 m",
+      "total_cropland_ha": 184.9,
+      "paddy_ha": 79.6,
+      "banana_ha": 2.6,
+      "other_ha": 102.7,
+      "paddy_pct": 43.1,
+      "banana_pct": 1.4,
+      "other_pct": 55.5,
+      "color": "#0077B6"
+    },
+    {
+      "bin": "250 \u2013 500 m",
+      "total_cropland_ha": 337.7,
+      "paddy_ha": 173.1,
+      "banana_ha": 11.0,
+      "other_ha": 153.6,
+      "paddy_pct": 51.3,
+      "banana_pct": 3.3,
+      "other_pct": 45.4,
+      "color": "#0096C7"
+    },
+    {
+      "bin": "500 \u2013 1,000 m",
+      "total_cropland_ha": 741.0,
+      "paddy_ha": 347.8,
+      "banana_ha": 12.6,
+      "other_ha": 380.6,
+      "paddy_pct": 46.9,
+      "banana_pct": 1.7,
+      "other_pct": 51.4,
+      "color": "#48CAE4"
+    },
+    {
+      "bin": "1,000 \u2013 2,000 m",
+      "total_cropland_ha": 1077.1,
+      "paddy_ha": 608.4,
+      "banana_ha": 12.4,
+      "other_ha": 456.3,
+      "paddy_pct": 56.5,
+      "banana_pct": 1.2,
+      "other_pct": 42.3,
+      "color": "#90E0EF"
+    },
+    {
+      "bin": "> 2,000 m",
+      "total_cropland_ha": 670.3,
+      "paddy_ha": 519.1,
+      "banana_ha": 1.8,
+      "other_ha": 149.4,
+      "paddy_pct": 77.4,
+      "banana_pct": 0.3,
+      "other_pct": 22.3,
+      "color": "#ADE8F4"
+    }
+  ],
+  "chart_data": [
+    {
+      "category": "0 \u2013 250 m",
+      "area_ha": 184.9,
+      "pct": 6.1,
+      "paddy_pct": 43.1,
+      "banana_pct": 1.4,
+      "other_pct": 55.5,
+      "paddy_ha": 79.6,
+      "banana_ha": 2.6,
+      "color": "#0077B6"
+    },
+    {
+      "category": "250 \u2013 500 m",
+      "area_ha": 337.7,
+      "pct": 11.2,
+      "paddy_pct": 51.3,
+      "banana_pct": 3.3,
+      "other_pct": 45.4,
+      "paddy_ha": 173.1,
+      "banana_ha": 11.0,
+      "color": "#0096C7"
+    },
+    {
+      "category": "500 \u2013 1,000 m",
+      "area_ha": 741.0,
+      "pct": 24.6,
+      "paddy_pct": 46.9,
+      "banana_pct": 1.7,
+      "other_pct": 51.4,
+      "paddy_ha": 347.8,
+      "banana_ha": 12.6,
+      "color": "#48CAE4"
+    },
+    {
+      "category": "1,000 \u2013 2,000 m",
+      "area_ha": 1077.1,
+      "pct": 35.8,
+      "paddy_pct": 56.5,
+      "banana_pct": 1.2,
+      "other_pct": 42.3,
+      "paddy_ha": 608.4,
+      "banana_ha": 12.4,
+      "color": "#90E0EF"
+    },
+    {
+      "category": "> 2,000 m",
+      "area_ha": 670.3,
+      "pct": 22.3,
+      "paddy_pct": 77.4,
+      "banana_pct": 0.3,
+      "other_pct": 22.3,
+      "paddy_ha": 519.1,
+      "banana_ha": 1.8,
+      "color": "#ADE8F4"
+    }
+  ],
+  "legend": [
+    {
+      "id": "bin_0_250",
+      "label": "0 \u2013 250 m",
+      "color": "#0077B6"
+    },
+    {
+      "id": "bin_250_500",
+      "label": "250 \u2013 500 m",
+      "color": "#0096C7"
+    },
+    {
+      "id": "bin_500_1000",
+      "label": "500 \u2013 1,000 m",
+      "color": "#48CAE4"
+    },
+    {
+      "id": "bin_1000_2000",
+      "label": "1,000 \u2013 2,000 m",
+      "color": "#90E0EF"
+    },
+    {
+      "id": "bin_gt_2000",
+      "label": "> 2,000 m",
+      "color": "#ADE8F4"
+    },
+    {
+      "id": "water",
+      "label": "Canal / Tank Network",
+      "color": "#0F2850"
+    }
+  ],
+  "method": "Euclidean Distance Transformation (EDT) computed at 10m pixel resolution from all surface water features (Thamirabarani river channels, branch canals, and irrigation tanks). Crop parcel composition is statistically aggregated across concentric distance buffers.",
+  "limitations": "Underground borewells and lift-irrigation pumps allow localized banana cultivation in deeper buffers, which does not rely on direct surface canal frontage.",
+  "csv_url": "/api/insights/irrigation_dependency/csv?study_area=pilot",
+  "png_url": "/api/insights/irrigation_dependency/png?study_area=pilot"
+}

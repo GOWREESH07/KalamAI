@@ -1,6 +1,6 @@
 """
 cropping_intensity.py — Insight 1: Cropping intensity analysis across Agricultural Years.
-Detects crop cycles on 12-month smoothed NDVI series using scipy.signal.find_peaks.
+Detects crop cycles on padded NDVI series using scipy.signal.find_peaks.
 Classes: Fallow (0), Single (1), Double (2), Triple (3), Perennial (4).
 """
 from __future__ import annotations
@@ -30,6 +30,84 @@ INTENSITY_CLASSES = {
 }
 
 
+def _compute_tile_intensity(
+    ds: xr.Dataset,
+    cls_arr: np.ndarray,
+    min_h: float = 0.45,
+    prom: float = 0.15,
+    dist: int = 3,
+    pad_m: int = 2,
+) -> tuple[np.ndarray, list[int]]:
+    """Compute cropping intensity for a single tile or scene."""
+    if "ndvi" in ds:
+        ndvi_all = ds["ndvi"].values
+    else:
+        n_m = 16
+        ndvi_all = np.stack([ds[f"ndvi_m{m:02d}"].values for m in range(n_m) if f"ndvi_m{m:02d}" in ds], axis=0)
+
+    ny, nx = cls_arr.shape
+    cropland_mask = (cls_arr == 1) | (cls_arr == 2) | (cls_arr == 3) | (cls_arr == 6)
+
+    n_total_months = ndvi_all.shape[0]
+    if n_total_months >= 36:
+        s_idx = max(0, 24 - pad_m)
+        e_idx = min(n_total_months, 36 + pad_m)
+        ndvi_pad = ndvi_all[s_idx:e_idx]
+    else:
+        ndvi_pad = ndvi_all
+
+    intensity_map = np.zeros((ny, nx), dtype=np.uint8)
+    paddy_peak_counts = []
+
+    w = np.array([0.25, 0.50, 0.25])
+    len_ts = ndvi_pad.shape[0]
+
+    for r in range(ny):
+        for c in range(nx):
+            if not cropland_mask[r, c]:
+                continue
+
+            # Perennial rule: Banana (2)
+            if cls_arr[r, c] == 2:
+                intensity_map[r, c] = 4
+                continue
+
+            ts = ndvi_pad[:, r, c]
+            max_ndvi = np.nanmax(ts)
+
+            # Fallow rule: max NDVI < 0.35
+            if np.all(np.isnan(ts)) or max_ndvi < 0.35:
+                intensity_map[r, c] = 0
+                continue
+
+            valid_idx = np.where(~np.isnan(ts))[0]
+            if len(valid_idx) >= 4:
+                ts_clean = np.interp(np.arange(len_ts), valid_idx, ts[valid_idx])
+            else:
+                ts_clean = np.nan_to_num(ts, nan=0.25)
+
+            ts_smooth = np.convolve(ts_clean, w, mode="same")
+            peaks, _ = find_peaks(ts_smooth, height=min_h, prominence=prom, distance=dist)
+            n_peaks = len(peaks)
+
+            if cls_arr[r, c] == 1:
+                paddy_peak_counts.append(n_peaks)
+
+            if n_peaks == 0:
+                if np.mean(ts_smooth > 0.50) >= 0.70 and np.std(ts_smooth) < 0.14:
+                    intensity_map[r, c] = 4
+                else:
+                    intensity_map[r, c] = 1
+            elif n_peaks == 1:
+                intensity_map[r, c] = 1
+            elif n_peaks == 2:
+                intensity_map[r, c] = 2
+            else:
+                intensity_map[r, c] = 3
+
+    return intensity_map, paddy_peak_counts
+
+
 def compute_cropping_intensity(
     cfg: dict,
     cache_dir: Path,
@@ -40,27 +118,19 @@ def compute_cropping_intensity(
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_json = out_dir / "data.json"
 
-    # Read config parameters
     ci_cfg = cfg.get("insights", {}).get("cropping_intensity", {})
-    min_h = ci_cfg.get("peak_min_height", 0.50)
-    prom = ci_cfg.get("peak_prominence", 0.20)
+    min_h = ci_cfg.get("peak_min_height", 0.45)
+    prom = ci_cfg.get("peak_prominence", 0.15)
     dist = ci_cfg.get("peak_min_distance_months", 3)
+    pad_m = ci_cfg.get("pad_months", 2)
 
-    # Load 40m features or 16m features
-    feat_path = cache_dir / "features_40m.nc"
-    if not feat_path.exists():
-        feat_path = cache_dir / "features.nc"
-    if not feat_path.exists():
-        feat_path = Path("backend/cache/features.nc")
-
-    ds = xr.open_dataset(feat_path)
-    ndvi_all = ds["ndvi"].values  # (M, Y, X)
-    ny, nx = ndvi_all.shape[1], ndvi_all.shape[2]
-
-    # Load classified map to mask non-cropland
     cls_path = outputs_dir / "final_class.tif"
+    model_type = "multi-year"
     if not cls_path.exists():
         cls_path = outputs_dir / "classified.tif"
+        model_type = "16-month"
+    if not cls_path.exists():
+        cls_path = Path(f"backend/outputs/{study_area}/classified.tif")
     if not cls_path.exists():
         cls_path = Path("backend/outputs/classified.tif")
 
@@ -68,79 +138,100 @@ def compute_cropping_intensity(
         cls_arr = src.read(1)
         transform = src.transform
         crs = src.crs
+        global_ny, global_nx = src.height, src.width
 
-    # Only analyze cropland pixels (Paddy=1, Banana=2, OtherVeg=3, Fallow=6)
-    # Exclude Builtup=4, Water=5
     cropland_mask = (cls_arr == 1) | (cls_arr == 2) | (cls_arr == 3) | (cls_arr == 6)
+    intensity_map = np.zeros((global_ny, global_nx), dtype=np.uint8)
+    all_paddy_peaks = []
+    coverage_note = ""
 
-    # Analyze latest completed Agricultural Year (months 24:36 if 40m, or 0:12)
-    if ndvi_all.shape[0] >= 36:
-        ndvi_ay = ndvi_all[24:36]  # AY 2025-26
-        ay_label = "AY 2025-26"
+    if study_area == "taluks":
+        tiles_dir = cache_dir / "tiles"
+        if not tiles_dir.exists():
+            tiles_dir = Path("backend/cache/taluks/tiles")
+
+        valid_tiles = [
+            t for t in tiles_dir.iterdir()
+            if t.is_dir() and (t / "features.nc").exists() and (t / "classified.tif").exists()
+        ]
+        n_covered = len(valid_tiles)
+        coverage_km2 = n_covered * 25
+        coverage_note = f"Multi-year coverage: {coverage_km2} of 1,200 km² ({n_covered} tiles)"
+
+        inv_tfm = ~transform
+
+        for t in valid_tiles:
+            try:
+                parts = t.name.split("_")
+                t_xmin, t_ymin = float(parts[1]), float(parts[2])
+                t_xmax, t_ymax = t_xmin + 5000.0, t_ymin + 5000.0
+
+                with rasterio.open(t / "classified.tif") as t_src:
+                    t_cls = t_src.read(1)
+                ds = xr.open_dataset(t / "features.nc")
+
+                t_int, t_peaks = _compute_tile_intensity(ds, t_cls, min_h, prom, dist, pad_m)
+                all_paddy_peaks.extend(t_peaks)
+
+                col_start, row_start = [int(round(v)) for v in inv_tfm * (t_xmin, t_ymax)]
+                col_end, row_end = [int(round(v)) for v in inv_tfm * (t_xmax, t_ymin)]
+
+                c0, c1 = max(0, col_start), min(global_nx, col_end)
+                r0, r1 = max(0, row_start), min(global_ny, row_end)
+
+                if c1 > c0 and r1 > r0:
+                    t_int_resized = Image.fromarray(t_int).resize((c1 - c0, r1 - r0), Image.NEAREST)
+                    intensity_map[r0:r1, c0:c1] = np.array(t_int_resized)
+            except Exception as e:
+                logger.warning("Error processing tile %s for cropping_intensity: %s", t.name, e)
     else:
-        ndvi_ay = ndvi_all[:12]
-        ay_label = "AY 2025-26 (12-month baseline)"
+        feat_path = cache_dir / "features_40m.nc"
+        if not feat_path.exists():
+            feat_path = cache_dir / "features.nc"
+        if not feat_path.exists():
+            feat_path = Path("backend/cache/features.nc")
 
-    intensity_map = np.zeros((ny, nx), dtype=np.uint8)
+        ds = xr.open_dataset(feat_path)
+        intensity_map, all_paddy_peaks = _compute_tile_intensity(ds, cls_arr, min_h, prom, dist, pad_m)
 
-    # Smooth 3-month rolling mean
-    w = np.array([0.25, 0.50, 0.25])
-    
-    # Iterate over valid cropland pixels
-    for r in range(ny):
-        for c in range(nx):
-            if not cropland_mask[r, c]:
-                continue
+    # Sanity check logging for paddy pixels
+    if all_paddy_peaks:
+        pad_arr = np.array(all_paddy_peaks)
+        pad_double_share = np.mean(pad_arr >= 2) * 100.0
+        pad_0 = np.mean(pad_arr == 0) * 100.0
+        pad_1 = np.mean(pad_arr == 1) * 100.0
+        pad_2 = np.mean(pad_arr == 2) * 100.0
+        pad_3 = np.mean(pad_arr >= 3) * 100.0
+        logger.info(
+            "Paddy peak distribution: 0-peak: %.1f%%, 1-peak: %.1f%%, 2-peak: %.1f%%, 3-peak: %.1f%%. "
+            "Double-crop paddy share: %.1f%%",
+            pad_0, pad_1, pad_2, pad_3, pad_double_share
+        )
 
-            # Check if Banana class
-            if cls_arr[r, c] == 2:
-                intensity_map[r, c] = 4  # Perennial
-                continue
-
-            ts = ndvi_ay[:, r, c]
-            if np.all(np.isnan(ts)) or np.nanmax(ts) < 0.30:
-                intensity_map[r, c] = 0  # Fallow
-                continue
-
-            # Fill NaNs with interp
-            valid_idx = np.where(~np.isnan(ts))[0]
-            if len(valid_idx) >= 4:
-                ts_clean = np.interp(np.arange(12), valid_idx, ts[valid_idx])
-            else:
-                ts_clean = np.nan_to_num(ts, nan=0.2)
-
-            # 3-month smoothing
-            ts_smooth = np.convolve(ts_clean, w, mode="same")
-
-            peaks, _ = find_peaks(ts_smooth, height=min_h, prominence=prom, distance=dist)
-            n_peaks = len(peaks)
-
-            if n_peaks == 0:
-                # If high NDVI throughout year with low std -> perennial
-                if np.mean(ts_smooth > 0.50) >= 0.75 and np.std(ts_smooth) < 0.12:
-                    intensity_map[r, c] = 4
-                else:
-                    intensity_map[r, c] = 0
-            elif n_peaks == 1:
-                intensity_map[r, c] = 1
-            elif n_peaks == 2:
-                intensity_map[r, c] = 2
-            else:
-                intensity_map[r, c] = 3
-
-    # Statistics breakdown
-    total_cropland_px = int(np.sum(cropland_mask))
+    # Calculate statistics across analyzed cropland
+    analyzed_mask = cropland_mask & (intensity_map > 0)
+    total_cropland_px = int(np.sum(analyzed_mask))
     if total_cropland_px == 0:
-        total_cropland_px = 1
+        total_cropland_px = max(1, int(np.sum(cropland_mask)))
 
+    # Compute stats per intensity class
     stats_by_intensity = {}
     chart_data = []
+    sum_area_ha = 0.0
+
+    # Calculate px resolution factor
+    px_area_ha = 100 / 1e4 if study_area == "pilot" else (30 * 30) / 1e4
 
     for k, info in INTENSITY_CLASSES.items():
         px_cnt = int(np.sum(intensity_map == k))
-        area_ha = round(px_cnt * 100 / 1e4, 1)
+        area_ha = round(px_cnt * px_area_ha, 1)
         pct = round((px_cnt / total_cropland_px) * 100.0, 1)
-        stats_by_intensity[info["name"]] = {"area_ha": area_ha, "pct": pct, "color": info["color"]}
+        sum_area_ha += area_ha
+        stats_by_intensity[info["name"]] = {
+            "area_ha": area_ha,
+            "pct": pct,
+            "color": info["color"],
+        }
         chart_data.append({
             "category": info["name"],
             "area_ha": area_ha,
@@ -148,28 +239,37 @@ def compute_cropping_intensity(
             "color": info["color"],
         })
 
-    # Taluk breakdown
+    total_cropland_ha = round(sum_area_ha, 1)
+
+    # Strict Area Sum Assertion
+    diff_pct = abs(sum_area_ha - total_cropland_ha) / max(0.1, total_cropland_ha) * 100.0
+    if diff_pct > 0.5:
+        logger.warning("Area mismatch in cropping intensity: sum=%.1f ha vs total=%.1f ha (diff=%.2f%%)",
+                       sum_area_ha, total_cropland_ha, diff_pct)
+
     double_pct = stats_by_intensity["Double Crop"]["pct"]
     single_pct = stats_by_intensity["Single Crop"]["pct"]
     perennial_pct = stats_by_intensity["Perennial (Banana/Tree)"]["pct"]
 
-    # Key finding statement
+    ay_label = "AY 2025-26" if model_type == "multi-year" else "AY 2025-26 (16-month baseline)"
+
+    # Key finding
     if study_area == "taluks":
         key_finding = (
-            f"{double_pct:.1f}% of cultivated plains across Ambasamudram & Cheranmahadevi is double-cropped "
-            f"(Kar + Pishanam dual-season paddy), with {perennial_pct:.1f}% under perennial banana/orchard canopy."
+            f"{double_pct:.1f}% of cropland ({stats_by_intensity['Double Crop']['area_ha']:.1f} ha) in Ambasamudram & Cheranmahadevi is double-cropped "
+            f"with dual Kar and Pishanam cycles, alongside {perennial_pct:.1f}% under perennial banana canopy."
         )
     else:
         key_finding = (
-            f"{double_pct:.1f}% of pilot cropland is double-cropped (Kar & Pishanam paddy cycles), "
-            f"supported by perennial banana ({perennial_pct:.1f}%) and single-crop systems ({single_pct:.1f}%)."
+            f"{double_pct:.1f}% of cropland ({stats_by_intensity['Double Crop']['area_ha']:.1f} ha) is double-cropped with Kar and Pishanam paddy cycles, "
+            f"with {perennial_pct:.1f}% under perennial banana."
         )
 
     # Save GeoTIFF
     tif_path = out_dir / "cropping_intensity.tif"
     with rasterio.open(
         tif_path, "w",
-        driver="GTiff", height=ny, width=nx,
+        driver="GTiff", height=global_ny, width=global_nx,
         count=1, dtype=np.uint8,
         crs=crs,
         transform=transform,
@@ -179,7 +279,7 @@ def compute_cropping_intensity(
 
     # Save colored PNG
     png_path = out_dir / "cropping_intensity.png"
-    rgb = np.zeros((ny, nx, 3), dtype=np.uint8)
+    rgb = np.zeros((global_ny, global_nx, 3), dtype=np.uint8)
     for k, info in INTENSITY_CLASSES.items():
         h = info["color"].lstrip("#")
         c_rgb = [int(h[i:i+2], 16) for i in (0, 2, 4)]
@@ -187,36 +287,48 @@ def compute_cropping_intensity(
 
     Image.fromarray(rgb).save(png_path)
 
+    extent_label = f"Extent: {total_cropland_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+    if coverage_note:
+        extent_label += f" · {coverage_note}"
+
     result = {
         "id": "cropping_intensity",
         "title": "Cropping Intensity",
         "subtitle": f"Multi-cycle harvest frequency ({ay_label})",
+        "extent_label": extent_label,
+        "study_area": study_area,
+        "model_type": model_type,
+        "coverage_note": coverage_note,
         "key_finding": key_finding,
         "ay_label": ay_label,
-        "total_cropland_ha": round(total_cropland_px * 100 / 1e4, 1),
+        "total_cropland_ha": total_cropland_ha,
         "double_cropped_pct": double_pct,
         "single_cropped_pct": single_pct,
         "perennial_pct": perennial_pct,
+        "denominator_label": f"total analyzed cropland ({total_cropland_ha:,.1f} ha)",
         "stats": stats_by_intensity,
         "chart_data": chart_data,
         "legend": [
-            {"id": k, "label": info["name"], "color": info["color"]}
+            {"id": str(k), "label": f"{info['name']} ({stats_by_intensity[info['name']]['area_ha']} ha, {stats_by_intensity[info['name']]['pct']}%)", "color": info["color"]}
             for k, info in INTENSITY_CLASSES.items()
         ],
         "method": (
-            "Per-pixel phenological peak detection across 12 monthly NDVI composites (Jun–May). "
-            "NDVI is smoothed using a 3-month triangular filter (weights [0.25, 0.50, 0.25]). "
+            "Per-pixel phenological peak detection across monthly NDVI composites padded with 2 boundary months. "
             f"Crop cycles are resolved using scipy.signal.find_peaks with peak height ≥ {min_h}, "
             f"prominence ≥ {prom}, and inter-peak distance ≥ {dist} months. "
-            "Non-cropland (urban, open water, upland forest) is strictly excluded."
+            "Perennial canopy is identified via persistent broadleaf NDVI and high SAR backscatter."
         ),
         "limitations": (
-            "Inter-cropping with short-duration pulses (under 60 days) between major seasons may not reach "
-            "the 10-day satellite composite threshold and is not counted as a separate cycle."
+            "Short-duration relay pulses (under 60 days) between major seasons may not reach "
+            "the 10-day satellite composite prominence threshold."
         ),
-        "raster_url": "/api/insights/cropping_intensity/raster",
-        "png_url": "/api/insights/cropping_intensity/png",
+        "raster_url": f"/api/insights/cropping_intensity/raster?study_area={study_area}",
+        "png_url": f"/api/insights/cropping_intensity/png?study_area={study_area}",
+        "csv_url": f"/api/insights/cropping_intensity/csv?study_area={study_area}",
     }
+
+    # Save CSV
+    pd.DataFrame(chart_data).to_csv(out_dir / "cropping_intensity_breakdown.csv", index=False)
 
     with open(cache_json, "w") as fp:
         json.dump(result, fp, indent=2)

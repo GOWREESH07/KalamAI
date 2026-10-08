@@ -1,0 +1,6 @@
+village,taluk,village_idx,total_parcels,total_area_ha,paddy_ha,banana_ha,other_ha,paddy_pct,banana_pct,other_pct,dominant_type,color
+Veeravanallur,Cheranmahadevi,5,982,1740.0,594.2,0.0,1145.8,34.1,0.0,65.9,Diversified / Fallow,#E76F51
+Kallidaikurichi,Ambasamudram,2,565,907.6,614.4,7.7,285.5,67.7,0.8,31.5,Paddy intensive,#2A9D8F
+Mukkudal,Ambasamudram,6,231,322.0,275.6,1.1,45.3,85.6,0.3,14.1,Paddy intensive,#457B9D
+Ambasamudram Urban,Ambasamudram,1,168,237.8,208.2,0.0,29.6,87.6,0.0,12.4,Paddy intensive,#264653
+Harikesavanallur,Cheranmahadevi,10,96,139.2,127.8,0.0,11.4,91.8,0.0,8.2,Paddy intensive,#B4554B

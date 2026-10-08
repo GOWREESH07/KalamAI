@@ -2,7 +2,7 @@
 verification_priority.py — Insight 3: Ground-truthing and field audit priority ranking.
 Formula:
   Priority = w_conf * (1 - confidence) + w_cons * (1 - consistency) + w_disag * disagreement
-Exports Top-50 list, CSV, KMZ, and priority choropleth map.
+Percentiles: Critical = top 10%, High = next 15%, Medium = next 25%, Low = rest.
 """
 from __future__ import annotations
 
@@ -23,10 +23,10 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 PRIORITY_LEVELS = {
-    "Critical": {"color": "#B4554B", "min_score": 0.55},
-    "High": {"color": "#E76F51", "min_score": 0.40},
-    "Medium": {"color": "#E9C46A", "min_score": 0.25},
-    "Low": {"color": "#2A9D8F", "min_score": 0.0},
+    "Critical": {"color": "#B4554B", "label": "Critical Priority (Top 10%)"},
+    "High": {"color": "#E76F51", "label": "High Priority (Next 15%)"},
+    "Medium": {"color": "#E9C46A", "label": "Medium Priority (Next 25%)"},
+    "Low": {"color": "#2A9D8F", "label": "Low Priority (Baseline 50%)"},
 }
 
 
@@ -47,74 +47,85 @@ def compute_verification_priority(
     w_disag = weights.get("disagreement", 0.2)
 
     parcels_gpkg = outputs_dir / "parcels.gpkg"
+    model_type = "multi-year"
+    if not parcels_gpkg.exists():
+        parcels_gpkg = Path(f"backend/outputs/{study_area}/parcels.gpkg")
     if not parcels_gpkg.exists():
         parcels_gpkg = Path("backend/outputs/parcels.gpkg")
+        model_type = "16-month"
 
     if not parcels_gpkg.exists():
-        raise FileNotFoundError("parcels.gpkg not found")
+        raise FileNotFoundError(f"parcels.gpkg not found for study area {study_area}")
 
     gdf = gpd.read_file(parcels_gpkg)
     if gdf.crs is None:
         gdf = gdf.set_crs(epsg=32643)
 
-    # Compute priority components
-    # 1. Confidence (0..1)
+    if "area_ha" not in gdf.columns:
+        gdf["area_ha"] = gdf.geometry.area / 1e4
+
+    total_parcels = len(gdf)
+    total_area_ha = round(float(gdf["area_ha"].sum()), 1)
+
+    # Compute priority score
     conf = gdf["confidence"].fillna(0.70).values if "confidence" in gdf.columns else np.full(len(gdf), 0.70)
-    # 2. Consistency (0..1)
     cons = gdf["consistency"].fillna(0.80).values if "consistency" in gdf.columns else np.full(len(gdf), 0.80)
-    # 3. Disagreement / Rotation flag
+    
     disag = np.zeros(len(gdf), dtype=float)
     if "rotation_detected" in gdf.columns:
         disag = np.where(gdf["rotation_detected"].fillna(False), 1.0, 0.0)
     elif "ay23_24_class" in gdf.columns and "ay25_26_class" in gdf.columns:
         disag = np.where(gdf["ay23_24_class"] != gdf["ay25_26_class"], 0.8, 0.0)
 
-    # Score
     priority_score = w_conf * (1.0 - conf) + w_cons * (1.0 - cons) + w_disag * disag
     gdf["priority_score"] = np.round(priority_score, 4)
 
-    # Assign Priority Level
+    # Thresholds by exact percentiles: Critical = top 10%, High = next 15% (85-75th), Medium = next 25% (75-50th), Low = rest
+    p90 = np.percentile(priority_score, 90)
+    p75 = np.percentile(priority_score, 75)
+    p50 = np.percentile(priority_score, 50)
+
     levels = []
     colors = []
     reasons = []
+
     for i, row in gdf.iterrows():
         score = row["priority_score"]
         c_val = conf[i]
         cs_val = cons[i]
         d_val = disag[i]
 
-        if score >= 0.50:
+        if score >= p90:
             lvl = "Critical"
-        elif score >= 0.35:
+        elif score >= p75:
             lvl = "High"
-        elif score >= 0.20:
+        elif score >= p50:
             lvl = "Medium"
         else:
             lvl = "Low"
         levels.append(lvl)
         colors.append(PRIORITY_LEVELS[lvl]["color"])
 
-        # Reason generator
         r_parts = []
         if c_val < 0.65:
             r_parts.append(f"Low classifier confidence ({c_val*100:.0f}%)")
         if cs_val < 0.70:
             r_parts.append(f"Inter-annual crop instability ({cs_val*100:.0f}% consistency)")
         if d_val > 0.5:
-            r_parts.append("Paddy-banana rotation / boundary mixture")
+            r_parts.append("Paddy-banana rotation / spectral ambiguity")
         if not r_parts:
-            r_parts.append("Routine spot verification")
+            r_parts.append("Routine spot audit")
         reasons.append("; ".join(r_parts))
 
     gdf["priority_level"] = levels
     gdf["priority_color"] = colors
     gdf["audit_reason"] = reasons
 
-    # Centroids in WGS84 for mobile GPS
-    gdf_wgs84 = gdf.to_crs(epsg=4326)
-    centroids = gdf_wgs84.geometry.centroid
-    gdf["center_lon"] = np.round(centroids.x, 5)
-    gdf["center_lat"] = np.round(centroids.y, 5)
+    # Centroids in WGS84 for GPS
+    centroids_utm = gdf.geometry.centroid
+    gdf_pts_wgs = gpd.GeoDataFrame(geometry=centroids_utm, crs=gdf.crs).to_crs(epsg=4326)
+    gdf["center_lon"] = np.round(gdf_pts_wgs.geometry.x, 5)
+    gdf["center_lat"] = np.round(gdf_pts_wgs.geometry.y, 5)
 
     # Top 50 highest audit priorities
     top50 = gdf.sort_values(by="priority_score", ascending=False).head(50)
@@ -136,19 +147,35 @@ def compute_verification_priority(
     # Summary stats by priority level
     stats_by_level = {}
     chart_data = []
-    total_parcels = len(gdf)
+    sum_area_ha = 0.0
+
     for lvl, pinfo in PRIORITY_LEVELS.items():
-        cnt = int(np.sum(gdf["priority_level"] == lvl))
-        area = round(float(gdf[gdf["priority_level"] == lvl]["area_ha"].sum()), 1)
-        pct = round((cnt / max(1, total_parcels)) * 100.0, 1)
-        stats_by_level[lvl] = {"count": cnt, "area_ha": area, "pct": pct, "color": pinfo["color"]}
-        chart_data.append({"category": lvl, "count": cnt, "area_ha": area, "pct": pct, "color": pinfo["color"]})
+        sub = gdf[gdf["priority_level"] == lvl]
+        cnt = len(sub)
+        area = round(float(sub["area_ha"].sum()), 1)
+        cnt_pct = round((cnt / max(1, total_parcels)) * 100.0, 1)
+        area_pct = round((area / max(0.1, total_area_ha)) * 100.0, 1)
+        sum_area_ha += area
+        stats_by_level[lvl] = {
+            "count": cnt,
+            "area_ha": area,
+            "pct": cnt_pct,
+            "area_pct": area_pct,
+            "color": pinfo["color"]
+        }
+        chart_data.append({
+            "category": f"{lvl} Priority",
+            "count": cnt,
+            "area_ha": area,
+            "pct": cnt_pct,
+            "color": pinfo["color"]
+        })
 
     # Save CSV
     csv_path = out_dir / "field_verification_top50.csv"
     pd.DataFrame(top50_records).to_csv(csv_path, index=False)
 
-    # Save KMZ / KML for mobile GPS ground audit
+    # Save KML
     kml_path = out_dir / "field_verification.kml"
     kml_content = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -175,64 +202,64 @@ def compute_verification_priority(
     ny = max(50, min(ny, 2000))
     tfm = from_bounds(bounds[0], bounds[1], bounds[2], bounds[3], nx, ny)
 
-    shapes_p = [(geom, score) for geom, score in zip(gdf.geometry, gdf["priority_score"])]
-    priority_raster = rasterize(shapes_p, out_shape=(ny, nx), transform=tfm, fill=0.0, dtype=np.float32)
+    level_map_vals = {"Critical": 1, "High": 2, "Medium": 3, "Low": 4}
+    shapes_p = [(geom, level_map_vals[lvl]) for geom, lvl in zip(gdf.geometry, gdf["priority_level"])]
+    priority_raster = rasterize(shapes_p, out_shape=(ny, nx), transform=tfm, fill=0, dtype=np.uint8)
 
     # Render PNG
     rgb = np.zeros((ny, nx, 3), dtype=np.uint8)
-    for r in range(ny):
-        for c in range(nx):
-            val = priority_raster[r, c]
-            if val == 0:
-                continue
-            if val >= 0.50:
-                rgb[r, c] = [180, 85, 75]
-            elif val >= 0.35:
-                rgb[r, c] = [231, 111, 81]
-            elif val >= 0.20:
-                rgb[r, c] = [233, 196, 106]
-            else:
-                rgb[r, c] = [42, 157, 143]
+    for lvl, val in level_map_vals.items():
+        h = PRIORITY_LEVELS[lvl]["color"].lstrip("#")
+        c_rgb = [int(h[i:i+2], 16) for i in (0, 2, 4)]
+        rgb[priority_raster == val] = c_rgb
 
     png_path = out_dir / "verification_priority.png"
     Image.fromarray(rgb).save(png_path)
 
     critical_cnt = stats_by_level["Critical"]["count"]
     high_cnt = stats_by_level["High"]["count"]
-    crit_high_pct = stats_by_level["Critical"]["pct"] + stats_by_level["High"]["pct"]
+    crit_high_cnt = critical_cnt + high_cnt
+    crit_high_pct = round((crit_high_cnt / max(1, total_parcels)) * 100.0, 1)
 
     key_finding = (
-        f"{crit_high_pct:.1f}% of parcels ({critical_cnt + high_cnt} fields) are flagged for targeted ground audit "
-        f"due to lower phenological confidence (<65%) or multi-year crop switching, enabling efficient sample-based field verification."
+        f"{crit_high_pct:.1f}% of parcels ({crit_high_cnt} fields) are flagged for targeted ground audit "
+        f"due to lower phenological confidence or inter-annual crop instability, with top-50 priority targets packaged for GPS navigation."
     )
+
+    extent_label = f"Extent: {total_area_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
 
     result = {
         "id": "verification_priority",
         "title": "Field Verification Priority",
         "subtitle": "Targeted ground-audit ranking & GPS navigation coordinates",
+        "extent_label": extent_label,
+        "study_area": study_area,
+        "model_type": model_type,
         "key_finding": key_finding,
         "total_parcels": total_parcels,
+        "total_area_ha": total_area_ha,
         "critical_parcels": critical_cnt,
         "high_priority_parcels": high_cnt,
+        "denominator_label": f"total agricultural parcels ({total_parcels:,} fields)",
         "stats": stats_by_level,
         "chart_data": chart_data,
         "top50": top50_records,
         "legend": [
-            {"id": lvl, "label": f"{lvl} Priority", "color": pinfo["color"]}
+            {"id": lvl, "label": pinfo["label"], "color": pinfo["color"]}
             for lvl, pinfo in PRIORITY_LEVELS.items()
         ],
         "method": (
-            "Multi-criteria objective index combining Random Forest posterior class certainty (50%), "
+            "Objective priority index combining Random Forest posterior class certainty (50%), "
             "inter-annual agricultural consistency (30%), and crop-switching / phenological ambiguity flags (20%). "
-            "Parcels are sorted and packaged with geographic coordinates for mobile GPS field verification."
+            "Parcels are ranked into percentile tiers: Critical (top 10%), High (next 15%), Medium (next 25%), Low (baseline 50%)."
         ),
         "limitations": (
-            "Parcels in cloud-prone mountain boundary fringes may receive elevated priority scores due to higher "
-            "optical composite variance rather than genuine ground-cover ambiguity."
+            "Parcels on steep mountain boundary fringes may receive elevated priority scores due to cloud shadows "
+            "rather than agronomic ambiguity."
         ),
-        "csv_url": "/api/insights/verification_priority/csv",
-        "kml_url": "/api/insights/verification_priority/kml",
-        "png_url": "/api/insights/verification_priority/png",
+        "csv_url": f"/api/insights/verification_priority/csv?study_area={study_area}",
+        "kml_url": f"/api/insights/verification_priority/kml?study_area={study_area}",
+        "png_url": f"/api/insights/verification_priority/png?study_area={study_area}",
     }
 
     with open(cache_json, "w") as fp:

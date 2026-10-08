@@ -2,12 +2,18 @@
   "id": "village_stats",
   "title": "Village-Level Statistics",
   "subtitle": "Micro-administrative cropland and crop type allocation",
-  "key_finding": "Kallidaikurichi leads in paddy cultivation with 614.4 ha (68% of village cropland), while Kallidaikurichi features the highest banana concentration (7.7 ha, 1% share).",
+  "extent_label": "Extent: 3,346.6 ha \u00b7 Taluks \u00b7 Model: multi-year",
+  "study_area": "taluks",
+  "model_type": "multi-year",
+  "key_finding": "Kallidaikurichi leads overall agricultural cultivation across both crops with 614.4 ha of paddy (68% share) and 7.7 ha of banana.",
   "village_count": 5,
+  "total_area_ha": 3346.6,
+  "denominator_label": "total analysed agricultural area (3,346.6 ha)",
   "villages": [
     {
       "village": "Veeravanallur",
       "taluk": "Cheranmahadevi",
+      "village_idx": 5,
       "total_parcels": 982,
       "total_area_ha": 1740.0,
       "paddy_ha": 594.2,
@@ -15,11 +21,14 @@
       "other_ha": 1145.8,
       "paddy_pct": 34.1,
       "banana_pct": 0.0,
-      "dominant_type": "Diversified / Fallow"
+      "other_pct": 65.9,
+      "dominant_type": "Diversified / Fallow",
+      "color": "#E76F51"
     },
     {
       "village": "Kallidaikurichi",
       "taluk": "Ambasamudram",
+      "village_idx": 2,
       "total_parcels": 565,
       "total_area_ha": 907.6,
       "paddy_ha": 614.4,
@@ -27,35 +36,44 @@
       "other_ha": 285.5,
       "paddy_pct": 67.7,
       "banana_pct": 0.8,
-      "dominant_type": "Paddy Intensive"
+      "other_pct": 31.5,
+      "dominant_type": "Paddy intensive",
+      "color": "#2A9D8F"
     },
     {
       "village": "Mukkudal",
       "taluk": "Ambasamudram",
+      "village_idx": 6,
       "total_parcels": 231,
       "total_area_ha": 322.0,
       "paddy_ha": 275.6,
       "banana_ha": 1.1,
-      "other_ha": 45.2,
+      "other_ha": 45.3,
       "paddy_pct": 85.6,
       "banana_pct": 0.3,
-      "dominant_type": "Paddy Intensive"
+      "other_pct": 14.1,
+      "dominant_type": "Paddy intensive",
+      "color": "#457B9D"
     },
     {
       "village": "Ambasamudram Urban",
       "taluk": "Ambasamudram",
+      "village_idx": 1,
       "total_parcels": 168,
       "total_area_ha": 237.8,
       "paddy_ha": 208.2,
       "banana_ha": 0.0,
-      "other_ha": 29.7,
+      "other_ha": 29.6,
       "paddy_pct": 87.6,
       "banana_pct": 0.0,
-      "dominant_type": "Paddy Intensive"
+      "other_pct": 12.4,
+      "dominant_type": "Paddy intensive",
+      "color": "#264653"
     },
     {
       "village": "Harikesavanallur",
       "taluk": "Cheranmahadevi",
+      "village_idx": 10,
       "total_parcels": 96,
       "total_area_ha": 139.2,
       "paddy_ha": 127.8,
@@ -63,59 +81,97 @@
       "other_ha": 11.4,
       "paddy_pct": 91.8,
       "banana_pct": 0.0,
-      "dominant_type": "Paddy Intensive"
+      "other_pct": 8.2,
+      "dominant_type": "Paddy intensive",
+      "color": "#B4554B"
     }
   ],
   "chart_data": [
     {
+      "category": "Veeravanallur (Che)",
       "village": "Veeravanallur",
       "taluk": "Cheranmahadevi",
+      "area_ha": 1740.0,
+      "pct": 52.0,
       "paddy_ha": 594.2,
       "banana_ha": 0.0,
-      "total_area_ha": 1740.0
+      "dominant_type": "Diversified / Fallow",
+      "color": "#E76F51"
     },
     {
+      "category": "Kallidaikurichi (Amb)",
       "village": "Kallidaikurichi",
       "taluk": "Ambasamudram",
+      "area_ha": 907.6,
+      "pct": 27.1,
       "paddy_ha": 614.4,
       "banana_ha": 7.7,
-      "total_area_ha": 907.6
+      "dominant_type": "Paddy intensive",
+      "color": "#2A9D8F"
     },
     {
+      "category": "Mukkudal (Amb)",
       "village": "Mukkudal",
       "taluk": "Ambasamudram",
+      "area_ha": 322.0,
+      "pct": 9.6,
       "paddy_ha": 275.6,
       "banana_ha": 1.1,
-      "total_area_ha": 322.0
+      "dominant_type": "Paddy intensive",
+      "color": "#457B9D"
     },
     {
+      "category": "Ambasamudram Urban (Amb)",
       "village": "Ambasamudram Urban",
       "taluk": "Ambasamudram",
+      "area_ha": 237.8,
+      "pct": 7.1,
       "paddy_ha": 208.2,
       "banana_ha": 0.0,
-      "total_area_ha": 237.8
+      "dominant_type": "Paddy intensive",
+      "color": "#264653"
     },
     {
+      "category": "Harikesavanallur (Che)",
       "village": "Harikesavanallur",
       "taluk": "Cheranmahadevi",
+      "area_ha": 139.2,
+      "pct": 4.2,
       "paddy_ha": 127.8,
       "banana_ha": 0.0,
-      "total_area_ha": 139.2
+      "dominant_type": "Paddy intensive",
+      "color": "#B4554B"
     }
   ],
   "legend": [
     {
-      "id": "paddy",
-      "label": "Paddy Area (ha)",
-      "color": "#8DB33F"
+      "id": "Ambasamudram Urban",
+      "label": "Ambasamudram Urban (Paddy intensive)",
+      "color": "#264653"
     },
     {
-      "id": "banana",
-      "label": "Banana Area (ha)",
-      "color": "#2E6B3F"
+      "id": "Kallidaikurichi",
+      "label": "Kallidaikurichi (Paddy intensive)",
+      "color": "#2A9D8F"
+    },
+    {
+      "id": "Veeravanallur",
+      "label": "Veeravanallur (Diversified / Fallow)",
+      "color": "#E76F51"
+    },
+    {
+      "id": "Mukkudal",
+      "label": "Mukkudal (Paddy intensive)",
+      "color": "#457B9D"
+    },
+    {
+      "id": "Harikesavanallur",
+      "label": "Harikesavanallur (Paddy intensive)",
+      "color": "#B4554B"
     }
   ],
-  "method": "Field parcel centroids are aggregated into administrative village catchments. Zonal acreage and percentage shares for Paddy, Banana, and other classes are calculated to support panchayat-level agricultural planning and credit disbursement.",
-  "limitations": "Catchments use settlement proximities aligned with revenue boundaries; minor revenue cadastre border realignments may shift border parcels.",
-  "csv_url": "/api/insights/village_stats/csv"
+  "method": "Field parcel boundaries are spatially aggregated into revenue village catchments aligned with Census / OpenStreetMap settlements. Per-village acreage and percentage shares for Paddy, Banana, and other crops are calculated to support panchayat-level planning.",
+  "limitations": "Catchments use settlement proximities aligned with revenue settlements; minor cadastral border variations may occur in outlying hamlets.",
+  "csv_url": "/api/insights/village_stats/csv?study_area=taluks",
+  "png_url": "/api/insights/village_stats/png?study_area=taluks"
 }

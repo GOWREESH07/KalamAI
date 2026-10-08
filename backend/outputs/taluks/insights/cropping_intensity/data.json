@@ -1,101 +1,107 @@
 {
   "id": "cropping_intensity",
   "title": "Cropping Intensity",
-  "subtitle": "Multi-cycle harvest frequency (AY 2025-26 (12-month baseline))",
-  "key_finding": "0.0% of cultivated plains across Ambasamudram & Cheranmahadevi is double-cropped (Kar + Pishanam dual-season paddy), with 0.0% under perennial banana/orchard canopy.",
-  "ay_label": "AY 2025-26 (12-month baseline)",
-  "total_cropland_ha": 4825.0,
-  "double_cropped_pct": 0.0,
-  "single_cropped_pct": 0.6,
-  "perennial_pct": 0.0,
+  "subtitle": "Multi-cycle harvest frequency (AY 2025-26 (16-month baseline))",
+  "extent_label": "Extent: 211,701.6 ha \u00b7 Taluks \u00b7 Model: 16-month \u00b7 Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "study_area": "taluks",
+  "model_type": "16-month",
+  "coverage_note": "Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "key_finding": "4.8% of cropland (1694.2 ha) in Ambasamudram & Cheranmahadevi is double-cropped with dual Kar and Pishanam cycles, alongside 1.1% under perennial banana canopy.",
+  "ay_label": "AY 2025-26 (16-month baseline)",
+  "total_cropland_ha": 211701.6,
+  "double_cropped_pct": 4.8,
+  "single_cropped_pct": 96.3,
+  "perennial_pct": 1.1,
+  "denominator_label": "total analyzed cropland (211,701.6 ha)",
   "stats": {
     "Fallow / Uncultivated": {
-      "area_ha": 3316.5,
-      "pct": 68.7,
+      "area_ha": 175729.3,
+      "pct": 499.7,
       "color": "#CBA670"
     },
     "Single Crop": {
-      "area_ha": 27.6,
-      "pct": 0.6,
+      "area_ha": 33870.7,
+      "pct": 96.3,
       "color": "#A8DADC"
     },
     "Double Crop": {
-      "area_ha": 0.5,
-      "pct": 0.0,
+      "area_ha": 1694.2,
+      "pct": 4.8,
       "color": "#457B9D"
     },
     "Triple Crop": {
-      "area_ha": 0.0,
-      "pct": 0.0,
+      "area_ha": 31.8,
+      "pct": 0.1,
       "color": "#1D3557"
     },
     "Perennial (Banana/Tree)": {
-      "area_ha": 2.0,
-      "pct": 0.0,
+      "area_ha": 375.6,
+      "pct": 1.1,
       "color": "#2E6B3F"
     }
   },
   "chart_data": [
     {
       "category": "Fallow / Uncultivated",
-      "area_ha": 3316.5,
-      "pct": 68.7,
+      "area_ha": 175729.3,
+      "pct": 499.7,
       "color": "#CBA670"
     },
     {
       "category": "Single Crop",
-      "area_ha": 27.6,
-      "pct": 0.6,
+      "area_ha": 33870.7,
+      "pct": 96.3,
       "color": "#A8DADC"
     },
     {
       "category": "Double Crop",
-      "area_ha": 0.5,
-      "pct": 0.0,
+      "area_ha": 1694.2,
+      "pct": 4.8,
       "color": "#457B9D"
     },
     {
       "category": "Triple Crop",
-      "area_ha": 0.0,
-      "pct": 0.0,
+      "area_ha": 31.8,
+      "pct": 0.1,
       "color": "#1D3557"
     },
     {
       "category": "Perennial (Banana/Tree)",
-      "area_ha": 2.0,
-      "pct": 0.0,
+      "area_ha": 375.6,
+      "pct": 1.1,
       "color": "#2E6B3F"
     }
   ],
   "legend": [
     {
-      "id": 0,
-      "label": "Fallow / Uncultivated",
+      "id": "0",
+      "label": "Fallow / Uncultivated (175729.3 ha, 499.7%)",
       "color": "#CBA670"
     },
     {
-      "id": 1,
-      "label": "Single Crop",
+      "id": "1",
+      "label": "Single Crop (33870.7 ha, 96.3%)",
       "color": "#A8DADC"
     },
     {
-      "id": 2,
-      "label": "Double Crop",
+      "id": "2",
+      "label": "Double Crop (1694.2 ha, 4.8%)",
       "color": "#457B9D"
     },
     {
-      "id": 3,
-      "label": "Triple Crop",
+      "id": "3",
+      "label": "Triple Crop (31.8 ha, 0.1%)",
       "color": "#1D3557"
     },
     {
-      "id": 4,
-      "label": "Perennial (Banana/Tree)",
+      "id": "4",
+      "label": "Perennial (Banana/Tree) (375.6 ha, 1.1%)",
       "color": "#2E6B3F"
     }
   ],
-  "method": "Per-pixel phenological peak detection across 12 monthly NDVI composites (Jun\u2013May). NDVI is smoothed using a 3-month triangular filter (weights [0.25, 0.50, 0.25]). Crop cycles are resolved using scipy.signal.find_peaks with peak height \u2265 0.5, prominence \u2265 0.2, and inter-peak distance \u2265 3 months. Non-cropland (urban, open water, upland forest) is strictly excluded.",
-  "limitations": "Inter-cropping with short-duration pulses (under 60 days) between major seasons may not reach the 10-day satellite composite threshold and is not counted as a separate cycle.",
-  "raster_url": "/api/insights/cropping_intensity/raster",
-  "png_url": "/api/insights/cropping_intensity/png"
+  "method": "Per-pixel phenological peak detection across monthly NDVI composites padded with 2 boundary months. Crop cycles are resolved using scipy.signal.find_peaks with peak height \u2265 0.45, prominence \u2265 0.15, and inter-peak distance \u2265 3 months. Perennial canopy is identified via persistent broadleaf NDVI and high SAR backscatter.",
+  "limitations": "Short-duration relay pulses (under 60 days) between major seasons may not reach the 10-day satellite composite prominence threshold.",
+  "raster_url": "/api/insights/cropping_intensity/raster?study_area=taluks",
+  "png_url": "/api/insights/cropping_intensity/png?study_area=taluks",
+  "csv_url": "/api/insights/cropping_intensity/csv?study_area=taluks"
 }

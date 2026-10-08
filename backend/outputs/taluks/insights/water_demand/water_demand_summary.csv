@@ -1,5 +1,5 @@
-component,water_mcm,area_ha,color
-Paddy (Kar),105.54,8795.4,#8DB33F
-Paddy (Pishanam),150.78,12564.9,#457B9D
-Banana (Annual),7.51,375.7,#2E6B3F
-Other Crops,83.14,16627.1,#BFCB8F
+category,water_mcm,area_ha,pct,color,rate_desc
+Paddy (Kar Season),10.89,907.5,28.9,#8DB33F,"1,200 mm (12,000 m³/ha)"
+Paddy (Pishanam Season),16.75,1396.1,44.4,#457B9D,"1,200 mm (12,000 m³/ha)"
+Banana (Annual Perennial),0.83,41.7,2.2,#2E6B3F,"2,000 mm (20,000 m³/ha/yr)"
+Other Crops / Pulses,9.24,1847.5,24.5,#BFCB8F,"500 mm (5,000 m³/ha)"

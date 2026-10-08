@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { api, InsightSummaryItem, InsightDetail, StudyAreaType } from '../api'
 import BasemapSwitcher from '../components/BasemapSwitcher'
 import { BasemapType, BASEMAP_SOURCES, getBasemapLayers, updateBasemapVisibility } from '../utils/basemaps'
-import { Download, Layers, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, FileText, MapPin, RefreshCw } from 'lucide-react'
+import { Download, Layers, CheckCircle2, AlertCircle, AlertTriangle, ChevronDown, ChevronUp, FileText, MapPin, RefreshCw, Calendar, Droplet, Activity, PieChart, ShieldAlert } from 'lucide-react'
 
 interface Props {
   studyArea: StudyAreaType
@@ -18,7 +18,7 @@ export default function ScreenInsights({ studyArea }: Props) {
   const [detail, setDetail] = useState<InsightDetail | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [computingAll, setComputingAll] = useState<boolean>(false)
-  const [opacity, setOpacity] = useState<number>(0.85)
+  const [opacity, setOpacity] = useState<number>(0.65)
   const [coords, setCoords] = useState<{ lon: number; lat: number }>({ lon: 77.5, lat: 8.7 })
   const [showMethod, setShowMethod] = useState<boolean>(true)
   const [showLimitations, setShowLimitations] = useState<boolean>(false)
@@ -67,6 +67,7 @@ export default function ScreenInsights({ studyArea }: Props) {
 
       map = new maplibregl.Map({
         container: mapRef.current!,
+        attributionControl: false, // Custom compact attribution
         style: {
           version: 8,
           sources: BASEMAP_SOURCES,
@@ -78,7 +79,6 @@ export default function ScreenInsights({ studyArea }: Props) {
       })
 
       map.on('load', () => {
-        // Overlay insight PNG if available
         const pngUrl = api.getInsightPngUrl(selectedId, studyArea)
         map.addSource('insight-raster', {
           type: 'image',
@@ -152,6 +152,14 @@ export default function ScreenInsights({ studyArea }: Props) {
     }
   }
 
+  // Calculate sum of areas to assert conservation of mass/area
+  const areaSum = detail?.chart_data?.reduce((acc: number, item: any) => {
+    return acc + (item.area_ha || 0)
+  }, 0) || 0
+
+  const totalExtentHa = detail?.total_cropland_ha || detail?.total_paddy_ha || detail?.total_area_ha || detail?.total_evaluated_ha || 0
+  const areaMismatch = totalExtentHa > 0 && Math.abs(areaSum - totalExtentHa) / totalExtentHa > 0.005
+
   return (
     <div style={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       {/* LEFT COLUMN: INSIGHTS LIST */}
@@ -180,13 +188,19 @@ export default function ScreenInsights({ studyArea }: Props) {
             </button>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-            Analytical derivatives from 40-month multi-year time-series
+            Analytical derivatives for {studyArea === 'taluks' ? 'Ambasamudram & Cheranmahadevi' : 'Cheranmahadevi Pilot'}
           </div>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {insights.map((item, idx) => {
+          {insights.map((item) => {
             const isSelected = item.id === selectedId
+            const statusColor = item.status === 'ready'
+              ? 'var(--status-done, #2A9D8F)'
+              : item.status === 'partial'
+                ? '#E9C46A'
+                : 'var(--status-failed, #B4554B)'
+
             return (
               <div
                 key={item.id}
@@ -208,13 +222,17 @@ export default function ScreenInsights({ studyArea }: Props) {
                   }}>
                     {item.title}
                   </span>
-                  <span style={{
-                    width: 7,
-                    height: 7,
-                    borderRadius: '50%',
-                    background: item.status === 'ready' ? 'var(--status-done)' : 'var(--status-pending)',
-                    display: 'inline-block',
-                  }} />
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      background: statusColor,
+                      display: 'inline-block',
+                      boxShadow: isSelected ? `0 0 6px ${statusColor}` : 'none',
+                    }}
+                    title={`Status: ${item.status || 'ready'}`}
+                  />
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.35 }}>
                   {item.subtitle}
@@ -250,7 +268,7 @@ export default function ScreenInsights({ studyArea }: Props) {
           {/* Opacity Control Overlay */}
           <div style={{
             position: 'absolute',
-            bottom: 12,
+            bottom: 32,
             right: 12,
             background: 'var(--panel)',
             border: '1px solid var(--border)',
@@ -270,9 +288,24 @@ export default function ScreenInsights({ studyArea }: Props) {
               step={0.05}
               value={opacity}
               onChange={e => setOpacity(parseFloat(e.target.value))}
-              style={{ width: 80, cursor: 'pointer' }}
+              style={{ width: 75, cursor: 'pointer' }}
             />
             <span className="mono" style={{ fontSize: 11, width: 30 }}>{Math.round(opacity * 100)}%</span>
+          </div>
+
+          {/* Compact Bottom-Right Attribution */}
+          <div style={{
+            position: 'absolute',
+            bottom: 6,
+            right: 12,
+            fontSize: 9,
+            color: 'var(--text-secondary)',
+            background: 'rgba(255,255,255,0.7)',
+            padding: '1px 4px',
+            borderRadius: 2,
+            zIndex: 5,
+          }}>
+            © Esri, Maxar, Earthstar | Copernicus Sentinel 2025–26 | Kalam
           </div>
 
           {/* Legend Overlay */}
@@ -286,11 +319,11 @@ export default function ScreenInsights({ studyArea }: Props) {
               borderRadius: 4,
               padding: '8px 12px',
               zIndex: 10,
-              maxWidth: 260,
+              maxWidth: 280,
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
             }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.4 }}>
-                Map Legend
+                Map Classification Legend
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {detail.legend.map((l, i) => (
@@ -313,12 +346,31 @@ export default function ScreenInsights({ studyArea }: Props) {
       </div>
 
       {/* RIGHT COLUMN: ANALYTICS, FINDINGS & EXPORTS */}
-      <div className="right-panel" style={{ flex: '0 0 380px', width: 380, display: 'flex', flexDirection: 'column' }}>
+      <div className="right-panel" style={{ flex: '0 0 390px', width: 390, display: 'flex', flexDirection: 'column' }}>
         <div className="panel-section" style={{ borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div className="page-title" style={{ fontSize: 16 }}>{detail?.title || 'Insight Analytics'}</div>
           </div>
-          <div className="page-subtitle">{detail?.subtitle || 'Agricultural pattern analytics'}</div>
+          <div className="page-subtitle" style={{ marginBottom: 6 }}>{detail?.subtitle || 'Agricultural pattern analytics'}</div>
+
+          {/* EXTENT AND MODEL BADGE */}
+          {detail?.extent_label && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 5,
+              padding: '3px 8px',
+              borderRadius: 3,
+              background: 'var(--bg)',
+              border: '1px solid var(--border)',
+              fontSize: 10,
+              fontWeight: 600,
+              color: 'var(--text-secondary)',
+            }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)' }} />
+              {detail.extent_label}
+            </div>
+          )}
         </div>
 
         <div className="panel-scroll" style={{ flex: 1, padding: 14 }}>
@@ -328,6 +380,25 @@ export default function ScreenInsights({ studyArea }: Props) {
             </div>
           ) : detail ? (
             <div>
+              {/* AREA SUM MISMATCH ALERT */}
+              {areaMismatch && (
+                <div style={{
+                  background: '#FFF3CD',
+                  borderLeft: '3px solid #E9C46A',
+                  padding: '8px 10px',
+                  borderRadius: '0 4px 4px 0',
+                  marginBottom: 12,
+                  fontSize: 11,
+                  color: '#856404',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}>
+                  <AlertTriangle size={14} style={{ flexShrink: 0 }} />
+                  <span>Area sum warning: component sum ({areaSum.toFixed(1)} ha) deviates &gt;0.5% from total extent ({totalExtentHa.toFixed(1)} ha).</span>
+                </div>
+              )}
+
               {/* KEY FINDING STATEMENT BANNER */}
               <div style={{
                 background: 'var(--accent-subtle)',
@@ -344,7 +415,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                 </div>
               </div>
 
-              {/* STAT TILES */}
+              {/* STAT TILES PER INSIGHT */}
               {detail.id === 'cropping_intensity' && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>
@@ -354,6 +425,23 @@ export default function ScreenInsights({ studyArea }: Props) {
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>
                     <div className="metric-label">Perennial Banana</div>
                     <div className="metric-value" style={{ fontSize: 20, color: '#2E6B3F' }}>{detail.perennial_pct}%</div>
+                  </div>
+                </div>
+              )}
+
+              {detail.id === 'transplanting_calendar' && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginBottom: 14 }}>
+                  <div className="metric-tile" style={{ padding: '6px 8px' }}>
+                    <div className="metric-label">Kar Peak</div>
+                    <div className="metric-value" style={{ fontSize: 16, color: '#EE9B00' }}>{detail.kar_median_month}</div>
+                  </div>
+                  <div className="metric-tile" style={{ padding: '6px 8px' }}>
+                    <div className="metric-label">Pishanam Peak</div>
+                    <div className="metric-value" style={{ fontSize: 16, color: '#005F73' }}>{detail.pishanam_median_month}</div>
+                  </div>
+                  <div className="metric-tile" style={{ padding: '6px 8px' }}>
+                    <div className="metric-label">Pishanam Delayed</div>
+                    <div className="metric-value" style={{ fontSize: 16, color: '#B4554B' }}>{detail.pishanam_delayed_pct}%</div>
                   </div>
                 </div>
               )}
@@ -375,11 +463,24 @@ export default function ScreenInsights({ studyArea }: Props) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>
                     <div className="metric-label">Smallholders (&lt;1 ha)</div>
-                    <div className="metric-value" style={{ fontSize: 20, color: '#2A9D8F' }}>{detail.smallholder_share_pct}%</div>
+                    <div className="metric-value" style={{ fontSize: 20, color: '#2A9D8F' }}>{detail.smallholder_count_pct}%</div>
                   </div>
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>
-                    <div className="metric-label">Average Parcel Size</div>
+                    <div className="metric-label">Mean Parcel Size</div>
                     <div className="metric-value" style={{ fontSize: 20, color: '#1F3A5F' }}>{detail.average_parcel_ha} <span style={{ fontSize: 11 }}>ha</span></div>
+                  </div>
+                </div>
+              )}
+
+              {detail.id === 'crop_health' && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+                  <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                    <div className="metric-label">Healthy Canopy</div>
+                    <div className="metric-value" style={{ fontSize: 20, color: '#2E6B3F' }}>{detail.healthy_share_pct}%</div>
+                  </div>
+                  <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                    <div className="metric-label">Moisture / Vigour Stress</div>
+                    <div className="metric-value" style={{ fontSize: 20, color: '#E76F51' }}>{detail.stressed_share_pct}%</div>
                   </div>
                 </div>
               )}
@@ -400,19 +501,30 @@ export default function ScreenInsights({ studyArea }: Props) {
               {/* DISTRIBUTION CHART */}
               {detail.chart_data && detail.chart_data.length > 0 && (
                 <div style={{ marginBottom: 14 }}>
-                  <div className="section-label" style={{ marginBottom: 6 }}>Distribution Breakdown</div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <div className="section-label" style={{ margin: 0 }}>Distribution Breakdown</div>
+                    {detail.denominator_label && (
+                      <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
+                        Denominator: {detail.denominator_label}
+                      </span>
+                    )}
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {detail.chart_data.map((c: any, i: number) => {
                       const label = c.category || c.component || c.distance || c.village || `Item ${i + 1}`
                       const pct = c.pct !== undefined ? c.pct : c.count_pct !== undefined ? c.count_pct : (c.paddy_pct || 0)
                       const barColor = c.color || '#457B9D'
-                      const valStr = c.area_ha !== undefined ? `${c.area_ha} ha` : c.water_mcm !== undefined ? `${c.water_mcm} MCM` : `${pct}%`
+                      const valStr = c.area_ha !== undefined
+                        ? `${c.area_ha} ha (${pct}%)`
+                        : c.water_mcm !== undefined
+                          ? `${c.water_mcm} MCM (${pct}%)`
+                          : `${pct}%`
 
                       return (
                         <div key={i} style={{ fontSize: 11 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
                             <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{label}</span>
-                            <span className="mono" style={{ color: 'var(--text-secondary)' }}>{valStr} ({pct}%)</span>
+                            <span className="mono" style={{ color: 'var(--text-secondary)' }}>{valStr}</span>
                           </div>
                           <div style={{ width: '100%', height: 6, background: 'var(--border)', borderRadius: 3, overflow: 'hidden' }}>
                             <div style={{ width: `${Math.min(100, Math.max(0, pct))}%`, height: '100%', background: barColor, borderRadius: 3 }} />
@@ -428,17 +540,17 @@ export default function ScreenInsights({ studyArea }: Props) {
               {detail.id === 'verification_priority' && detail.top50 && detail.top50.length > 0 && (
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <div className="section-label">Top Audit Targets</div>
+                    <div className="section-label" style={{ margin: 0 }}>Top Field Audit Targets</div>
                     <span className="mono" style={{ fontSize: 10, color: 'var(--text-secondary)' }}>{detail.top50.length} flagged</span>
                   </div>
-                  <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 4 }}>
+                  <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 4, marginTop: 6 }}>
                     <table className="data-table" style={{ margin: 0, fontSize: 11 }}>
                       <thead>
                         <tr>
                           <th>#ID</th>
                           <th>Class</th>
                           <th>Score</th>
-                          <th>GPS</th>
+                          <th>GPS Centroid</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -449,7 +561,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                             <td className="mono num" style={{ color: r.priority_score > 0.4 ? '#B4554B' : '#E76F51' }}>
                               {r.priority_score}
                             </td>
-                            <td className="mono" style={{ fontSize: 10 }}>{r.lon.toFixed(3)},{r.lat.toFixed(3)}</td>
+                            <td className="mono" style={{ fontSize: 10 }}>{r.lon.toFixed(4)}, {r.lat.toFixed(4)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -461,7 +573,7 @@ export default function ScreenInsights({ studyArea }: Props) {
               {/* VILLAGES TABLE */}
               {detail.id === 'village_stats' && detail.villages && detail.villages.length > 0 && (
                 <div style={{ marginBottom: 14 }}>
-                  <div className="section-label" style={{ marginBottom: 6 }}>Village Cropland Summary</div>
+                  <div className="section-label" style={{ marginBottom: 6 }}>Settlement Cropland Summary</div>
                   <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 4 }}>
                     <table className="data-table" style={{ margin: 0, fontSize: 11 }}>
                       <thead>
@@ -469,7 +581,7 @@ export default function ScreenInsights({ studyArea }: Props) {
                           <th>Village</th>
                           <th className="num">Paddy (ha)</th>
                           <th className="num">Banana (ha)</th>
-                          <th>Dominant</th>
+                          <th>Dominant Crop</th>
                         </tr>
                       </thead>
                       <tbody>

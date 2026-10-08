@@ -1,62 +1,76 @@
 {
   "id": "water_demand",
-  "title": "Irrigation Water Demand",
-  "subtitle": "Agronomic water budgeting & canal allocation estimates",
-  "key_finding": "Total estimated crop water requirement is 347.0 MCM/year. Dual-season paddy accounts for 73.9% (256.3 MCM) of agricultural water demand, while high-intensity perennial banana accounts for 2.2% (7.5 MCM).",
-  "total_water_mcm": 346.97,
-  "paddy_water_mcm": 256.32,
-  "banana_water_mcm": 7.51,
-  "paddy_water_share_pct": 73.9,
+  "title": "Indicative Gross Irrigation Requirement",
+  "subtitle": "Agronomic volumetric water budgeting & canal allocation estimates",
+  "extent_label": "Extent: 3,285.3 ha \u00b7 Taluks \u00b7 Model: 16-month",
+  "study_area": "taluks",
+  "model_type": "16-month",
+  "key_finding": "Total indicative gross irrigation water requirement is 37.7 MCM/year. Dual-season paddy accounts for 73.3% (27.6 MCM) of total demand, while perennial banana accounts for 2.2% (0.8 MCM).",
+  "total_water_mcm": 37.71,
+  "paddy_water_mcm": 27.64,
+  "banana_water_mcm": 0.83,
+  "paddy_water_share_pct": 73.3,
   "banana_water_share_pct": 2.2,
+  "total_cropland_ha": 3285.3,
+  "denominator_label": "total gross irrigation requirement (37.7 MCM)",
   "chart_data": [
     {
-      "component": "Paddy (Kar)",
-      "water_mcm": 105.54,
-      "area_ha": 8795.4,
-      "color": "#8DB33F"
+      "category": "Paddy (Kar Season)",
+      "water_mcm": 10.89,
+      "area_ha": 907.5,
+      "pct": 28.9,
+      "color": "#8DB33F",
+      "rate_desc": "1,200 mm (12,000 m\u00b3/ha)"
     },
     {
-      "component": "Paddy (Pishanam)",
-      "water_mcm": 150.78,
-      "area_ha": 12564.9,
-      "color": "#457B9D"
+      "category": "Paddy (Pishanam Season)",
+      "water_mcm": 16.75,
+      "area_ha": 1396.1,
+      "pct": 44.4,
+      "color": "#457B9D",
+      "rate_desc": "1,200 mm (12,000 m\u00b3/ha)"
     },
     {
-      "component": "Banana (Annual)",
-      "water_mcm": 7.51,
-      "area_ha": 375.7,
-      "color": "#2E6B3F"
+      "category": "Banana (Annual Perennial)",
+      "water_mcm": 0.83,
+      "area_ha": 41.7,
+      "pct": 2.2,
+      "color": "#2E6B3F",
+      "rate_desc": "2,000 mm (20,000 m\u00b3/ha/yr)"
     },
     {
-      "component": "Other Crops",
-      "water_mcm": 83.14,
-      "area_ha": 16627.1,
-      "color": "#BFCB8F"
+      "category": "Other Crops / Pulses",
+      "water_mcm": 9.24,
+      "area_ha": 1847.5,
+      "pct": 24.5,
+      "color": "#BFCB8F",
+      "rate_desc": "500 mm (5,000 m\u00b3/ha)"
     }
   ],
   "legend": [
     {
-      "id": "Paddy (Kar)",
-      "label": "Paddy (Kar)",
+      "id": "Paddy (Kar Season)",
+      "label": "Paddy (Kar Season) (28.9%)",
       "color": "#8DB33F"
     },
     {
-      "id": "Paddy (Pishanam)",
-      "label": "Paddy (Pishanam)",
+      "id": "Paddy (Pishanam Season)",
+      "label": "Paddy (Pishanam Season) (44.4%)",
       "color": "#457B9D"
     },
     {
-      "id": "Banana (Annual)",
-      "label": "Banana (Annual)",
+      "id": "Banana (Annual Perennial)",
+      "label": "Banana (Annual Perennial) (2.2%)",
       "color": "#2E6B3F"
     },
     {
-      "id": "Other Crops",
-      "label": "Other Crops",
+      "id": "Other Crops / Pulses",
+      "label": "Other Crops / Pulses (24.5%)",
       "color": "#BFCB8F"
     }
   ],
-  "method": "Agronomic crop evapotranspiration (ETc) and percolation budgeting using Tamil Nadu Agricultural University (TNAU) and FAO-56 irrigation standards. Wetland paddy requires ~1,200 mm/season including land preparation soaking; perennial banana requires ~2,000 mm/year under tropical wetland regimes.",
-  "limitations": "Effective monsoon rainfall offset (typically 400\u2013600 mm during NE Monsoon) reduces net canal irrigation draft requirements during peak November\u2013December flows.",
-  "csv_url": "/api/insights/water_demand/csv"
+  "method": "area \u00d7 standard seasonal water requirement (config values, to be verified against TNAU/FAO-56); rainfall offset not applied. Wetland paddy: 1,200 mm/season; perennial banana: 2,000 mm/year; other crops: 500 mm.",
+  "limitations": "Rainfall offset (effective precipitation during Northeast Monsoon) and groundwater conjunctive use are not subtracted in this gross baseline estimate.",
+  "csv_url": "/api/insights/water_demand/csv?study_area=taluks",
+  "png_url": "/api/insights/water_demand/png?study_area=taluks"
 }

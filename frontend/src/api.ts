@@ -127,7 +127,7 @@ export interface InsightSummaryItem {
   title: string
   subtitle: string
   key_finding: string
-  status: 'ready' | 'pending' | 'failed'
+  status: 'ready' | 'pending' | 'failed' | 'partial'
 }
 
 export interface InsightDetail {
@@ -135,11 +135,23 @@ export interface InsightDetail {
   title: string
   subtitle: string
   key_finding: string
+  extent_label?: string
+  study_area?: string
+  model_type?: string
+  coverage_note?: string
   ay_label?: string
   total_cropland_ha?: number
+  total_paddy_ha?: number
+  total_area_ha?: number
+  total_evaluated_ha?: number
+  denominator_label?: string
   double_cropped_pct?: number
   single_cropped_pct?: number
   perennial_pct?: number
+  kar_median_month?: string
+  pishanam_median_month?: string
+  kar_delayed_pct?: number
+  pishanam_delayed_pct?: number
   total_parcels?: number
   critical_parcels?: number
   high_priority_parcels?: number
@@ -151,8 +163,13 @@ export interface InsightDetail {
   paddy_water_share_pct?: number
   banana_water_share_pct?: number
   smallholder_share_pct?: number
+  smallholder_count_pct?: number
+  smallholder_area_pct?: number
   average_parcel_ha?: number
   median_parcel_ha?: number
+  healthy_share_pct?: number
+  stressed_share_pct?: number
+  stressed_area_ha?: number
   stats?: Record<string, any>
   bins?: any[]
   chart_data?: any[]

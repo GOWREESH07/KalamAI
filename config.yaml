@@ -114,9 +114,10 @@ outputs_dir: "backend/outputs"
 insights:
   cropping_intensity:
     smooth_window: 3
-    peak_min_height: 0.50
-    peak_prominence: 0.20
+    peak_min_height: 0.45
+    peak_prominence: 0.15
     peak_min_distance_months: 3
+    pad_months: 2
   transplanting_calendar:
     kar_window: [5, 8] # May-Aug
     pishanam_window: [9, 12] # Sep-Dec
@@ -126,9 +127,10 @@ insights:
       confidence: 0.5
       consistency: 0.3
       disagreement: 0.2
-    critical_percentile: 90
-    high_percentile: 70
-    medium_percentile: 40
+    percentiles:
+      critical: 10 # top 10% of parcels
+      high: 15     # next 15% (75-90th percentile)
+      medium: 25   # next 25% (50-75th percentile)
   village_stats:
     admin_levels: [8, 9]
   irrigation_dependency:
@@ -141,7 +143,9 @@ insights:
   water_demand:
     paddy_water_mm_per_season: 1200 # TNAU / FAO guidance for irrigated lowland rice
     banana_water_mm_per_year: 2000   # TNAU guidance for perennial wetland banana
+    other_crops_mm_per_season: 500  # TNAU Agronomy benchmark for short-duration pulses/millets (source: TNAU Agritech Portal 2024)
   field_size:
     bins_ha: [0.5, 1.0, 2.0, 5.0]
+
 
 
