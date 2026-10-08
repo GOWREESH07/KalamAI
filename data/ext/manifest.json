@@ -83,5 +83,11 @@
       "2026-04-22",
       "2026-05-27"
     ]
+  },
+  "s2_peaks": {
+    "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a",
+    "retrieved": "2026-10-08T23:59:41",
+    "status": "ok",
+    "note": "AY2023-24: 8 scenes; AY2024-25: 8 scenes; AY2025-26: 10 scenes"
   }
 }

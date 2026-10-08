@@ -1,0 +1,21 @@
+cluster_id,category,area_ha,indicative_value_cr,priority_score,recommended_action,lat,lon,easting,northing,rank
+126,INVEST,1574.78,12.4,1240.43,Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.,8.70144,77.49453,774487.9,962749.3,1
+5,RESILIENCE,394.1,6.77,676.81,Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.,8.7154,77.51647,776893.1,964309.8,2
+61,PROTECT,59.45,0.9,89.95,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.68296,77.48212,773135.5,960694.8,3
+46,PROTECT,32.32,0.51,50.88,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.70386,77.47453,772284.5,963002.6,4
+52,PROTECT,27.14,0.47,46.8,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.70025,77.49069,774066.5,962614.1,5
+6,RESILIENCE,30.83,0.45,45.1,Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.,8.72332,77.52316,777624.3,965190.6,6
+132,INVEST,51.77,0.44,44.44,Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.,8.71937,77.52114,777405.1,964752.1,7
+142,INVEST,43.76,0.41,40.84,Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.,8.68469,77.47459,772304.8,960881.4,8
+65,PROTECT,19.64,0.39,39.36,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.6814,77.52294,777630.7,960552.3,9
+171,Stable / monitor,24.9,0.32,31.52,No priority intervention; continue routine monitoring.,8.69315,77.52667,778033.2,961855.3,10
+51,PROTECT,17.63,0.29,29.25,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.70202,77.51799,777070.2,962830.5,11
+62,PROTECT,14.12,0.28,28.1,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.68479,77.52378,777720.5,960928.1,12
+163,Stable / monitor,18.69,0.28,27.98,No priority intervention; continue routine monitoring.,8.70311,77.52048,777344.6,962952.1,13
+55,PROTECT,18.88,0.27,27.33,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.68903,77.47537,772387.3,961361.9,14
+64,PROTECT,17.37,0.27,26.93,Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.,8.68209,77.49584,774646.3,960608.8,15
+26,RESILIENCE,16.0,0.26,25.94,Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.,8.69566,77.52761,778134.8,962133.7,16
+114,OPTIMIZE,6.3,0.25,25.41,"Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.",8.7015,77.48128,773029.3,962746.1,17
+83,OPTIMIZE,19.73,0.24,23.78,"Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.",8.71508,77.47711,772560.5,964245.4,18
+123,OPTIMIZE,18.74,0.24,23.65,"Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.",8.68632,77.48222,773144.2,961066.4,19
+170,Stable / monitor,12.02,0.21,21.44,No priority intervention; continue routine monitoring.,8.69497,77.48898,773882.1,962028.4,20

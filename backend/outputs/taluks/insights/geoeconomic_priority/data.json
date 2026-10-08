@@ -1,0 +1,449 @@
+{
+  "id": "geoeconomic_priority",
+  "title": "08. Geo-Economic Priority & Action Zoning",
+  "subtitle": "Multivariate agro-economic decision zoning & climate-resilience prioritization",
+  "extent_label": "Extent: 52,619.4 ha \u00b7 Taluks \u00b7 Model: 16-month",
+  "analysed_ha": 52619.4,
+  "canonical_analysed_ha": 52619.4,
+  "study_area": "taluks",
+  "model_type": "16-month",
+  "key_finding": "10,015.2 ha (\u20b9110.3 Cr indicative value at risk) of cropland falls in RESILIENCE, mostly within corridors inundated during the December 2023 floods (433.1 ha inundated). 4,853.4 ha (11.6%) is classified as high-value PROTECT farmland.",
+  "total_cropland_ha": 41879.6,
+  "resilience_area_ha": 10015.2,
+  "resilience_pct": 23.9,
+  "resilience_value_cr": 110.3,
+  "protect_area_ha": 4853.4,
+  "protect_pct": 11.6,
+  "invest_area_ha": 22064.0,
+  "invest_pct": 52.7,
+  "flooded_2023_ha": 433.1,
+  "sensitivity_pct": 33.6,
+  "denominator_label": "analysed cropland within mask (41,879.6 ha)",
+  "categories": [
+    {
+      "category_id": 1,
+      "name": "RESILIENCE",
+      "area_ha": 10015.2,
+      "pct": 23.9,
+      "color": "#B23B3B",
+      "action": "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning."
+    },
+    {
+      "category_id": 2,
+      "name": "PROTECT",
+      "area_ha": 4853.4,
+      "pct": 11.6,
+      "color": "#1A7F37",
+      "action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage."
+    },
+    {
+      "category_id": 3,
+      "name": "OPTIMIZE",
+      "area_ha": 3603.5,
+      "pct": 8.6,
+      "color": "#D4A72C",
+      "action": "Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar."
+    },
+    {
+      "category_id": 4,
+      "name": "INVEST",
+      "area_ha": 22064.0,
+      "pct": 52.7,
+      "color": "#1F5FA8",
+      "action": "Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage."
+    },
+    {
+      "category_id": 5,
+      "name": "Stable / monitor",
+      "area_ha": 1343.4,
+      "pct": 3.2,
+      "color": "#B9B4A8",
+      "action": "No priority intervention; continue routine monitoring."
+    }
+  ],
+  "chart_data": [
+    {
+      "category": "RESILIENCE",
+      "area_ha": 10015.2,
+      "pct": 23.9,
+      "color": "#B23B3B"
+    },
+    {
+      "category": "PROTECT",
+      "area_ha": 4853.4,
+      "pct": 11.6,
+      "color": "#1A7F37"
+    },
+    {
+      "category": "OPTIMIZE",
+      "area_ha": 3603.5,
+      "pct": 8.6,
+      "color": "#D4A72C"
+    },
+    {
+      "category": "INVEST",
+      "area_ha": 22064.0,
+      "pct": 52.7,
+      "color": "#1F5FA8"
+    },
+    {
+      "category": "Stable / monitor",
+      "area_ha": 1343.4,
+      "pct": 3.2,
+      "color": "#B9B4A8"
+    }
+  ],
+  "top20_clusters": [
+    {
+      "cluster_id": 28,
+      "category": "RESILIENCE",
+      "area_ha": 6890.58,
+      "indicative_value_cr": 81.22,
+      "priority_score": 8122.19,
+      "recommended_action": "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.",
+      "lat": 8.70779,
+      "lon": 77.51305,
+      "easting": 776522.6,
+      "northing": 963465.4,
+      "rank": 1
+    },
+    {
+      "cluster_id": 265,
+      "category": "INVEST",
+      "area_ha": 11274.12,
+      "indicative_value_cr": 44.18,
+      "priority_score": 4418.13,
+      "recommended_action": "Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.",
+      "lat": 8.76514,
+      "lon": 77.44678,
+      "easting": 769185.4,
+      "northing": 969763.6,
+      "rank": 2
+    },
+    {
+      "cluster_id": 300,
+      "category": "INVEST",
+      "area_ha": 8311.23,
+      "indicative_value_cr": 32.07,
+      "priority_score": 3206.68,
+      "recommended_action": "Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.",
+      "lat": 8.65214,
+      "lon": 77.53524,
+      "easting": 779007.1,
+      "northing": 957323.2,
+      "rank": 3
+    },
+    {
+      "cluster_id": 116,
+      "category": "PROTECT",
+      "area_ha": 755.64,
+      "indicative_value_cr": 8.65,
+      "priority_score": 864.95,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.65827,
+      "lon": 77.48027,
+      "easting": 772949.0,
+      "northing": 957961.6,
+      "rank": 4
+    },
+    {
+      "cluster_id": 86,
+      "category": "PROTECT",
+      "area_ha": 699.3,
+      "indicative_value_cr": 8.12,
+      "priority_score": 811.66,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.82105,
+      "lon": 77.35524,
+      "easting": 759070.0,
+      "northing": 975884.9,
+      "rank": 5
+    },
+    {
+      "cluster_id": 1,
+      "category": "RESILIENCE",
+      "area_ha": 976.32,
+      "indicative_value_cr": 7.79,
+      "priority_score": 778.59,
+      "recommended_action": "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.",
+      "lat": 8.84956,
+      "lon": 77.37163,
+      "easting": 760853.1,
+      "northing": 979051.4,
+      "rank": 6
+    },
+    {
+      "cluster_id": 98,
+      "category": "PROTECT",
+      "area_ha": 552.15,
+      "indicative_value_cr": 7.32,
+      "priority_score": 732.44,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.76966,
+      "lon": 77.3887,
+      "easting": 762788.8,
+      "northing": 970222.1,
+      "rank": 7
+    },
+    {
+      "cluster_id": 77,
+      "category": "RESILIENCE",
+      "area_ha": 482.67,
+      "indicative_value_cr": 4.65,
+      "priority_score": 464.86,
+      "recommended_action": "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.",
+      "lat": 8.60741,
+      "lon": 77.55923,
+      "easting": 781681.5,
+      "northing": 952390.9,
+      "rank": 8
+    },
+    {
+      "cluster_id": 112,
+      "category": "PROTECT",
+      "area_ha": 330.48,
+      "indicative_value_cr": 3.37,
+      "priority_score": 337.33,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.67344,
+      "lon": 77.42655,
+      "easting": 767023.5,
+      "northing": 959602.0,
+      "rank": 9
+    },
+    {
+      "cluster_id": 316,
+      "category": "INVEST",
+      "area_ha": 531.54,
+      "indicative_value_cr": 3.35,
+      "priority_score": 335.42,
+      "recommended_action": "Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage.",
+      "lat": 8.66809,
+      "lon": 77.41727,
+      "easting": 766005.5,
+      "northing": 959003.1,
+      "rank": 10
+    },
+    {
+      "cluster_id": 108,
+      "category": "PROTECT",
+      "area_ha": 225.09,
+      "indicative_value_cr": 2.86,
+      "priority_score": 286.5,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.71804,
+      "lon": 77.44018,
+      "easting": 768492.8,
+      "northing": 964547.2,
+      "rank": 11
+    },
+    {
+      "cluster_id": 110,
+      "category": "PROTECT",
+      "area_ha": 184.95,
+      "indicative_value_cr": 2.33,
+      "priority_score": 233.23,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.70142,
+      "lon": 77.42689,
+      "easting": 767041.3,
+      "northing": 962698.7,
+      "rank": 12
+    },
+    {
+      "cluster_id": 101,
+      "category": "PROTECT",
+      "area_ha": 171.81,
+      "indicative_value_cr": 2.33,
+      "priority_score": 232.88,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.75498,
+      "lon": 77.42292,
+      "easting": 766566.1,
+      "northing": 968621.7,
+      "rank": 13
+    },
+    {
+      "cluster_id": 34,
+      "category": "RESILIENCE",
+      "area_ha": 150.75,
+      "indicative_value_cr": 1.68,
+      "priority_score": 168.04,
+      "recommended_action": "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.",
+      "lat": 8.7307,
+      "lon": 77.53572,
+      "easting": 779001.3,
+      "northing": 966017.2,
+      "rank": 14
+    },
+    {
+      "cluster_id": 94,
+      "category": "PROTECT",
+      "area_ha": 144.36,
+      "indicative_value_cr": 1.52,
+      "priority_score": 151.66,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.78525,
+      "lon": 77.34342,
+      "easting": 757794.2,
+      "northing": 971915.2,
+      "rank": 15
+    },
+    {
+      "cluster_id": 359,
+      "category": "Stable / monitor",
+      "area_ha": 177.12,
+      "indicative_value_cr": 1.47,
+      "priority_score": 147.38,
+      "recommended_action": "No priority intervention; continue routine monitoring.",
+      "lat": 8.67939,
+      "lon": 77.48896,
+      "easting": 773890.7,
+      "northing": 960305.4,
+      "rank": 16
+    },
+    {
+      "cluster_id": 143,
+      "category": "PROTECT",
+      "area_ha": 139.68,
+      "indicative_value_cr": 1.47,
+      "priority_score": 147.04,
+      "recommended_action": "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage.",
+      "lat": 8.60592,
+      "lon": 77.58985,
+      "easting": 785055.1,
+      "northing": 952249.3,
+      "rank": 17
+    },
+    {
+      "cluster_id": 225,
+      "category": "OPTIMIZE",
+      "area_ha": 255.51,
+      "indicative_value_cr": 1.38,
+      "priority_score": 137.79,
+      "recommended_action": "Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.",
+      "lat": 8.64599,
+      "lon": 77.52513,
+      "easting": 777897.7,
+      "northing": 956635.7,
+      "rank": 18
+    },
+    {
+      "cluster_id": 41,
+      "category": "RESILIENCE",
+      "area_ha": 116.64,
+      "indicative_value_cr": 1.36,
+      "priority_score": 136.23,
+      "recommended_action": "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning.",
+      "lat": 8.71324,
+      "lon": 77.54971,
+      "easting": 780555.0,
+      "northing": 964095.6,
+      "rank": 19
+    },
+    {
+      "cluster_id": 185,
+      "category": "OPTIMIZE",
+      "area_ha": 127.44,
+      "indicative_value_cr": 1.24,
+      "priority_score": 123.7,
+      "recommended_action": "Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar.",
+      "lat": 8.73862,
+      "lon": 77.42391,
+      "easting": 766686.6,
+      "northing": 966812.5,
+      "rank": 20
+    }
+  ],
+  "taluk_split": [
+    {
+      "taluk": "Ambasamudram",
+      "cropland_ha": 22926.1,
+      "categories": {
+        "RESILIENCE": {
+          "area_ha": 4333.6,
+          "pct": 18.9
+        },
+        "PROTECT": {
+          "area_ha": 4047.9,
+          "pct": 17.7
+        },
+        "OPTIMIZE": {
+          "area_ha": 1804.4,
+          "pct": 7.9
+        },
+        "INVEST": {
+          "area_ha": 11864.3,
+          "pct": 51.8
+        },
+        "Stable / monitor": {
+          "area_ha": 875.9,
+          "pct": 3.8
+        }
+      }
+    },
+    {
+      "taluk": "Cheranmahadevi",
+      "cropland_ha": 18953.5,
+      "categories": {
+        "RESILIENCE": {
+          "area_ha": 5681.6,
+          "pct": 30.0
+        },
+        "PROTECT": {
+          "area_ha": 805.5,
+          "pct": 4.2
+        },
+        "OPTIMIZE": {
+          "area_ha": 1799.1,
+          "pct": 9.5
+        },
+        "INVEST": {
+          "area_ha": 10199.7,
+          "pct": 53.8
+        },
+        "Stable / monitor": {
+          "area_ha": 467.5,
+          "pct": 2.5
+        }
+      }
+    }
+  ],
+  "legend": [
+    {
+      "id": 1,
+      "label": "RESILIENCE",
+      "color": "#B23B3B"
+    },
+    {
+      "id": 2,
+      "label": "PROTECT",
+      "color": "#1A7F37"
+    },
+    {
+      "id": 3,
+      "label": "OPTIMIZE",
+      "color": "#D4A72C"
+    },
+    {
+      "id": 4,
+      "label": "INVEST",
+      "color": "#1F5FA8"
+    },
+    {
+      "id": 5,
+      "label": "Stable / monitor",
+      "color": "#B9B4A8"
+    },
+    {
+      "id": "flood_dec23",
+      "label": "Dec 2023 Inundation Footprint",
+      "color": "#0077B6"
+    }
+  ],
+  "method": "Multi-indicator parcel evaluation across 6 normalized dimensions: Productivity (P), Indicative Gross Crop Value (V), Water Security (W: canal proximity + GWPI + multi-year stability), Flood Exposure (F: Sentinel-1 Dec 2023 SAR change mapping + HAND), Market Access (M: OSM road MCP travel time), and Infrastructure (I). Decision taxonomy applied via strict rule hierarchy.",
+  "limitations": "Crop value figures are indicative estimates based on published MSP and regional agronomic benchmarks (to verify with local mandi records). Priority category thresholds are rule-based, with \u00b110% sensitivity reported. The December 2023 flood footprint reflects a specific extreme precipitation event (~950 mm in 24h). Market travel time relies on OpenStreetMap road network completeness and nominal speed profiles.",
+  "png_url": "/api/insights/geoeconomic_priority/png?study_area=taluks",
+  "csv_url": "/api/insights/geoeconomic_priority/csv?study_area=taluks",
+  "kml_url": "/api/insights/geoeconomic_priority/kml?study_area=taluks"
+}
