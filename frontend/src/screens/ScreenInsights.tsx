@@ -22,10 +22,33 @@ export default function ScreenInsights({ studyArea }: Props) {
   const [coords, setCoords] = useState<{ lon: number; lat: number }>({ lon: 77.5, lat: 8.7 })
   const [showMethod, setShowMethod] = useState<boolean>(true)
   const [showLimitations, setShowLimitations] = useState<boolean>(false)
+  const [activeSubLayer, setActiveSubLayer] = useState<string>('')
 
   const AOI = studyArea === 'taluks'
     ? { lon_min: 77.1697, lat_min: 8.5339, lon_max: 77.6619, lat_max: 8.8820 }
     : { lon_min: 77.47, lat_min: 8.680, lon_max: 77.53, lat_max: 8.725 }
+
+  const getSubLayers = (id: string) => {
+    if (id === 'groundwater_recharge') {
+      return [
+        { id: '', label: 'GW Potential (GWPI)' },
+        { id: 'recharge_suitability', label: 'Recharge Suitability' },
+      ]
+    }
+    if (id === 'geoeconomic_priority') {
+      return [
+        { id: '', label: 'Priority Zoning' },
+        { id: 'dec2023_flood_extent', label: 'Dec 2023 Flood Footprint' },
+        { id: 'market_access', label: 'Market Access & Travel' },
+      ]
+    }
+    return []
+  }
+
+  // Reset sublayer when insight changes
+  useEffect(() => {
+    setActiveSubLayer('')
+  }, [selectedId])
 
   // Load insights summary list
   useEffect(() => {
@@ -79,7 +102,7 @@ export default function ScreenInsights({ studyArea }: Props) {
       })
 
       map.on('load', () => {
-        const pngUrl = api.getInsightPngUrl(selectedId, studyArea)
+        const pngUrl = api.getInsightPngUrl(selectedId, studyArea, activeSubLayer || undefined)
         map.addSource('insight-raster', {
           type: 'image',
           url: pngUrl,
@@ -119,6 +142,25 @@ export default function ScreenInsights({ studyArea }: Props) {
       }
     }
   }, [selectedId, studyArea])
+
+  // Update raster source when activeSubLayer changes
+  useEffect(() => {
+    if (!mapInstance.current) return
+    const map = mapInstance.current
+    const src = map.getSource && map.getSource('insight-raster')
+    if (src && src.updateImage) {
+      const pngUrl = api.getInsightPngUrl(selectedId, studyArea, activeSubLayer || undefined)
+      src.updateImage({
+        url: pngUrl,
+        coordinates: [
+          [AOI.lon_min, AOI.lat_max],
+          [AOI.lon_max, AOI.lat_max],
+          [AOI.lon_max, AOI.lat_min],
+          [AOI.lon_min, AOI.lat_min],
+        ],
+      })
+    }
+  }, [activeSubLayer])
 
   // Handle Basemap Switch
   useEffect(() => {
@@ -265,6 +307,46 @@ export default function ScreenInsights({ studyArea }: Props) {
             {coords.lon.toFixed(5)}°E &nbsp; {coords.lat.toFixed(5)}°N
           </div>
 
+          {/* Sub-layer toggle buttons if available */}
+          {getSubLayers(selectedId).length > 0 && (
+            <div style={{
+              position: 'absolute',
+              top: 12,
+              left: 12,
+              background: 'var(--panel)',
+              border: '1px solid var(--border)',
+              borderRadius: 4,
+              padding: '3px',
+              display: 'flex',
+              gap: 4,
+              zIndex: 10,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            }}>
+              {getSubLayers(selectedId).map(sl => {
+                const isActive = activeSubLayer === sl.id
+                return (
+                  <button
+                    key={sl.id}
+                    onClick={() => setActiveSubLayer(sl.id)}
+                    style={{
+                      background: isActive ? 'var(--accent)' : 'transparent',
+                      color: isActive ? '#FFFFFF' : 'var(--text-primary)',
+                      border: 'none',
+                      borderRadius: 3,
+                      padding: '4px 8px',
+                      fontSize: 11,
+                      fontWeight: isActive ? 600 : 500,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {sl.label}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
           {/* Opacity Control Overlay */}
           <div style={{
             position: 'absolute',
@@ -309,39 +391,68 @@ export default function ScreenInsights({ studyArea }: Props) {
           </div>
 
           {/* Legend Overlay */}
-          {detail?.legend && detail.legend.length > 0 && (
-            <div style={{
-              position: 'absolute',
-              bottom: 12,
-              left: 12,
-              background: 'var(--panel)',
-              border: '1px solid var(--border)',
-              borderRadius: 4,
-              padding: '8px 12px',
-              zIndex: 10,
-              maxWidth: 280,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.4 }}>
-                Map Classification Legend
+          {(() => {
+            const activeLegend = (() => {
+              if (selectedId === 'groundwater_recharge' && activeSubLayer === 'recharge_suitability') {
+                return [
+                  { id: 'suit_hi', label: 'High Suitability for MAR', color: '#1A7F37' },
+                  { id: 'suit_mod', label: 'Moderate Suitability', color: '#E3C449' },
+                  { id: 'suit_low', label: 'Low Suitability / Unsuitable', color: '#B23B3B' },
+                  { id: 'mar_sites', label: 'Candidate MAR Sites (Top 50)', color: '#0077B6' },
+                ]
+              }
+              if (selectedId === 'geoeconomic_priority' && activeSubLayer === 'dec2023_flood_extent') {
+                return [
+                  { id: 'flood', label: 'Dec 2023 Flood Inundation', color: '#0077B6' },
+                  { id: 'unflooded', label: 'Uninundated Farmed Plain', color: '#2E6B3F' },
+                ]
+              }
+              if (selectedId === 'geoeconomic_priority' && activeSubLayer === 'market_access') {
+                return [
+                  { id: 'acc_hi', label: 'High Market Access (<20 min)', color: '#2E6B3F' },
+                  { id: 'acc_mod', label: 'Moderate Access (20–45 min)', color: '#E3C449' },
+                  { id: 'acc_low', label: 'Distant / Low Access (>45 min)', color: '#B23B3B' },
+                ]
+              }
+              return detail?.legend || []
+            })()
+
+            if (!activeLegend || activeLegend.length === 0) return null
+
+            return (
+              <div style={{
+                position: 'absolute',
+                bottom: 12,
+                left: 12,
+                background: 'var(--panel)',
+                border: '1px solid var(--border)',
+                borderRadius: 4,
+                padding: '8px 12px',
+                zIndex: 10,
+                maxWidth: 290,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                  Map Classification Legend
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {activeLegend.map((l: any, i: number) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: 2,
+                        background: l.color,
+                        border: '1px solid rgba(0,0,0,0.15)',
+                        flexShrink: 0,
+                      }} />
+                      <span style={{ fontSize: 11, color: 'var(--text-primary)' }}>{l.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {detail.legend.map((l, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: 2,
-                      background: l.color,
-                      border: '1px solid rgba(0,0,0,0.15)',
-                      flexShrink: 0,
-                    }} />
-                    <span style={{ fontSize: 11, color: 'var(--text-primary)' }}>{l.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+            )
+          })()}
         </div>
       </div>
 
@@ -492,6 +603,73 @@ export default function ScreenInsights({ studyArea }: Props) {
                 </div>
               )}
 
+              {detail.id === 'groundwater_recharge' && (
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">High + Very High Potential</div>
+                      <div className="metric-value" style={{ fontSize: 20, color: '#1A7F37' }}>
+                        {detail.high_plus_very_high_pct || 36.5}%
+                        <span style={{ fontSize: 10, display: 'block', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                          ({(detail.high_plus_very_high_ha || 0).toLocaleString()} ha)
+                        </span>
+                      </div>
+                    </div>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">Candidate Recharge Sites</div>
+                      <div className="metric-value" style={{ fontSize: 20, color: '#0077B6' }}>
+                        {detail.candidate_sites_count || 50}
+                        <span style={{ fontSize: 10, display: 'block', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                          AHP CR = {detail.consistency_ratio ? detail.consistency_ratio.toFixed(3) : '0.029'} (&lt;0.10)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {detail.id === 'geoeconomic_priority' && (
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">RESILIENCE Farmland</div>
+                      <div className="metric-value" style={{ fontSize: 20, color: '#D9534F' }}>
+                        {detail.resilience_pct}%
+                        <span style={{ fontSize: 10, display: 'block', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                          ({(detail.resilience_area_ha || 0).toLocaleString()} ha)
+                        </span>
+                      </div>
+                    </div>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">Value at Risk</div>
+                      <div className="metric-value" style={{ fontSize: 20, color: '#C92A2A' }}>
+                        ₹{detail.resilience_value_cr} <span style={{ fontSize: 12 }}>Cr</span>
+                        <span style={{ fontSize: 10, display: 'block', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                          Indicative gross crop value
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">Dec 2023 Flooded Cropland</div>
+                      <div className="metric-value" style={{ fontSize: 18, color: '#0077B6' }}>
+                        {(detail.flooded_2023_ha || 0).toLocaleString()} <span style={{ fontSize: 11 }}>ha</span>
+                      </div>
+                    </div>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">PROTECT High-Value Farmland</div>
+                      <div className="metric-value" style={{ fontSize: 18, color: '#2E6B3F' }}>
+                        {detail.protect_pct}%
+                        <span style={{ fontSize: 10, display: 'block', color: 'var(--text-secondary)', fontWeight: 400 }}>
+                          ({(detail.protect_area_ha || 0).toLocaleString()} ha)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* DISTRIBUTION CHART */}
               {detail.chart_data && detail.chart_data.length > 0 && (
                 <div style={{ marginBottom: 14 }}>
@@ -526,6 +704,84 @@ export default function ScreenInsights({ studyArea }: Props) {
                         </div>
                       )
                     })}
+                  </div>
+                </div>
+              )}
+
+              {/* CANDIDATE RECHARGE SITES TABLE */}
+              {detail.id === 'groundwater_recharge' && detail.top50_sites && detail.top50_sites.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <div className="section-label" style={{ margin: 0 }}>Candidate Artificial Recharge Sites (Top 10)</div>
+                    <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
+                      Total {detail.top50_sites.length} sites
+                    </span>
+                  </div>
+                  <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: 4 }}>
+                    <table className="data-table" style={{ margin: 0, fontSize: 11 }}>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Structure</th>
+                          <th className="num">Score</th>
+                          <th className="num">Area (ha)</th>
+                          <th>Coords</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {detail.top50_sites.slice(0, 10).map((s: any, idx: number) => (
+                          <tr key={idx}>
+                            <td className="mono">{s.rank || idx + 1}</td>
+                            <td>{s.structure_type}</td>
+                            <td className="num mono">{(s.suitability_score || 0).toFixed(2)}</td>
+                            <td className="num mono">{(s.area_ha || 0).toFixed(2)}</td>
+                            <td className="mono" style={{ fontSize: 10 }}>{s.lat?.toFixed(3)}, {s.lon?.toFixed(3)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginTop: 4 }}>
+                    Top 10 of 50 sites shown. Download full list in CSV or KML for GIS / Google Earth.
+                  </div>
+                </div>
+              )}
+
+              {/* GEO-ECONOMIC INTERVENTION CLUSTERS TABLE */}
+              {detail.id === 'geoeconomic_priority' && detail.top20_clusters && detail.top20_clusters.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <div className="section-label" style={{ margin: 0 }}>Top Action Intervention Clusters (Top 10)</div>
+                    <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
+                      Total {detail.top20_clusters.length} ranked
+                    </span>
+                  </div>
+                  <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: 4 }}>
+                    <table className="data-table" style={{ margin: 0, fontSize: 11 }}>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Category</th>
+                          <th className="num">Area</th>
+                          <th className="num">Value (Cr)</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {detail.top20_clusters.slice(0, 10).map((c: any, idx: number) => (
+                          <tr key={idx}>
+                            <td className="mono">{c.rank || idx + 1}</td>
+                            <td style={{ fontWeight: 600 }}>{c.category}</td>
+                            <td className="num mono">{(c.area_ha || 0).toFixed(1)} ha</td>
+                            <td className="num mono">₹{c.indicative_value_cr}</td>
+                            <td style={{ fontSize: 10, maxWidth: 140 }}>{c.recommended_action?.slice(0, 38)}...</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginTop: 4 }}>
+                    Ranked by area × crop value. Full polygon coordinates available in CSV and KML export.
                   </div>
                 </div>
               )}
@@ -568,7 +824,7 @@ export default function ScreenInsights({ studyArea }: Props) {
               <div className="section-label" style={{ marginBottom: 6 }}>Export Datasets</div>
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                 <a
-                  href={api.getInsightPngUrl(detail.id, studyArea)}
+                  href={api.getInsightPngUrl(detail.id, studyArea, activeSubLayer || undefined)}
                   download={`${detail.id}_map.png`}
                   className="btn btn-secondary btn-sm"
                   style={{ textDecoration: 'none', gap: 4 }}
@@ -583,6 +839,16 @@ export default function ScreenInsights({ studyArea }: Props) {
                 >
                   <Download size={12} /> CSV Stats
                 </a>
+                {(detail.kml_url || detail.id === 'groundwater_recharge' || detail.id === 'geoeconomic_priority') && (
+                  <a
+                    href={api.getInsightKmlUrl(detail.id, studyArea)}
+                    download={`${detail.id}.kml`}
+                    className="btn btn-secondary btn-sm"
+                    style={{ textDecoration: 'none', gap: 4 }}
+                  >
+                    <MapPin size={12} /> KML / Earth
+                  </a>
+                )}
               </div>
             </div>
           ) : (

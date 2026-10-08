@@ -505,6 +505,24 @@ export default function LandingPage({ onNavigateToApp }: Props) {
                   use: 'Ambasamudram and Cheranmahadevi taluk boundaries',
                 },
                 {
+                  dataset: 'ISRIC SoilGrids 2.0 (0–30 cm)',
+                  provider: 'ISRIC — World Soil Information (WCS 2.0)',
+                  res: '250 m',
+                  use: 'Sand, clay, silt fractions; USDA soil hydrological infiltration scoring',
+                },
+                {
+                  dataset: 'UCSB CHIRPS v2.0 (10-yr Mean Annual Rainfall)',
+                  provider: 'Climate Hazards Center, UC Santa Barbara',
+                  res: '0.05° (~5.5 km)',
+                  use: 'Multi-year climatological rainfall for groundwater recharge zoning',
+                },
+                {
+                  dataset: 'OpenStreetMap Roads & Marketplaces',
+                  provider: 'OpenStreetMap contributors via Overpass API',
+                  res: 'Vector (13,987 ways, 157 places)',
+                  use: 'MCP geometric travel-time routing; road density; structural lineament filtering',
+                },
+                {
                   dataset: 'Esri World Imagery',
                   provider: 'Esri',
                   res: 'Sub-metre',

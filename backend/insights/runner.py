@@ -16,6 +16,8 @@ from .irrigation_dependency import compute_irrigation_dependency
 from .crop_change import compute_crop_change
 from .crop_health import compute_crop_health
 from .water_demand import compute_water_demand
+from .groundwater_recharge import compute_groundwater_recharge
+from .geoeconomic_priority import compute_geoeconomic_priority
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +28,8 @@ INSIGHT_MODULES = [
     ("crop_change", "04. Crop Change & Farmland Loss", "Multi-year transition matrix (AY 23-24 vs AY 25-26)", compute_crop_change),
     ("crop_health", "05. Crop Health & Anomaly", "Multi-year NDVI z-score deviation & stress tracking", compute_crop_health),
     ("water_demand", "06. Irrigation Water Demand", "TNAU/FAO agronomic water budgeting (MCM)", compute_water_demand),
+    ("groundwater_recharge", "07. Groundwater & Recharge Intelligence", "Multi-criteria AHP hydrogeological modeling & MAR siting", compute_groundwater_recharge),
+    ("geoeconomic_priority", "08. Geo-Economic Priority & Action Zoning", "Multivariate agro-economic decision zoning & climate-resilience prioritization", compute_geoeconomic_priority),
 ]
 
 
@@ -54,7 +58,7 @@ def run_all_insights(
             }
 
     duration = round(time.time() - start_time, 2)
-    logger.info("All 6 core insights computed in %.2fs", duration)
+    logger.info("All 8 insight modules computed in %.2fs", duration)
     return results
 
 

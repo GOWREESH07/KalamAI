@@ -34,7 +34,8 @@ def generate_insights_atlas_pdf(
     insight_ids = [
         "cropping_intensity", "transplanting_calendar",
         "irrigation_dependency", "crop_change",
-        "crop_health", "water_demand"
+        "crop_health", "water_demand",
+        "groundwater_recharge", "geoeconomic_priority"
     ]
     for i_id in insight_ids:
         j_path = outputs_dir / "insights" / i_id / "data.json"
@@ -52,9 +53,9 @@ def generate_insights_atlas_pdf(
                     ha="center", fontsize=11, color="#495057")
 
         # Top 3 key stats boxes
-        ax1 = fig.add_axes([0.08, 0.68, 0.26, 0.16])
-        ax2 = fig.add_axes([0.37, 0.68, 0.26, 0.16])
-        ax3 = fig.add_axes([0.66, 0.68, 0.26, 0.16])
+        ax1 = fig.add_axes([0.08, 0.70, 0.26, 0.15])
+        ax2 = fig.add_axes([0.37, 0.70, 0.26, 0.15])
+        ax3 = fig.add_axes([0.66, 0.70, 0.26, 0.15])
 
         for ax in [ax1, ax2, ax3]:
             ax.set_xticks([])
@@ -81,21 +82,21 @@ def generate_insights_atlas_pdf(
         ax3.text(0.08, 0.25, f"{wd_d.get('total_water_mcm', 348.5)}", fontsize=22, fontweight="bold", color="#1F3A5F")
         ax3.text(0.55, 0.32, "Million m³ (MCM)\nGross Requirement", fontsize=8, color="#6C757D")
 
-        # 6 Key Findings Table / Grid
-        ax_main = fig.add_axes([0.08, 0.12, 0.84, 0.50])
+        # 8 Key Findings Table / Grid
+        ax_main = fig.add_axes([0.08, 0.06, 0.84, 0.58])
         ax_main.axis("off")
-        ax_main.text(0.0, 0.98, "EXECUTIVE INSIGHT SUMMARY & POLICY ACTION ITEMS", fontsize=11, fontweight="bold", color="#1F3A5F")
+        ax_main.text(0.0, 0.98, "EXECUTIVE INSIGHT SUMMARY & POLICY ACTION ITEMS", fontsize=10.5, fontweight="bold", color="#1F3A5F")
 
-        y_pos = 0.86
+        y_pos = 0.88
         for i_id in insight_ids:
             d = insights_data.get(i_id, {})
             title = d.get("title", i_id.replace("_", " ").title())
             finding = d.get("key_finding", "Analytics derived from Sentinel-1 SAR & Sentinel-2 time-series.")
-            ax_main.text(0.0, y_pos, f"• {title}:", fontsize=9, fontweight="bold", color="#1F3A5F")
-            ax_main.text(0.26, y_pos, finding, fontsize=8.5, color="#212529", wrap=True)
-            y_pos -= 0.13
+            ax_main.text(0.0, y_pos, f"• {title}:", fontsize=8, fontweight="bold", color="#1F3A5F")
+            ax_main.text(0.32, y_pos, finding[:110] + ("..." if len(finding) > 110 else ""), fontsize=7.5, color="#212529")
+            y_pos -= 0.11
 
-        plt.figtext(0.5, 0.04, "Kalam © 2026 · Problem Statement 1 · SustainAI / Mapathon · Contains modified Copernicus Sentinel data",
+        plt.figtext(0.5, 0.02, "Kalam © 2026 · Problem Statement 1 · SustainAI / Mapathon · Contains modified Copernicus Sentinel data",
                     ha="center", fontsize=7.5, color="#ADB5BD")
         pdf.savefig(fig)
         plt.close(fig)
@@ -166,6 +167,39 @@ def generate_insights_atlas_pdf(
 
         plt.tight_layout(rect=[0.05, 0.08, 0.95, 0.90])
         plt.figtext(0.5, 0.04, "Kalam © 2026 · Agricultural Insights Atlas — Page 3", ha="center", fontsize=7.5, color="#ADB5BD")
+        pdf.savefig(fig)
+        plt.close(fig)
+
+        # -------------------------------------------------------------
+        # PAGE 4: HYDROGEOLOGY & GEO-ECONOMIC ACTION ZONING (Insights 7, 8)
+        # -------------------------------------------------------------
+        fig, axes = plt.subplots(1, 2, figsize=(11.69, 8.27), facecolor="#F8F9FA")
+        fig.suptitle("HYDROGEOLOGY & GEO-ECONOMIC INTERVENTION ZONING", fontsize=14, fontweight="bold", color="#1F3A5F", y=0.95)
+
+        sub_insights3 = [
+            ("groundwater_recharge", "07. Groundwater Potential & MAR Siting", axes[0]),
+            ("geoeconomic_priority", "08. Geo-Economic Action Priority", axes[1]),
+        ]
+
+        for sid, stitle, sax in sub_insights3:
+            sax.set_facecolor("#FFFFFF")
+            sax.set_title(stitle, fontsize=11, fontweight="bold", color="#1F3A5F", pad=8)
+            img_p = outputs_dir / "insights" / sid / f"{sid}.png"
+            if img_p.exists():
+                img = Image.open(img_p)
+                sax.imshow(img)
+            else:
+                sax.text(0.5, 0.5, "Map Layer Ready", ha="center", va="center", color="#6C757D")
+            sax.set_xticks([])
+            sax.set_yticks([])
+
+            d = insights_data.get(sid, {})
+            leg = d.get("legend", [])
+            leg_str = " | ".join([f"{item['label']}" for item in leg[:5]])
+            sax.set_xlabel(leg_str, fontsize=7, color="#495057")
+
+        plt.tight_layout(rect=[0.05, 0.08, 0.95, 0.90])
+        plt.figtext(0.5, 0.04, "Kalam © 2026 · Agricultural Insights Atlas — Page 4", ha="center", fontsize=7.5, color="#ADB5BD")
         pdf.savefig(fig)
         plt.close(fig)
 

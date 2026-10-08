@@ -177,6 +177,22 @@ export interface InsightDetail {
   bins?: any[]
   chart_data?: any[]
   top50?: any[]
+  top50_sites?: any[]
+  high_plus_very_high_ha?: number
+  high_plus_very_high_pct?: number
+  candidate_sites_count?: number
+  consistency_ratio?: number
+  validation_ratio?: number
+  resilience_area_ha?: number
+  resilience_pct?: number
+  resilience_value_cr?: number
+  protect_area_ha?: number
+  protect_pct?: number
+  invest_area_ha?: number
+  invest_pct?: number
+  flooded_2023_ha?: number
+  sensitivity_pct?: number
+  top20_clusters?: any[]
   legend?: { id: string | number; label: string; color: string }[]
   method: string
   limitations: string
@@ -237,8 +253,10 @@ export const api = {
     request<InsightDetail>(`/insights/${insightId}?study_area=${studyArea}`),
   computeAllInsights: (studyArea: StudyAreaType = 'pilot') =>
     request<{ status: string; insights: string[] }>(`/insights/compute_all?study_area=${studyArea}`, { method: 'POST' }),
-  getInsightPngUrl: (insightId: string, studyArea: StudyAreaType = 'pilot') =>
-    `${BASE}/insights/${insightId}/png?study_area=${studyArea}`,
+  getInsightPngUrl: (insightId: string, studyArea: StudyAreaType = 'pilot', layer?: string) =>
+    layer
+      ? `${BASE}/insights/${insightId}/png?study_area=${studyArea}&layer=${layer}`
+      : `${BASE}/insights/${insightId}/png?study_area=${studyArea}`,
   getInsightCsvUrl: (insightId: string, studyArea: StudyAreaType = 'pilot') =>
     `${BASE}/insights/${insightId}/csv?study_area=${studyArea}`,
   getInsightKmlUrl: (insightId: string, studyArea: StudyAreaType = 'pilot') =>

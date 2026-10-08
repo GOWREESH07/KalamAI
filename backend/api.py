@@ -920,12 +920,18 @@ def compute_all_insights(study_area: str = "pilot"):
 
 @app.get("/api/insights/{insight_id}/png")
 @app.get("/insights/{insight_id}/png")
-def get_insight_png(insight_id: str, study_area: str = "pilot"):
+def get_insight_png(insight_id: str, study_area: str = "pilot", layer: Optional[str] = None):
     out_d = _get_out_dir(study_area)
-    png_path = out_d / "insights" / insight_id / f"{insight_id}.png"
+    target_name = f"{layer}.png" if layer else f"{insight_id}.png"
+    png_path = out_d / "insights" / insight_id / target_name
+    if not png_path.exists():
+        png_path = out_d / "insights" / insight_id / f"{insight_id}.png"
     if not png_path.exists():
         # Compute insight on the fly
         get_insight_detail(insight_id, study_area)
+        png_path = out_d / "insights" / insight_id / target_name
+        if not png_path.exists():
+            png_path = out_d / "insights" / insight_id / f"{insight_id}.png"
     if not png_path.exists():
         raise HTTPException(status_code=404, detail="PNG overlay not available for this insight")
     return FileResponse(png_path, media_type="image/png")
@@ -949,12 +955,13 @@ def get_insight_csv(insight_id: str, study_area: str = "pilot"):
 @app.get("/insights/{insight_id}/kml")
 def get_insight_kml(insight_id: str, study_area: str = "pilot"):
     out_d = _get_out_dir(study_area)
-    kml_p = out_d / "insights" / insight_id / "field_verification.kml"
-    if not kml_p.exists():
+    i_dir = out_d / "insights" / insight_id
+    if not i_dir.exists():
         get_insight_detail(insight_id, study_area)
-    if not kml_p.exists():
+    kml_files = list(i_dir.glob("*.kml"))
+    if not kml_files:
         raise HTTPException(status_code=404, detail="KML file not available")
-    return FileResponse(kml_p, filename=kml_p.name, media_type="application/vnd.google-earth.kml+xml")
+    return FileResponse(kml_files[0], filename=kml_files[0].name, media_type="application/vnd.google-earth.kml+xml")
 
 
 @app.get("/api/insights/atlas/pdf")
