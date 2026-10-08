@@ -2,9 +2,11 @@
   "id": "field_size",
   "title": "Segment Size Distribution (Image-Derived)",
   "subtitle": "Agrarian parcel morphology & smallholder distribution",
-  "extent_label": "Extent: 3,346.6 ha \u00b7 Pilot \u00b7 Model: multi-year",
+  "extent_label": "Extent: 3,346.5 ha \u00b7 Pilot \u00b7 Model: multi-year",
   "study_area": "pilot",
   "model_type": "multi-year",
+  "analysed_ha": 3346.5,
+  "canonical_analysed_ha": 3346.5,
   "key_finding": "19.8% of image-derived field segments (9.9% of agricultural area) are below 1.0 ha. The mean segment size is 1.64 ha with a median of 1.41 ha.",
   "total_parcels": 2042,
   "total_area_ha": 3346.6,
@@ -139,8 +141,8 @@
       "color": "#B4554B"
     }
   ],
-  "method": "Vector parcel boundaries derived from SLIC spatial-spectral superpixel segmentation are measured in projected UTM coordinates (EPSG:32643). Parcels are categorized into national agricultural census holding size brackets.",
-  "limitations": "Segment sizes depend on the SLIC segmentation scale and are not cadastral holdings.",
+  "method": "Vector parcel boundaries derived from SLIC spatial-spectral superpixel segmentation are measured in projected UTM coordinates (EPSG:32643). Parcels are categorized into standard agricultural holding size brackets.",
+  "limitations": "Segment sizes are image-derived via SLIC superpixels (0.1 ha minimum merge threshold) and reflect physical field boundaries rather than legal revenue ownership holdings.",
   "csv_url": "/api/insights/field_size/csv?study_area=pilot",
   "png_url": "/api/insights/field_size/png?study_area=pilot"
 }

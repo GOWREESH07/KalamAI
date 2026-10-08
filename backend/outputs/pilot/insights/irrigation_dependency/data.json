@@ -2,13 +2,15 @@
   "id": "irrigation_dependency",
   "title": "Irrigation Dependency & Water Access",
   "subtitle": "Crop composition decay across Thamirabarani canal buffers",
-  "extent_label": "Extent: 3,011.2 ha \u00b7 Pilot \u00b7 Model: 16-month",
+  "extent_label": "Extent: 3,346.5 ha \u00b7 Pilot \u00b7 Model: 16-month",
+  "analysed_ha": 3346.5,
+  "canonical_analysed_ha": 3346.5,
   "study_area": "pilot",
   "model_type": "16-month",
   "key_finding": "14.7% of paddy acreage is concentrated within 500 m of a river channel, canal or irrigation tank. Banana accounts for 1.4% of cropland in the immediate 0\u2013250 m corridor, decaying sharply beyond 1 km.",
   "paddy_within_500m_pct": 14.7,
   "total_cropland_ha": 3011.2,
-  "denominator_label": "total analyzed cropland (3,011.2 ha)",
+  "denominator_label": "total analyzed cropland (3,011.2 ha of 3,346.5 ha)",
   "bins": [
     {
       "bin": "0 \u2013 250 m",

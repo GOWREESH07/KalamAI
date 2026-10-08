@@ -1,7 +1,8 @@
 """
 transplanting_calendar.py — Insight 2: Paddy transplanting calendar & delay detection.
 Detects flooding dip (SAR VH < -18 dB or LSWI peak) for Kar (May–Aug) & Pishanam (Sep–Dec).
-Computes delay >= 1 month after median transplanting timing.
+Separate denominators per season: Kar paddy ha, Pishanam paddy ha.
+Peak month = month with the largest share.
 """
 from __future__ import annotations
 
@@ -97,6 +98,15 @@ def compute_transplanting_calendar(
     tc_cfg = cfg.get("insights", {}).get("transplanting_calendar", {})
     delay_thresh = tc_cfg.get("delayed_threshold_months", 1)
 
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
+
     cls_path = outputs_dir / "final_class.tif"
     model_type = "multi-year"
     if not cls_path.exists():
@@ -177,62 +187,85 @@ def compute_transplanting_calendar(
         ds = xr.open_dataset(feat_path)
         combined_transplant_map, kar_month_map, pish_month_map, all_kar_months, all_pish_months = _compute_tile_transplanting(ds, cls_arr)
 
+    px_area_ha = 100 / 1e4 if study_area == "pilot" else (30 * 30) / 1e4
+
+    kar_total_count = len(all_kar_months) if all_kar_months else 1
+    pish_total_count = len(all_pish_months) if all_pish_months else 1
+
+    kar_paddy_ha = round(kar_total_count * px_area_ha, 1)
+    pish_paddy_ha = round(pish_total_count * px_area_ha, 1)
+
+    # Median timing
     median_kar = int(np.median(all_kar_months)) if all_kar_months else 6
     median_pish = int(np.median(all_pish_months)) if all_pish_months else 10
 
+    # Delayed = >= 1 month after taluk median
     delayed_kar_px = int(np.sum([1 for m in all_kar_months if m > (median_kar + delay_thresh)]))
     delayed_pish_px = int(np.sum([1 for m in all_pish_months if m > (median_pish + delay_thresh)]))
 
-    kar_delayed_pct = round((delayed_kar_px / max(1, len(all_kar_months))) * 100.0, 1)
-    pish_delayed_pct = round((delayed_pish_px / max(1, len(all_pish_months))) * 100.0, 1)
+    kar_delayed_pct = round((delayed_kar_px / kar_total_count) * 100.0, 1)
+    pish_delayed_pct = round((delayed_pish_px / pish_total_count) * 100.0, 1)
 
-    px_area_ha = 100 / 1e4 if study_area == "pilot" else (30 * 30) / 1e4
-
-    # Chart data
+    # Separate chart data per season with distinct denominators
     chart_data = []
+    kar_counts = {}
     for m in [5, 6, 7, 8]:
         cnt = int(np.sum([1 for val in all_kar_months if val == m]))
+        kar_counts[m] = cnt
         area_ha = round(cnt * px_area_ha, 1)
-        pct = round((cnt / max(1, len(all_kar_months))) * 100.0, 1)
+        pct = round((cnt / kar_total_count) * 100.0, 1)
         chart_data.append({
-            "category": f"Kar {MONTH_NAMES[m]} (Early/Mid)",
+            "category": f"Kar Season — {MONTH_NAMES[m]}",
             "area_ha": area_ha,
             "pct": pct,
             "month": MONTH_NAMES[m],
             "season": "Kar",
+            "season_total_ha": kar_paddy_ha,
             "is_median": bool(m == median_kar),
             "color": SEASON_COLORS[m],
         })
 
+    pish_counts = {}
     for m in [9, 10, 11, 12]:
         cnt = int(np.sum([1 for val in all_pish_months if val == m]))
+        pish_counts[m] = cnt
         area_ha = round(cnt * px_area_ha, 1)
-        pct = round((cnt / max(1, len(all_pish_months))) * 100.0, 1)
+        pct = round((cnt / pish_total_count) * 100.0, 1)
         chart_data.append({
-            "category": f"Pishanam {MONTH_NAMES[m]}" + (" (Delayed)" if m > 10 else ""),
+            "category": f"Pishanam Season — {MONTH_NAMES[m]}",
             "area_ha": area_ha,
             "pct": pct,
             "month": MONTH_NAMES[m],
             "season": "Pishanam",
+            "season_total_ha": pish_paddy_ha,
             "is_median": bool(m == median_pish),
             "color": SEASON_COLORS[m],
         })
 
-    total_paddy_ha = round(len(all_pish_months) * px_area_ha, 1) if all_pish_months else round(int(np.sum(paddy_mask)) * px_area_ha, 1)
+    # Find peak month (largest share)
+    kar_peak_m = max(kar_counts, key=kar_counts.get)
+    pish_peak_m = max(pish_counts, key=pish_counts.get)
+    kar_peak_pct = round((kar_counts[kar_peak_m] / kar_total_count) * 100.0, 1)
+    pish_peak_pct = round((pish_counts[pish_peak_m] / pish_total_count) * 100.0, 1)
 
     key_finding = (
-        f"Peak Kar transplanting occurs in {MONTH_NAMES[median_kar]} ({chart_data[1]['pct']}% of fields), "
-        f"while main Pishanam sowing peaks in {MONTH_NAMES[median_pish]}. "
+        f"Peak Kar transplanting occurs in {MONTH_NAMES[kar_peak_m]} ({kar_peak_pct}% of Kar fields), "
+        f"while main Pishanam sowing peaks in {MONTH_NAMES[pish_peak_m]} ({pish_peak_pct}% of Pishanam fields). "
         f"{pish_delayed_pct}% of Pishanam acreage experiences delayed transplanting beyond November."
     )
 
     # Save PNG maps
     png_main = out_dir / "transplanting_calendar.png"
-    rgb_main = np.zeros((global_ny, global_nx, 3), dtype=np.uint8)
+    rgb_main = np.zeros((global_ny, global_nx, 4), dtype=np.uint8)
     for m in range(5, 13):
         h = SEASON_COLORS[m].lstrip("#")
-        rgb_main[combined_transplant_map == m] = [int(h[i:i+2], 16) for i in (0, 2, 4)]
-    Image.fromarray(rgb_main).save(png_main)
+        c_rgb = [int(h[i:i+2], 16) for i in (0, 2, 4)]
+        px_m = (combined_transplant_map == m) & (cls_arr != 255)
+        rgb_main[px_m, 0] = c_rgb[0]
+        rgb_main[px_m, 1] = c_rgb[1]
+        rgb_main[px_m, 2] = c_rgb[2]
+        rgb_main[px_m, 3] = 255
+    Image.fromarray(rgb_main, "RGBA").save(png_main)
 
     # Save GeoTIFF
     with rasterio.open(
@@ -245,10 +278,7 @@ def compute_transplanting_calendar(
         dst.write(pish_month_map, 2)
         dst.update_tags(band_1="kar_transplanting_month", band_2="pishanam_transplanting_month")
 
-    extent_label = f"Extent: {total_paddy_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
-    if coverage_note:
-        extent_label += f" · {coverage_note}"
-
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
     ay_label = "AY 2025-26" if model_type == "multi-year" else "AY 2025-26 (16-month baseline)"
 
     result = {
@@ -258,26 +288,31 @@ def compute_transplanting_calendar(
         "extent_label": extent_label,
         "study_area": study_area,
         "model_type": model_type,
-        "coverage_note": coverage_note,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "key_finding": key_finding,
         "ay_label": ay_label,
+        "kar_paddy_ha": kar_paddy_ha,
+        "pish_paddy_ha": pish_paddy_ha,
+        "total_paddy_ha": pish_paddy_ha,
         "kar_median_month": MONTH_NAMES[median_kar],
         "pishanam_median_month": MONTH_NAMES[median_pish],
+        "kar_peak_month": MONTH_NAMES[kar_peak_m],
+        "pishanam_peak_month": MONTH_NAMES[pish_peak_m],
         "kar_delayed_pct": kar_delayed_pct,
         "pishanam_delayed_pct": pish_delayed_pct,
-        "total_paddy_ha": total_paddy_ha,
-        "denominator_label": f"total paddy area ({total_paddy_ha:,.1f} ha)",
+        "denominator_label": f"Kar paddy ({kar_paddy_ha:,.1f} ha) / Pishanam paddy ({pish_paddy_ha:,.1f} ha)",
         "chart_data": chart_data,
         "legend": [
             {"id": "kar_jun", "label": "Kar Peak (Jun–Jul)", "color": SEASON_COLORS[6]},
             {"id": "kar_late", "label": "Kar Late (Aug)", "color": SEASON_COLORS[8]},
             {"id": "pish_oct", "label": "Pishanam Peak (Oct)", "color": SEASON_COLORS[10]},
-            {"id": "pish_delayed", "label": "Pishanam Delayed (Nov–Dec)", "color": SEASON_COLORS[12]},
+            {"id": "pish_delayed", "label": "Pishanam Late (Nov–Dec)", "color": SEASON_COLORS[12]},
         ],
         "method": (
             "Transplanting timing is resolved per paddy parcel from the SAR VH backscatter trough "
             "(specular reflectance in flooded soil < -18 dB), cross-checked with peak LSWI. "
-            "Timing is classified into standard Kar (May–Aug) and Pishanam (Sep–Dec) windows."
+            "Timing is classified into standard Kar (May–Aug) and Pishanam (Sep–Dec) windows with independent season denominators."
         ),
         "limitations": (
             "Monthly composites provide month-level timing; per-scene Sentinel-1 acquisitions can refine "

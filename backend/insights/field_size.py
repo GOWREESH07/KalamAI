@@ -40,6 +40,15 @@ def compute_field_size(
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_json = out_dir / "data.json"
 
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
+
     parcels_gpkg = outputs_dir / "parcels.gpkg"
     model_type = "multi-year"
     if not parcels_gpkg.exists():
@@ -65,7 +74,6 @@ def compute_field_size(
     chart_data = []
     sum_area_ha = 0.0
 
-    # Assign size bin id to each parcel for rasterization
     bin_assignments = np.zeros(len(gdf), dtype=np.uint8)
 
     for idx, b in enumerate(SIZE_BINS, start=1):
@@ -121,14 +129,18 @@ def compute_field_size(
     size_raster = rasterize(shapes_b, out_shape=(ny, nx), transform=tfm, fill=0, dtype=np.uint8)
 
     # Render PNG
-    rgb = np.zeros((ny, nx, 3), dtype=np.uint8)
+    rgb = np.zeros((ny, nx, 4), dtype=np.uint8)
     for b in SIZE_BINS:
         h = b["color"].lstrip("#")
         c_rgb = [int(h[i:i+2], 16) for i in (0, 2, 4)]
-        rgb[size_raster == b["val"]] = c_rgb
+        m = (size_raster == b["val"])
+        rgb[m, 0] = c_rgb[0]
+        rgb[m, 1] = c_rgb[1]
+        rgb[m, 2] = c_rgb[2]
+        rgb[m, 3] = 255
 
     png_path = out_dir / "field_size.png"
-    Image.fromarray(rgb).save(png_path)
+    Image.fromarray(rgb, "RGBA").save(png_path)
 
     # Save GeoTIFF
     tif_path = out_dir / "field_size.tif"
@@ -145,7 +157,6 @@ def compute_field_size(
     small_cnt_pct = round(bin_stats[0]["count_pct"] + bin_stats[1]["count_pct"], 1)
     small_area_pct = round(bin_stats[0]["area_pct"] + bin_stats[1]["area_pct"], 1)
 
-    # Key finding (strictly objective numbers without exaggeration)
     key_finding = (
         f"{small_cnt_pct:.1f}% of image-derived field segments ({small_area_pct:.1f}% of agricultural area) "
         f"are below 1.0 ha. The mean segment size is {avg_size:.2f} ha with a median of {median_size:.2f} ha."
@@ -153,7 +164,7 @@ def compute_field_size(
 
     pd.DataFrame(bin_stats).to_csv(out_dir / "field_size_distribution.csv", index=False)
 
-    extent_label = f"Extent: {total_area_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
 
     result = {
         "id": "field_size",
@@ -162,6 +173,8 @@ def compute_field_size(
         "extent_label": extent_label,
         "study_area": study_area,
         "model_type": model_type,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "key_finding": key_finding,
         "total_parcels": total_parcels,
         "total_area_ha": total_area_ha,
@@ -179,10 +192,11 @@ def compute_field_size(
         "method": (
             "Vector parcel boundaries derived from SLIC spatial-spectral superpixel segmentation "
             "are measured in projected UTM coordinates (EPSG:32643). Parcels are categorized into "
-            "national agricultural census holding size brackets."
+            "standard agricultural holding size brackets."
         ),
         "limitations": (
-            "Segment sizes depend on the SLIC segmentation scale and are not cadastral holdings."
+            "Segment sizes are image-derived via SLIC superpixels (0.1 ha minimum merge threshold) "
+            "and reflect physical field boundaries rather than legal revenue ownership holdings."
         ),
         "csv_url": f"/api/insights/field_size/csv?study_area={study_area}",
         "png_url": f"/api/insights/field_size/png?study_area={study_area}",

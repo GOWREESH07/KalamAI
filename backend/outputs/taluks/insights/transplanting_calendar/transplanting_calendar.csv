@@ -1,9 +1,9 @@
-category,area_ha,pct,month,season,is_median,color
-Kar May (Early/Mid),53422.6,46.6,May,Kar,False,#E9D8A6
-Kar Jun (Early/Mid),36586.5,31.9,Jun,Kar,True,#EE9B00
-Kar Jul (Early/Mid),6938.8,6.1,Jul,Kar,False,#CA6702
-Kar Aug (Early/Mid),17729.1,15.5,Aug,Kar,False,#BB3E03
-Pishanam Sep,27856.7,24.3,Sep,Pishanam,False,#0A9396
-Pishanam Oct,15538.8,13.6,Oct,Pishanam,False,#94D2BD
-Pishanam Nov (Delayed),45342.4,39.5,Nov,Pishanam,True,#005F73
-Pishanam Dec (Delayed),25939.1,22.6,Dec,Pishanam,False,#0A2472
+category,area_ha,pct,month,season,season_total_ha,is_median,color
+Kar Season — May,53422.6,46.6,May,Kar,114677.0,False,#E9D8A6
+Kar Season — Jun,36586.5,31.9,Jun,Kar,114677.0,True,#EE9B00
+Kar Season — Jul,6938.8,6.1,Jul,Kar,114677.0,False,#CA6702
+Kar Season — Aug,17729.1,15.5,Aug,Kar,114677.0,False,#BB3E03
+Pishanam Season — Sep,27856.7,24.3,Sep,Pishanam,114677.0,False,#0A9396
+Pishanam Season — Oct,15538.8,13.6,Oct,Pishanam,114677.0,False,#94D2BD
+Pishanam Season — Nov,45342.4,39.5,Nov,Pishanam,114677.0,True,#005F73
+Pishanam Season — Dec,25939.1,22.6,Dec,Pishanam,114677.0,False,#0A2472

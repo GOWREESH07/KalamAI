@@ -1,18 +1,21 @@
 {
   "total_taluk_km2": 1183.41,
-  "excluded_km2": 634.72,
-  "analyzed_km2": 548.69,
+  "excluded_km2": 657.21,
+  "analyzed_km2": 526.19,
+  "analyzed_ha": 52619.4,
   "tree_below_120_kept_km2": 135.08,
   "per_taluk": {
     "Ambasamudram": {
       "total_km2": 913.94,
-      "excluded_km2": 604.88,
-      "analyzed_km2": 309.06
+      "excluded_km2": 627.81,
+      "analyzed_km2": 286.13,
+      "analyzed_ha": 28612.7
     },
     "Cheranmahadevi": {
       "total_km2": 269.47,
-      "excluded_km2": 29.84,
-      "analyzed_km2": 239.63
+      "excluded_km2": 29.4,
+      "analyzed_km2": 240.07,
+      "analyzed_ha": 24006.7
     }
   },
   "resolution_m": 30

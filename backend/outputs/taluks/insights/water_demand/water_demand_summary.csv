@@ -1,5 +1,5 @@
 category,water_mcm,area_ha,pct,color,rate_desc
-Paddy (Kar Season),10.89,907.5,28.9,#8DB33F,"1,200 mm (12,000 m³/ha)"
-Paddy (Pishanam Season),16.75,1396.1,44.4,#457B9D,"1,200 mm (12,000 m³/ha)"
-Banana (Annual Perennial),0.83,41.7,2.2,#2E6B3F,"2,000 mm (20,000 m³/ha/yr)"
-Other Crops / Pulses,9.24,1847.5,24.5,#BFCB8F,"500 mm (5,000 m³/ha)"
+Kar Paddy (Short-duration),117.76,9813.7,33.8,#8DB33F,"1,200 mm/season (12,000 m³/ha)"
+Pishanam Paddy (Main Monsoon),143.61,11967.9,41.2,#457B9D,"1,200 mm/season (12,000 m³/ha)"
+Perennial Banana (Year-round),7.4,369.9,2.1,#2E6B3F,"2,000 mm/yr (20,000 m³/ha/yr)"
+Other Cropland / Pulses,79.74,15947.5,22.9,#BFCB8F,"500 mm/season (5,000 m³/ha)"

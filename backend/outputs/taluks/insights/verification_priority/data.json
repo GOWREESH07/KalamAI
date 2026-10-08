@@ -2,7 +2,9 @@
   "id": "verification_priority",
   "title": "Field Verification Priority",
   "subtitle": "Targeted ground-audit ranking & GPS navigation coordinates",
-  "extent_label": "Extent: 3,346.6 ha \u00b7 Taluks \u00b7 Model: multi-year",
+  "extent_label": "Extent: 52,619.4 ha \u00b7 Taluks \u00b7 Model: multi-year",
+  "analysed_ha": 52619.4,
+  "canonical_analysed_ha": 52619.4,
   "study_area": "taluks",
   "model_type": "multi-year",
   "key_finding": "25.0% of parcels (511 fields) are flagged for targeted ground audit due to lower phenological confidence or inter-annual crop instability, with top-50 priority targets packaged for GPS navigation.",
@@ -10,7 +12,7 @@
   "total_area_ha": 3346.6,
   "critical_parcels": 205,
   "high_priority_parcels": 306,
-  "denominator_label": "total agricultural parcels (2,042 fields)",
+  "denominator_label": "total agricultural parcels (2,042 fields across 3,346.6 ha)",
   "stats": {
     "Critical": {
       "count": 205,

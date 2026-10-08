@@ -1,88 +1,252 @@
 {
   "id": "crop_health",
   "title": "Crop Health & NDVI Anomaly",
-  "subtitle": "Multi-year standardized z-score deviation from 3-year baseline",
-  "extent_label": "Extent: 2,891.8 ha \u00b7 Taluks \u00b7 Model: 16-month \u00b7 Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
+  "subtitle": "Multi-year standardized z-score deviation from historical baseline",
+  "extent_label": "Extent: 52,619.4 ha \u00b7 Taluks \u00b7 Model: 16-month",
   "study_area": "taluks",
   "model_type": "16-month",
-  "coverage_note": "Multi-year coverage: 550 of 1,200 km\u00b2 (22 tiles)",
-  "key_finding": "74.6% of analyzed cropland displays normal or above-normal vegetative vigour. Localized moisture or transplanting delay stress affects 38.2% (1104.0 ha), predominantly along tail-end distributaries.",
-  "total_cropland_ha": 2891.8,
-  "healthy_share_pct": 74.6,
-  "stressed_share_pct": 38.2,
-  "stressed_area_ha": 1104.0,
-  "denominator_label": "total analyzed cropland (2,891.8 ha)",
+  "analysed_ha": 52619.4,
+  "canonical_analysed_ha": 52619.4,
+  "key_finding": "95.6% of analyzed cropland displays normal or above-normal vegetative vigour. Vegetative moisture/vigour stress is observed across 4.4% (1101.0 ha) of cultivated area.",
+  "total_cropland_ha": 25009.1,
+  "healthy_share_pct": 95.6,
+  "stressed_share_pct": 4.4,
+  "stressed_area_ha": 1101.0,
+  "selected_month_idx": -1,
+  "available_months": [
+    {
+      "idx": 0,
+      "label": "Jun 2023"
+    },
+    {
+      "idx": 1,
+      "label": "Jul 2023"
+    },
+    {
+      "idx": 2,
+      "label": "Aug 2023"
+    },
+    {
+      "idx": 3,
+      "label": "Sep 2023"
+    },
+    {
+      "idx": 4,
+      "label": "Oct 2023"
+    },
+    {
+      "idx": 5,
+      "label": "Nov 2023"
+    },
+    {
+      "idx": 6,
+      "label": "Dec 2023"
+    },
+    {
+      "idx": 7,
+      "label": "Jan 2024"
+    },
+    {
+      "idx": 8,
+      "label": "Feb 2024"
+    },
+    {
+      "idx": 9,
+      "label": "Mar 2024"
+    },
+    {
+      "idx": 10,
+      "label": "Apr 2024"
+    },
+    {
+      "idx": 11,
+      "label": "May 2024"
+    },
+    {
+      "idx": 12,
+      "label": "Jun 2024"
+    },
+    {
+      "idx": 13,
+      "label": "Jul 2024"
+    },
+    {
+      "idx": 14,
+      "label": "Aug 2024"
+    },
+    {
+      "idx": 15,
+      "label": "Sep 2024"
+    },
+    {
+      "idx": 16,
+      "label": "Oct 2024"
+    },
+    {
+      "idx": 17,
+      "label": "Nov 2024"
+    },
+    {
+      "idx": 18,
+      "label": "Dec 2024"
+    },
+    {
+      "idx": 19,
+      "label": "Jan 2025"
+    },
+    {
+      "idx": 20,
+      "label": "Feb 2025"
+    },
+    {
+      "idx": 21,
+      "label": "Mar 2025"
+    },
+    {
+      "idx": 22,
+      "label": "Apr 2025"
+    },
+    {
+      "idx": 23,
+      "label": "May 2025"
+    },
+    {
+      "idx": 24,
+      "label": "Jun 2025"
+    },
+    {
+      "idx": 25,
+      "label": "Jul 2025"
+    },
+    {
+      "idx": 26,
+      "label": "Aug 2025"
+    },
+    {
+      "idx": 27,
+      "label": "Sep 2025"
+    },
+    {
+      "idx": 28,
+      "label": "Oct 2025"
+    },
+    {
+      "idx": 29,
+      "label": "Nov 2025"
+    },
+    {
+      "idx": 30,
+      "label": "Dec 2025"
+    },
+    {
+      "idx": 31,
+      "label": "Jan 2026"
+    },
+    {
+      "idx": 32,
+      "label": "Feb 2026"
+    },
+    {
+      "idx": 33,
+      "label": "Mar 2026"
+    },
+    {
+      "idx": 34,
+      "label": "Apr 2026"
+    },
+    {
+      "idx": 35,
+      "label": "May 2026"
+    },
+    {
+      "idx": 36,
+      "label": "Jun 2026"
+    },
+    {
+      "idx": 37,
+      "label": "Jul 2026"
+    },
+    {
+      "idx": 38,
+      "label": "Aug 2026"
+    },
+    {
+      "idx": 39,
+      "label": "Sep 2026"
+    }
+  ],
+  "denominator_label": "total analyzed cropland within mask (25,009.1 ha)",
   "stats": {
     "Severe Stress": {
-      "area_ha": 25.0,
-      "pct": 0.9,
+      "area_ha": 186.8,
+      "pct": 0.7,
       "color": "#B4554B"
     },
-    "Mild Stress": {
-      "area_ha": 1079.0,
-      "pct": 37.3,
+    "Stressed": {
+      "area_ha": 914.2,
+      "pct": 3.7,
       "color": "#E76F51"
     },
     "Normal Vigour": {
-      "area_ha": 2032.3,
-      "pct": 70.3,
+      "area_ha": 23815.2,
+      "pct": 95.2,
       "color": "#8DB33F"
     },
     "Above Normal": {
-      "area_ha": 123.9,
-      "pct": 4.3,
+      "area_ha": 93.0,
+      "pct": 0.4,
       "color": "#2E6B3F"
     }
   },
   "chart_data": [
     {
       "category": "Severe Stress",
-      "area_ha": 25.0,
-      "pct": 0.9,
+      "area_ha": 186.8,
+      "pct": 0.7,
       "color": "#B4554B"
     },
     {
-      "category": "Mild Stress",
-      "area_ha": 1079.0,
-      "pct": 37.3,
+      "category": "Stressed",
+      "area_ha": 914.2,
+      "pct": 3.7,
       "color": "#E76F51"
     },
     {
       "category": "Normal Vigour",
-      "area_ha": 2032.3,
-      "pct": 70.3,
+      "area_ha": 23815.2,
+      "pct": 95.2,
       "color": "#8DB33F"
     },
     {
       "category": "Above Normal",
-      "area_ha": 123.9,
-      "pct": 4.3,
+      "area_ha": 93.0,
+      "pct": 0.4,
       "color": "#2E6B3F"
     }
   ],
   "legend": [
     {
       "id": "1",
-      "label": "Severe Stress (25.0 ha, 0.9%)",
+      "label": "Severe Stress (186.8 ha, 0.7%)",
       "color": "#B4554B"
     },
     {
       "id": "2",
-      "label": "Mild Stress (1079.0 ha, 37.3%)",
+      "label": "Stressed (914.2 ha, 3.7%)",
       "color": "#E76F51"
     },
     {
       "id": "3",
-      "label": "Normal Vigour (2032.3 ha, 70.3%)",
+      "label": "Normal Vigour (23815.2 ha, 95.2%)",
       "color": "#8DB33F"
     },
     {
       "id": "4",
-      "label": "Above Normal (123.9 ha, 4.3%)",
+      "label": "Above Normal (93.0 ha, 0.4%)",
       "color": "#2E6B3F"
     }
   ],
-  "method": "Standardized NDVI anomaly z-scores computed against multi-year seasonal reference distributions. Negative anomalies (z < -0.5) identify water stress, delayed transplanting, or localized pest attack, while positive anomalies (z > 0.5) indicate robust canopy development.",
+  "method": "Standardized NDVI anomaly z-scores computed against multi-year seasonal reference distributions. Classes: Severe Stress (z < -1.5), Stressed (-1.5 to -1.0), Normal (-1.0 to 1.0), and Above Normal (> 1.0). Calculated strictly over analyzed cropland within the canonical mask.",
   "limitations": "Cloud contamination during heavy Northeast Monsoon weeks (Nov\u2013Dec) can momentarily depress optical composites before synthetic radar cross-calibration kicks in.",
   "csv_url": "/api/insights/crop_health/csv?study_area=taluks",
   "png_url": "/api/insights/crop_health/png?study_area=taluks"

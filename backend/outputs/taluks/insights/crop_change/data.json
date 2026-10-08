@@ -2,48 +2,50 @@
   "id": "crop_change",
   "title": "Crop Change & Farmland Dynamics",
   "subtitle": "Inter-annual parcel transitions (AY 2023-24 vs AY 2025-26)",
-  "extent_label": "Extent: 4,825.0 ha \u00b7 Taluks \u00b7 Model: 16-month",
+  "extent_label": "Extent: 52,619.4 ha \u00b7 Taluks \u00b7 Model: 16-month",
+  "analysed_ha": 52619.4,
+  "canonical_analysed_ha": 52619.4,
   "study_area": "taluks",
   "model_type": "16-month",
-  "key_finding": "Evaluated 4,825.0 ha of 4,825.0 ha cropland (confidence \u2265 0.60): 26.7% of paddy and 0.8% of banana parcels remained stable across 2023\u20132026, with 82.2 ha (1.7%) identified as candidate paddy-to-banana diversification.",
-  "evaluated_ha": 4825.0,
-  "total_cropland_ha": 4825.0,
-  "coverage_note": "Evaluated 4,825.0 ha of 4,825.0 ha (both years with probability \u2265 0.6)",
-  "denominator_label": "evaluated confident area (4,825.0 ha)",
+  "key_finding": "Evaluated 41,879.6 ha of 200,961.8 ha cropland (confidence \u2265 0.60): 26.3% of paddy and 0.8% of banana parcels remained stable across 2023\u20132026, with 705.9 ha (1.7%) identified as candidate paddy-to-banana diversification.",
+  "evaluated_ha": 41879.6,
+  "total_cropland_ha": 200961.8,
+  "coverage_note": "Evaluated 41,879.6 ha of 200,961.8 ha (both years with probability \u2265 0.6)",
+  "denominator_label": "evaluated confident area (41,879.6 ha)",
   "stats": {
     "Stable Paddy": {
-      "area_ha": 1286.1,
-      "pct": 26.7,
+      "area_ha": 11023.4,
+      "pct": 26.3,
       "color": "#8DB33F",
       "desc": "Paddy in both AY 23-24 and AY 25-26"
     },
     "Stable Banana": {
-      "area_ha": 40.0,
+      "area_ha": 354.6,
       "pct": 0.8,
       "color": "#2E6B3F",
       "desc": "Continuous perennial banana plantation"
     },
     "Candidate Paddy \u2192 Banana": {
-      "area_ha": 82.2,
+      "area_ha": 705.9,
       "pct": 1.7,
       "color": "#E76F51",
       "desc": "Potential diversification from annual paddy to perennial banana"
     },
     "Banana \u2192 Paddy": {
-      "area_ha": 1.7,
+      "area_ha": 15.3,
       "pct": 0.0,
       "color": "#2A9D8F",
       "desc": "Banana replanting cycle / rotation back to paddy"
     },
     "Cropland \u2192 Fallow/Loss": {
-      "area_ha": 27.8,
+      "area_ha": 238.7,
       "pct": 0.6,
       "color": "#B4554B",
       "desc": "Cultivated land converted to fallow or non-agricultural use"
     },
     "Other Stable Cropland": {
-      "area_ha": 3387.2,
-      "pct": 70.2,
+      "area_ha": 29541.8,
+      "pct": 70.5,
       "color": "#BFCB8F",
       "desc": "Other vegetation / seasonal horticulture"
     }
@@ -51,38 +53,38 @@
   "chart_data": [
     {
       "category": "Stable Paddy",
-      "area_ha": 1286.1,
-      "pct": 26.7,
+      "area_ha": 11023.4,
+      "pct": 26.3,
       "color": "#8DB33F"
     },
     {
       "category": "Stable Banana",
-      "area_ha": 40.0,
+      "area_ha": 354.6,
       "pct": 0.8,
       "color": "#2E6B3F"
     },
     {
       "category": "Candidate Paddy \u2192 Banana",
-      "area_ha": 82.2,
+      "area_ha": 705.9,
       "pct": 1.7,
       "color": "#E76F51"
     },
     {
       "category": "Banana \u2192 Paddy",
-      "area_ha": 1.7,
+      "area_ha": 15.3,
       "pct": 0.0,
       "color": "#2A9D8F"
     },
     {
       "category": "Cropland \u2192 Fallow/Loss",
-      "area_ha": 27.8,
+      "area_ha": 238.7,
       "pct": 0.6,
       "color": "#B4554B"
     },
     {
       "category": "Other Stable Cropland",
-      "area_ha": 3387.2,
-      "pct": 70.2,
+      "area_ha": 29541.8,
+      "pct": 70.5,
       "color": "#BFCB8F"
     }
   ],

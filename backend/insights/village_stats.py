@@ -54,6 +54,15 @@ def compute_village_stats(
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_json = out_dir / "data.json"
 
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
+
     parcels_gpkg = outputs_dir / "parcels.gpkg"
     model_type = "multi-year"
     if not parcels_gpkg.exists():
@@ -221,19 +230,21 @@ def compute_village_stats(
             "color": r["color"],
         })
 
-    extent_label = f"Extent: {total_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
 
     result = {
         "id": "village_stats",
         "title": "Village-Level Statistics",
         "subtitle": "Micro-administrative cropland and crop type allocation",
         "extent_label": extent_label,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "study_area": study_area,
         "model_type": model_type,
         "key_finding": key_finding,
         "village_count": len(df_villages),
         "total_area_ha": total_analysed_ha,
-        "denominator_label": f"total analysed agricultural area ({total_analysed_ha:,.1f} ha)",
+        "denominator_label": f"total analysed agricultural area ({total_analysed_ha:,.1f} ha of {canonical_analysed_ha:,.1f} ha)",
         "villages": df_villages.to_dict(orient="records"),
         "chart_data": chart_data,
         "legend": [

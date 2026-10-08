@@ -1,7 +1,7 @@
 """
 crop_health.py — Insight 7: Multi-year NDVI z-score anomaly and crop vigour stress detection.
 Calculates standardized NDVI anomalies relative to historical 3-year agricultural baselines.
-Classes: Severe Stress (z < -1.5), Mild Stress (-1.5 <= z < -0.5), Normal (-0.5 <= z <= 0.5), Above Normal (z > 0.5).
+Classes: Severe Stress (z < -1.5), Stressed (-1.5 <= z < -1.0), Normal (-1.0 <= z <= 1.0), Above Normal (z > 1.0).
 """
 from __future__ import annotations
 
@@ -22,15 +22,14 @@ logger = logging.getLogger(__name__)
 
 ANOMALY_CLASSES = {
     1: {"name": "Severe Stress (z < -1.5)", "color": "#B4554B", "label": "Severe Stress"},
-    2: {"name": "Mild Stress (-1.5 ≤ z < -0.5)", "color": "#E76F51", "label": "Mild Stress"},
-    3: {"name": "Normal Canopy Vigour (-0.5 ≤ z ≤ 0.5)", "color": "#8DB33F", "label": "Normal Vigour"},
-    4: {"name": "Above Normal Growth (z > 0.5)", "color": "#2E6B3F", "label": "Above Normal"},
+    2: {"name": "Stressed (-1.5 ≤ z < -1.0)", "color": "#E76F51", "label": "Stressed"},
+    3: {"name": "Normal Canopy Vigour (-1.0 ≤ z ≤ 1.0)", "color": "#8DB33F", "label": "Normal Vigour"},
+    4: {"name": "Above Normal Growth (z > 1.0)", "color": "#2E6B3F", "label": "Above Normal"},
 }
 
 
-def _compute_tile_anomaly(ds: xr.Dataset, cls_arr: np.ndarray) -> np.ndarray:
-    """Compute anomaly map for a single tile."""
-    # Check if ndvi is 3D or separated by month
+def _compute_tile_anomaly(ds: xr.Dataset, cls_arr: np.ndarray, target_month_idx: int = -1) -> np.ndarray:
+    """Compute anomaly map for a single tile or scene."""
     if "ndvi" in ds:
         ndvi_all = ds["ndvi"].values
     else:
@@ -42,12 +41,24 @@ def _compute_tile_anomaly(ds: xr.Dataset, cls_arr: np.ndarray) -> np.ndarray:
 
     n_m = ndvi_all.shape[0]
     if n_m >= 36:
-        curr_ndvi = np.nanmean(ndvi_all[32:36], axis=0)
-        hist_1 = np.nanmean(ndvi_all[8:12], axis=0)
-        hist_2 = np.nanmean(ndvi_all[20:24], axis=0)
-        hist_stack = np.stack([hist_1, hist_2], axis=0)
-        hist_mean = np.nanmean(hist_stack, axis=0)
-        hist_std = np.nanstd(hist_stack, axis=0) + 0.05
+        if target_month_idx >= 0 and target_month_idx < n_m:
+            curr_ndvi = ndvi_all[target_month_idx]
+            # Baseline is same month across prior years
+            m_mod = target_month_idx % 12
+            prior_indices = [m for m in range(m_mod, n_m, 12) if m != target_month_idx]
+            if prior_indices:
+                hist_mean = np.nanmean(ndvi_all[prior_indices], axis=0)
+                hist_std = np.nanstd(ndvi_all[prior_indices], axis=0) + 0.05
+            else:
+                hist_mean = np.nanmean(ndvi_all, axis=0)
+                hist_std = np.nanstd(ndvi_all, axis=0) + 0.05
+        else:
+            curr_ndvi = np.nanmean(ndvi_all[32:36], axis=0)
+            hist_1 = np.nanmean(ndvi_all[8:12], axis=0)
+            hist_2 = np.nanmean(ndvi_all[20:24], axis=0)
+            hist_stack = np.stack([hist_1, hist_2], axis=0)
+            hist_mean = np.nanmean(hist_stack, axis=0)
+            hist_std = np.nanstd(hist_stack, axis=0) + 0.05
     elif n_m >= 12:
         curr_ndvi = np.nanmean(ndvi_all[max(0, n_m - 4):n_m], axis=0)
         hist_mean = np.nanmean(ndvi_all[0:12], axis=0)
@@ -61,9 +72,9 @@ def _compute_tile_anomaly(ds: xr.Dataset, cls_arr: np.ndarray) -> np.ndarray:
 
     anomaly_map = np.zeros((ny, nx), dtype=np.uint8)
     anomaly_map[cropland_mask & (z_score < -1.5)] = 1
-    anomaly_map[cropland_mask & (z_score >= -1.5) & (z_score < -0.5)] = 2
-    anomaly_map[cropland_mask & (z_score >= -0.5) & (z_score <= 0.5)] = 3
-    anomaly_map[cropland_mask & (z_score > 0.5)] = 4
+    anomaly_map[cropland_mask & (z_score >= -1.5) & (z_score < -1.0)] = 2
+    anomaly_map[cropland_mask & (z_score >= -1.0) & (z_score <= 1.0)] = 3
+    anomaly_map[cropland_mask & (z_score > 1.0)] = 4
     # Fallback for nan inside cropland
     anomaly_map[cropland_mask & np.isnan(z_score)] = 3
 
@@ -75,10 +86,20 @@ def compute_crop_health(
     cache_dir: Path,
     outputs_dir: Path,
     study_area: str = "pilot",
+    month_idx: int = -1,
 ) -> Dict[str, Any]:
     out_dir = outputs_dir / "insights" / "crop_health"
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_json = out_dir / "data.json"
+
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
 
     cls_path = outputs_dir / "final_class.tif"
     model_type = "multi-year"
@@ -102,7 +123,6 @@ def compute_crop_health(
     coverage_note = ""
 
     if study_area == "taluks":
-        # Process tile by tile
         tiles_dir = cache_dir / "tiles"
         if not tiles_dir.exists():
             tiles_dir = Path("backend/cache/taluks/tiles")
@@ -127,9 +147,8 @@ def compute_crop_health(
                     t_cls = t_src.read(1)
                 ds = xr.open_dataset(t / "features.nc")
 
-                t_anom = _compute_tile_anomaly(ds, t_cls)
+                t_anom = _compute_tile_anomaly(ds, t_cls, target_month_idx=month_idx)
 
-                # Resample or place tile anomaly into global anomaly raster
                 col_start, row_start = [int(round(v)) for v in inv_tfm * (t_xmin, t_ymax)]
                 col_end, row_end = [int(round(v)) for v in inv_tfm * (t_xmax, t_ymin)]
 
@@ -137,13 +156,11 @@ def compute_crop_health(
                 r0, r1 = max(0, row_start), min(global_ny, row_end)
 
                 if c1 > c0 and r1 > r0:
-                    # Resample tile anomaly to window size
                     t_anom_resized = Image.fromarray(t_anom).resize((c1 - c0, r1 - r0), Image.NEAREST)
                     anomaly_map[r0:r1, c0:c1] = np.array(t_anom_resized)
             except Exception as e:
                 logger.warning("Error processing tile %s for crop_health: %s", t.name, e)
     else:
-        # Pilot study area
         feat_path = cache_dir / "features_40m.nc"
         if not feat_path.exists():
             feat_path = cache_dir / "features.nc"
@@ -151,23 +168,24 @@ def compute_crop_health(
             feat_path = Path("backend/cache/features.nc")
 
         ds = xr.open_dataset(feat_path)
-        anomaly_map = _compute_tile_anomaly(ds, cls_arr)
+        anomaly_map = _compute_tile_anomaly(ds, cls_arr, target_month_idx=month_idx)
 
-    # Compute statistics across analyzed cropland
-    analyzed_mask = cropland_mask & (anomaly_map > 0)
+    # Compute statistics across analyzed cropland (100% sum)
+    analyzed_mask = cropland_mask & (anomaly_map > 0) & (cls_arr != 255)
     total_cropland_px = int(np.sum(analyzed_mask))
     if total_cropland_px == 0:
-        total_cropland_px = max(1, int(np.sum(cropland_mask)))
+        total_cropland_px = max(1, int(np.sum(cropland_mask & (cls_arr != 255))))
 
-    total_cropland_ha = round(total_cropland_px * 100 / 1e4, 1)
+    px_area_ha = 100 / 1e4 if study_area == "pilot" else (30 * 30) / 1e4
+    total_cropland_ha = round(total_cropland_px * px_area_ha, 1)
 
     stats_by_class = {}
     chart_data = []
     sum_area_ha = 0.0
 
     for k, ainfo in ANOMALY_CLASSES.items():
-        px_cnt = int(np.sum(anomaly_map == k))
-        area_ha = round(px_cnt * 100 / 1e4, 1)
+        px_cnt = int(np.sum((anomaly_map == k) & analyzed_mask))
+        area_ha = round(px_cnt * px_area_ha, 1)
         pct = round((px_cnt / total_cropland_px) * 100.0, 1)
         sum_area_ha += area_ha
         stats_by_class[ainfo["label"]] = {"area_ha": area_ha, "pct": pct, "color": ainfo["color"]}
@@ -190,45 +208,52 @@ def compute_crop_health(
     ) as dst:
         dst.write(anomaly_map, 1)
 
-    # Render PNG
     png_path = out_dir / "crop_health.png"
-    rgb = np.zeros((global_ny, global_nx, 3), dtype=np.uint8)
+    rgb = np.zeros((global_ny, global_nx, 4), dtype=np.uint8)
     for k, ainfo in ANOMALY_CLASSES.items():
         h = ainfo["color"].lstrip("#")
         c_rgb = [int(h[i:i+2], 16) for i in (0, 2, 4)]
-        rgb[anomaly_map == k] = c_rgb
+        m = (anomaly_map == k) & (cls_arr != 255)
+        rgb[m, 0] = c_rgb[0]
+        rgb[m, 1] = c_rgb[1]
+        rgb[m, 2] = c_rgb[2]
+        rgb[m, 3] = 255
 
-    Image.fromarray(rgb).save(png_path)
+    Image.fromarray(rgb, "RGBA").save(png_path)
 
-    # Key finding
     healthy_pct = round(stats_by_class["Normal Vigour"]["pct"] + stats_by_class["Above Normal"]["pct"], 1)
-    stress_pct = round(stats_by_class["Severe Stress"]["pct"] + stats_by_class["Mild Stress"]["pct"], 1)
-    stress_ha = round(stats_by_class["Severe Stress"]["area_ha"] + stats_by_class["Mild Stress"]["area_ha"], 1)
+    stress_pct = round(stats_by_class["Severe Stress"]["pct"] + stats_by_class["Stressed"]["pct"], 1)
+    stress_ha = round(stats_by_class["Severe Stress"]["area_ha"] + stats_by_class["Stressed"]["area_ha"], 1)
 
     key_finding = (
         f"{healthy_pct:.1f}% of analyzed cropland displays normal or above-normal vegetative vigour. "
-        f"Localized moisture or transplanting delay stress affects {stress_pct:.1f}% ({stress_ha:.1f} ha), "
-        f"predominantly along tail-end distributaries."
+        f"Vegetative moisture/vigour stress is observed across {stress_pct:.1f}% ({stress_ha:.1f} ha) of cultivated area."
     )
 
-    extent_label = f"Extent: {total_cropland_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
-    if coverage_note:
-        extent_label += f" · {coverage_note}"
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+
+    available_months = [
+        {"idx": i, "label": d.strftime("%b %Y")}
+        for i, d in enumerate(pd.date_range("2023-06-01", "2026-09-30", freq="MS"))
+    ]
 
     result = {
         "id": "crop_health",
         "title": "Crop Health & NDVI Anomaly",
-        "subtitle": "Multi-year standardized z-score deviation from 3-year baseline",
+        "subtitle": "Multi-year standardized z-score deviation from historical baseline",
         "extent_label": extent_label,
         "study_area": study_area,
         "model_type": model_type,
-        "coverage_note": coverage_note,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "key_finding": key_finding,
         "total_cropland_ha": total_cropland_ha,
         "healthy_share_pct": healthy_pct,
         "stressed_share_pct": stress_pct,
         "stressed_area_ha": stress_ha,
-        "denominator_label": f"total analyzed cropland ({total_cropland_ha:,.1f} ha)",
+        "selected_month_idx": month_idx,
+        "available_months": available_months,
+        "denominator_label": f"total analyzed cropland within mask ({total_cropland_ha:,.1f} ha)",
         "stats": stats_by_class,
         "chart_data": chart_data,
         "legend": [
@@ -237,8 +262,8 @@ def compute_crop_health(
         ],
         "method": (
             "Standardized NDVI anomaly z-scores computed against multi-year seasonal reference distributions. "
-            "Negative anomalies (z < -0.5) identify water stress, delayed transplanting, or localized pest attack, "
-            "while positive anomalies (z > 0.5) indicate robust canopy development."
+            "Classes: Severe Stress (z < -1.5), Stressed (-1.5 to -1.0), Normal (-1.0 to 1.0), and Above Normal (> 1.0). "
+            "Calculated strictly over analyzed cropland within the canonical mask."
         ),
         "limitations": (
             "Cloud contamination during heavy Northeast Monsoon weeks (Nov–Dec) can momentarily depress optical "
@@ -248,7 +273,6 @@ def compute_crop_health(
         "png_url": f"/api/insights/crop_health/png?study_area={study_area}",
     }
 
-    # Save CSV
     pd.DataFrame(chart_data).to_csv(out_dir / "crop_health_anomalies.csv", index=False)
 
     with open(cache_json, "w") as fp:

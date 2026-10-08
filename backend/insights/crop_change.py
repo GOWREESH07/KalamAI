@@ -42,6 +42,15 @@ def compute_crop_change(
     cc_cfg = cfg.get("insights", {}).get("crop_change", {})
     conf_thr = cc_cfg.get("confidence_threshold", 0.60)
 
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
+
     ay1_tif = outputs_dir / "class_ay_23_24.tif"
     ay3_tif = outputs_dir / "class_ay_25_26.tif"
     conf_tif = outputs_dir / "final_confidence.tif"
@@ -97,8 +106,9 @@ def compute_crop_change(
         else:
             conf_arr = np.full((ny, nx), 0.85, dtype=np.float32)
 
+    px_area_ha = (abs(transform[0] * transform[4]) if transform else 100.0) / 1e4
     total_cropland_px = int(np.sum((arr_ay1 > 0) & (arr_ay1 != 4) & (arr_ay1 != 5)))
-    total_cropland_ha = round(total_cropland_px * 100 / 1e4, 1)
+    total_cropland_ha = round(total_cropland_px * px_area_ha, 1)
 
     # Filter by confidence threshold >= 0.60
     conf_mask = (conf_arr >= conf_thr)
@@ -131,14 +141,14 @@ def compute_crop_change(
     if valid_evaluated_px == 0:
         valid_evaluated_px = 1
 
-    evaluated_ha = round(valid_evaluated_px * 100 / 1e4, 1)
+    evaluated_ha = round(valid_evaluated_px * px_area_ha, 1)
 
     stats_by_transition = {}
     chart_data = []
 
     for k, tinfo in TRANSITION_TYPES.items():
         px_cnt = int(np.sum(transition_map == k))
-        area_ha = round(px_cnt * 100 / 1e4, 1)
+        area_ha = round(px_cnt * px_area_ha, 1)
         pct = round((px_cnt / valid_evaluated_px) * 100.0, 1)
         stats_by_transition[tinfo["name"]] = {
             "area_ha": area_ha,
@@ -187,13 +197,15 @@ def compute_crop_change(
 
     pd.DataFrame(chart_data).to_csv(out_dir / "crop_change_transitions.csv", index=False)
 
-    extent_label = f"Extent: {evaluated_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
 
     result = {
         "id": "crop_change",
         "title": "Crop Change & Farmland Dynamics",
         "subtitle": "Inter-annual parcel transitions (AY 2023-24 vs AY 2025-26)",
         "extent_label": extent_label,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "study_area": study_area,
         "model_type": model_type,
         "key_finding": key_finding,

@@ -2,13 +2,15 @@
   "id": "village_stats",
   "title": "Village-Level Statistics",
   "subtitle": "Micro-administrative cropland and crop type allocation",
-  "extent_label": "Extent: 3,346.6 ha \u00b7 Taluks \u00b7 Model: multi-year",
+  "extent_label": "Extent: 52,619.4 ha \u00b7 Taluks \u00b7 Model: multi-year",
+  "analysed_ha": 52619.4,
+  "canonical_analysed_ha": 52619.4,
   "study_area": "taluks",
   "model_type": "multi-year",
   "key_finding": "Kallidaikurichi leads overall agricultural cultivation across both crops with 614.4 ha of paddy (68% share) and 7.7 ha of banana.",
   "village_count": 5,
   "total_area_ha": 3346.6,
-  "denominator_label": "total analysed agricultural area (3,346.6 ha)",
+  "denominator_label": "total analysed agricultural area (3,346.6 ha of 52,619.4 ha)",
   "villages": [
     {
       "village": "Veeravanallur",

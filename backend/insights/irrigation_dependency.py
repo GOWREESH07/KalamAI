@@ -40,6 +40,15 @@ def compute_irrigation_dependency(
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_json = out_dir / "data.json"
 
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
+
     cls_path = outputs_dir / "final_class.tif"
     model_type = "multi-year"
     if not cls_path.exists():
@@ -64,16 +73,18 @@ def compute_irrigation_dependency(
         water_mask[int(ny * 0.45):int(ny * 0.50), :] = True
         water_mask[:, int(nx * 0.35):int(nx * 0.38)] = True
 
-    # Compute Euclidean distance in 10m units
+    # Compute Euclidean distance in meters
+    res_m = abs(transform[0]) if transform else 10.0
+    px_area_ha = (abs(transform[0] * transform[4]) if transform else 100.0) / 1e4
     dist_px = distance_transform_edt(~water_mask)
-    dist_m = dist_px * 10.0
+    dist_m = dist_px * res_m
 
     paddy_mask = (cls_arr == 1)
     banana_mask = (cls_arr == 2)
     other_mask = (cls_arr == 3) | (cls_arr == 6)
 
     total_cropland_px = int(np.sum(paddy_mask | banana_mask | other_mask))
-    total_cropland_ha = round(total_cropland_px * 100 / 1e4, 1)
+    total_cropland_ha = round(total_cropland_px * px_area_ha, 1)
 
     total_paddy_px = int(np.sum(paddy_mask))
     paddy_near_500_px = int(np.sum(paddy_mask & (dist_m <= 500.0)))
@@ -88,9 +99,9 @@ def compute_irrigation_dependency(
         n_banana = int(np.sum(banana_mask & m_in_bin))
         n_other = int(np.sum(other_mask & m_in_bin))
 
-        paddy_ha = round(n_paddy * 100 / 1e4, 1)
-        banana_ha = round(n_banana * 100 / 1e4, 1)
-        other_ha = round(n_other * 100 / 1e4, 1)
+        paddy_ha = round(n_paddy * px_area_ha, 1)
+        banana_ha = round(n_banana * px_area_ha, 1)
+        other_ha = round(n_other * px_area_ha, 1)
         total_bin_ha = round(paddy_ha + banana_ha + other_ha, 1)
 
         paddy_share = round((paddy_ha / max(0.1, total_bin_ha)) * 100.0, 1)
@@ -156,19 +167,21 @@ def compute_irrigation_dependency(
 
     pd.DataFrame(bin_stats).to_csv(out_dir / "irrigation_dependency.csv", index=False)
 
-    extent_label = f"Extent: {total_cropland_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
 
     result = {
         "id": "irrigation_dependency",
         "title": "Irrigation Dependency & Water Access",
         "subtitle": "Crop composition decay across Thamirabarani canal buffers",
         "extent_label": extent_label,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "study_area": study_area,
         "model_type": model_type,
         "key_finding": key_finding,
         "paddy_within_500m_pct": paddy_near_500_pct,
         "total_cropland_ha": total_cropland_ha,
-        "denominator_label": f"total analyzed cropland ({total_cropland_ha:,.1f} ha)",
+        "denominator_label": f"total analyzed cropland ({total_cropland_ha:,.1f} ha of {canonical_analysed_ha:,.1f} ha)",
         "bins": bin_stats,
         "chart_data": chart_data,
         "legend": [

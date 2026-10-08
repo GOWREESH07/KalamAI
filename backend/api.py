@@ -301,22 +301,40 @@ def get_profile(lon: float, lat: float, study_area: str = "pilot"):
         }
 
     else:
-        # Check against taluks boundary polygon
-        taluks_geo = DATA_DIR / "taluks.geojson"
-        if taluks_geo.exists():
-            gdf = gpd.read_file(taluks_geo)
-            poly = gdf.union_all()
-            if not poly.contains(Point(lon, lat)):
-                raise HTTPException(
-                    status_code=400,
-                    detail={"error": "outside_aoi", "message": f"Point ({lon:.4f}, {lat:.4f}) is outside Ambasamudram & Cheranmahadevi taluks"}
-                )
+        # Check against canonical analysis mask
+        mask_tif_path = DATA_DIR / "analysis_mask.tif"
+        if mask_tif_path.exists():
+            import rasterio
+            with rasterio.open(mask_tif_path) as src:
+                row, col = src.index(x_utm, y_utm)
+                if 0 <= row < src.height and 0 <= col < src.width:
+                    val = src.read(1, window=((row, row+1), (col, col+1)))[0, 0]
+                    if val == 0:
+                        raise HTTPException(
+                            status_code=400,
+                            detail={"error": "excluded", "message": "Excluded: Western Ghats forest / hills"}
+                        )
+                    elif val == 255:
+                        raise HTTPException(
+                            status_code=400,
+                            detail={"error": "outside_aoi", "message": f"Point ({lon:.4f}, {lat:.4f}) is outside Ambasamudram & Cheranmahadevi taluks"}
+                        )
+                else:
+                    raise HTTPException(
+                        status_code=400,
+                        detail={"error": "outside_aoi", "message": f"Point ({lon:.4f}, {lat:.4f}) is outside Ambasamudram & Cheranmahadevi taluks"}
+                    )
         else:
-            if not (77.169 <= lon <= 77.662 and 8.533 <= lat <= 8.882):
-                raise HTTPException(
-                    status_code=400,
-                    detail={"error": "outside_aoi", "message": f"Point ({lon:.4f}, {lat:.4f}) is outside the taluks study area bounds"}
-                )
+            # Check against taluks boundary polygon
+            taluks_geo = DATA_DIR / "taluks.geojson"
+            if taluks_geo.exists():
+                gdf = gpd.read_file(taluks_geo)
+                poly = gdf.union_all()
+                if not poly.contains(Point(lon, lat)):
+                    raise HTTPException(
+                        status_code=400,
+                        detail={"error": "outside_aoi", "message": f"Point ({lon:.4f}, {lat:.4f}) is outside Ambasamudram & Cheranmahadevi taluks"}
+                    )
 
         # Find corresponding 5km tile
         tx = int(np.floor(x_utm / 5000.0) * 5000)

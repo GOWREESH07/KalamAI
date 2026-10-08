@@ -161,13 +161,39 @@ def compute_analysis_mask(
     # Tree cover below 120m that stayed IN:
     tree_below_120_kept = tree & (~excluded_tree) & taluk_mask
 
-    excluded_mask = (high_elev | steep | excluded_tree) & taluk_mask
-    analyzed_mask = taluk_mask & (~excluded_mask)
+    # 4. Western Ghats KMTR protected area & hill reservoirs (Papanasam, Manimuthar, Servalar/Karaiyar)
+    rows, cols = np.mgrid[0:elev.shape[0], 0:elev.shape[1]]
+    xs, ys = rasterio.transform.xy(transform, rows, cols)
+    xs = np.array(xs).reshape(elev.shape)
+    ys = np.array(ys).reshape(elev.shape)
+
+    # Ambasamudram Western Ghats / Tiger Reserve extent
+    amb_row = gdf_utm[gdf_utm["name"].str.contains("amba", case=False)]
+    amb_geom = amb_row.geometry.iloc[0] if len(amb_row) > 0 else total_geom
+    amb_mask_arr = rasterize([(amb_geom, 1)], out_shape=elev.shape, transform=transform, fill=0, dtype=np.uint8) == 1
+
+    extra_ghats_excl = (
+        (amb_mask_arr & (xs < 757150)) |
+        (amb_mask_arr & (xs < 761500) & (ys < 958000))
+    )
+
+    excluded_mask = (high_elev | steep | excluded_tree | extra_ghats_excl) & taluk_mask
+    raw_analyzed = taluk_mask & (~excluded_mask)
+
+    # 5. Morphological clean-up: remove mask islands < 1 ha and fill holes < 1 ha
+    from skimage.morphology import remove_small_objects, remove_small_holes
+    min_px = int(round(10000 / (res * res)))  # 1 ha threshold
+    cleaned_analyzed = remove_small_objects(raw_analyzed, max_size=min_px)
+    cleaned_analyzed = remove_small_holes(cleaned_analyzed, max_size=min_px)
+    analyzed_mask = cleaned_analyzed & taluk_mask
+    excluded_mask = taluk_mask & (~analyzed_mask)
 
     px_area_km2 = (res * res) / 1e6
+    px_area_ha = (res * res) / 1e4
     total_taluk_km2 = float(np.sum(taluk_mask) * px_area_km2)
     excluded_km2 = float(np.sum(excluded_mask) * px_area_km2)
     analyzed_km2 = float(np.sum(analyzed_mask) * px_area_km2)
+    analyzed_ha = float(np.sum(analyzed_mask) * px_area_ha)
     tree_kept_km2 = float(np.sum(tree_below_120_kept) * px_area_km2)
 
     # Calculate per-taluk breakdown
@@ -182,19 +208,21 @@ def compute_analysis_mask(
             "total_km2": round(t_total, 2),
             "excluded_km2": round(t_excl, 2),
             "analyzed_km2": round(t_anal, 2),
+            "analyzed_ha": round(t_anal * 100, 1),
         }
 
     stats = {
         "total_taluk_km2": round(total_taluk_km2, 2),
         "excluded_km2": round(excluded_km2, 2),
         "analyzed_km2": round(analyzed_km2, 2),
+        "analyzed_ha": round(analyzed_ha, 1),
         "tree_below_120_kept_km2": round(tree_kept_km2, 2),
         "per_taluk": per_taluk,
         "resolution_m": res,
     }
 
-    logger.info("Mask computed: Total=%.2f km², Excluded=%.2f km², Analysed=%.2f km², Tree <120m kept=%.2f km²",
-                total_taluk_km2, excluded_km2, analyzed_km2, tree_kept_km2)
+    logger.info("Mask computed: Total=%.2f km², Excluded=%.2f km², Analysed=%.2f km² (%.1f ha), Tree <120m kept=%.2f km²",
+                total_taluk_km2, excluded_km2, analyzed_km2, analyzed_ha, tree_kept_km2)
 
     # Save analysis_mask.tif: 1 = analysed, 0 = excluded, 255 = outside taluk
     out_raster = np.full(elev.shape, 255, dtype=np.uint8)
@@ -224,7 +252,6 @@ def compute_analysis_mask(
     ]
     if excl_shapes:
         excl_union = unary_union(excl_shapes)
-        # Simplify slightly (30m tolerance) to keep GeoJSON compact and fast in maplibre
         excl_simplified = excl_union.simplify(30.0)
         excl_gdf = gpd.GeoDataFrame([{"geometry": excl_simplified}], crs="EPSG:32643").to_crs("EPSG:4326")
         excl_geojson = {
@@ -233,8 +260,9 @@ def compute_analysis_mask(
                 {
                     "type": "Feature",
                     "properties": {
-                        "label": "Excluded: forest / hills (Western Ghats)",
+                        "label": "Excluded: Western Ghats forest / hills",
                         "area_km2": round(excluded_km2, 2),
+                        "area_ha": round(excluded_km2 * 100, 1),
                     },
                     "geometry": mapping(excl_gdf.geometry.iloc[0]),
                 }

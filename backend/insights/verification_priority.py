@@ -46,6 +46,15 @@ def compute_verification_priority(
     w_cons = weights.get("consistency", 0.3)
     w_disag = weights.get("disagreement", 0.2)
 
+    # Canonical mask denominator
+    mask_stats_p = Path("data/mask_stats.json")
+    if mask_stats_p.exists() and study_area == "taluks":
+        with open(mask_stats_p) as fp:
+            mask_info = json.load(fp)
+            canonical_analysed_ha = mask_info.get("analyzed_ha", 52619.4)
+    else:
+        canonical_analysed_ha = 3346.5
+
     parcels_gpkg = outputs_dir / "parcels.gpkg"
     model_type = "multi-year"
     if not parcels_gpkg.exists():
@@ -61,6 +70,7 @@ def compute_verification_priority(
     if gdf.crs is None:
         gdf = gdf.set_crs(epsg=32643)
 
+    # Filter out any non-agricultural or outside parcels
     if "area_ha" not in gdf.columns:
         gdf["area_ha"] = gdf.geometry.area / 1e4
 
@@ -226,13 +236,15 @@ def compute_verification_priority(
         f"due to lower phenological confidence or inter-annual crop instability, with top-50 priority targets packaged for GPS navigation."
     )
 
-    extent_label = f"Extent: {total_area_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
+    extent_label = f"Extent: {canonical_analysed_ha:,.1f} ha · {study_area.title()} · Model: {model_type}"
 
     result = {
         "id": "verification_priority",
         "title": "Field Verification Priority",
         "subtitle": "Targeted ground-audit ranking & GPS navigation coordinates",
         "extent_label": extent_label,
+        "analysed_ha": canonical_analysed_ha,
+        "canonical_analysed_ha": canonical_analysed_ha,
         "study_area": study_area,
         "model_type": model_type,
         "key_finding": key_finding,
@@ -240,7 +252,7 @@ def compute_verification_priority(
         "total_area_ha": total_area_ha,
         "critical_parcels": critical_cnt,
         "high_priority_parcels": high_cnt,
-        "denominator_label": f"total agricultural parcels ({total_parcels:,} fields)",
+        "denominator_label": f"total agricultural parcels ({total_parcels:,} fields across {total_area_ha:,.1f} ha)",
         "stats": stats_by_level,
         "chart_data": chart_data,
         "top50": top50_records,

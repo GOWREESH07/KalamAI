@@ -2,106 +2,108 @@
   "id": "cropping_intensity",
   "title": "Cropping Intensity",
   "subtitle": "Multi-cycle harvest frequency (AY 2025-26 (16-month baseline))",
-  "extent_label": "Extent: 3,346.6 ha \u00b7 Pilot \u00b7 Model: 16-month",
+  "extent_label": "Extent: 3,346.5 ha \u00b7 Pilot \u00b7 Model: 16-month",
   "study_area": "pilot",
   "model_type": "16-month",
-  "coverage_note": "",
-  "key_finding": "12.9% of cropland (370.6 ha) is double-cropped with Kar and Pishanam paddy cycles, with 1.4% under perennial banana.",
+  "analysed_ha": 3346.5,
+  "canonical_analysed_ha": 3346.5,
+  "total_cropland_ha": 3011.2,
+  "sum_area_ha": 3011.1,
+  "area_check_pass": true,
+  "key_finding": "42.2% of cropland (1269.4 ha) is double-cropped with Kar and Pishanam paddy cycles, with 1.3% under perennial banana.",
   "ay_label": "AY 2025-26 (16-month baseline)",
-  "total_cropland_ha": 3346.6,
-  "double_cropped_pct": 12.9,
-  "single_cropped_pct": 85.6,
-  "perennial_pct": 1.4,
-  "denominator_label": "total analyzed cropland (3,346.6 ha)",
+  "double_cropped_pct": 42.2,
+  "single_cropped_pct": 51.7,
+  "perennial_pct": 1.3,
+  "denominator_label": "total analyzed cropland within mask (3,011.2 ha)",
   "stats": {
     "Fallow / Uncultivated": {
-      "area_ha": 479.7,
-      "pct": 16.7,
+      "area_ha": 144.8,
+      "pct": 4.8,
       "color": "#CBA670"
     },
     "Single Crop": {
-      "area_ha": 2453.6,
-      "pct": 85.6,
+      "area_ha": 1556.5,
+      "pct": 51.7,
       "color": "#A8DADC"
     },
     "Double Crop": {
-      "area_ha": 370.6,
-      "pct": 12.9,
+      "area_ha": 1269.4,
+      "pct": 42.2,
       "color": "#457B9D"
     },
     "Triple Crop": {
-      "area_ha": 2.1,
-      "pct": 0.1,
+      "area_ha": 0.0,
+      "pct": 0.0,
       "color": "#1D3557"
     },
     "Perennial (Banana/Tree)": {
-      "area_ha": 40.6,
-      "pct": 1.4,
+      "area_ha": 40.4,
+      "pct": 1.3,
       "color": "#2E6B3F"
     }
   },
   "chart_data": [
     {
       "category": "Fallow / Uncultivated",
-      "area_ha": 479.7,
-      "pct": 16.7,
+      "area_ha": 144.8,
+      "pct": 4.8,
       "color": "#CBA670"
     },
     {
       "category": "Single Crop",
-      "area_ha": 2453.6,
-      "pct": 85.6,
+      "area_ha": 1556.5,
+      "pct": 51.7,
       "color": "#A8DADC"
     },
     {
       "category": "Double Crop",
-      "area_ha": 370.6,
-      "pct": 12.9,
+      "area_ha": 1269.4,
+      "pct": 42.2,
       "color": "#457B9D"
     },
     {
       "category": "Triple Crop",
-      "area_ha": 2.1,
-      "pct": 0.1,
+      "area_ha": 0.0,
+      "pct": 0.0,
       "color": "#1D3557"
     },
     {
       "category": "Perennial (Banana/Tree)",
-      "area_ha": 40.6,
-      "pct": 1.4,
+      "area_ha": 40.4,
+      "pct": 1.3,
       "color": "#2E6B3F"
     }
   ],
   "legend": [
     {
       "id": "0",
-      "label": "Fallow / Uncultivated (479.7 ha, 16.7%)",
+      "label": "Fallow / Uncultivated (144.8 ha, 4.8%)",
       "color": "#CBA670"
     },
     {
       "id": "1",
-      "label": "Single Crop (2453.6 ha, 85.6%)",
+      "label": "Single Crop (1556.5 ha, 51.7%)",
       "color": "#A8DADC"
     },
     {
       "id": "2",
-      "label": "Double Crop (370.6 ha, 12.9%)",
+      "label": "Double Crop (1269.4 ha, 42.2%)",
       "color": "#457B9D"
     },
     {
       "id": "3",
-      "label": "Triple Crop (2.1 ha, 0.1%)",
+      "label": "Triple Crop (0.0 ha, 0.0%)",
       "color": "#1D3557"
     },
     {
       "id": "4",
-      "label": "Perennial (Banana/Tree) (40.6 ha, 1.4%)",
+      "label": "Perennial (Banana/Tree) (40.4 ha, 1.3%)",
       "color": "#2E6B3F"
     }
   ],
-  "method": "Per-pixel phenological peak detection across monthly NDVI composites padded with 2 boundary months. Crop cycles are resolved using scipy.signal.find_peaks with peak height \u2265 0.45, prominence \u2265 0.15, and inter-peak distance \u2265 3 months. Perennial canopy is identified via persistent broadleaf NDVI and high SAR backscatter.",
+  "method": "Per-pixel phenological peak detection across monthly NDVI composites padded with 2 boundary months. Applies 2-month moving maximum gap filling for monsoon cloud suppression and integrates SAR specular inundation dip confirmation. Minimum peak prominence threshold set to 0.12 with height threshold 0.40.",
   "limitations": "Short-duration relay pulses (under 60 days) between major seasons may not reach the 10-day satellite composite prominence threshold.",
-  "raster_url": "/api/insights/cropping_intensity/raster?study_area=pilot",
   "png_url": "/api/insights/cropping_intensity/png?study_area=pilot",
   "csv_url": "/api/insights/cropping_intensity/csv?study_area=pilot"
 }

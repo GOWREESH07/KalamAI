@@ -2,74 +2,87 @@
   "id": "water_demand",
   "title": "Indicative Gross Irrigation Requirement",
   "subtitle": "Agronomic volumetric water budgeting & canal allocation estimates",
-  "extent_label": "Extent: 3,285.3 ha \u00b7 Taluks \u00b7 Model: 16-month",
+  "extent_label": "Extent: 52,619.4 ha \u00b7 Taluks \u00b7 Model: 16-month",
   "study_area": "taluks",
   "model_type": "16-month",
-  "key_finding": "Total indicative gross irrigation water requirement is 37.7 MCM/year. Dual-season paddy accounts for 73.3% (27.6 MCM) of total demand, while perennial banana accounts for 2.2% (0.8 MCM).",
-  "total_water_mcm": 37.71,
-  "paddy_water_mcm": 27.64,
-  "banana_water_mcm": 0.83,
-  "paddy_water_share_pct": 73.3,
-  "banana_water_share_pct": 2.2,
-  "total_cropland_ha": 3285.3,
-  "denominator_label": "total gross irrigation requirement (37.7 MCM)",
+  "analysed_ha": 52619.4,
+  "canonical_analysed_ha": 52619.4,
+  "key_finding": "Total indicative gross irrigation requirement across analyzed farmed plains is 348.5 MCM/year. Paddy cycles (Kar & Pishanam) account for 75.0% (261.4 MCM), while perennial banana requires 7.4 MCM (2.1%).",
+  "total_water_mcm": 348.51,
+  "paddy_water_mcm": 261.37,
+  "banana_water_mcm": 7.4,
+  "paddy_water_share_pct": 75.0,
+  "banana_water_share_pct": 2.1,
+  "taluk_split": {
+    "Ambasamudram": {
+      "total_water_mcm": 196.67,
+      "paddy_ha": 6552.4,
+      "banana_ha": 256.7
+    },
+    "Cheranmahadevi": {
+      "total_water_mcm": 151.84,
+      "paddy_ha": 5415.5,
+      "banana_ha": 113.2
+    }
+  },
+  "denominator_label": "total gross irrigation requirement (348.5 MCM)",
   "chart_data": [
     {
-      "category": "Paddy (Kar Season)",
-      "water_mcm": 10.89,
-      "area_ha": 907.5,
-      "pct": 28.9,
+      "category": "Kar Paddy (Short-duration)",
+      "water_mcm": 117.76,
+      "area_ha": 9813.7,
+      "pct": 33.8,
       "color": "#8DB33F",
-      "rate_desc": "1,200 mm (12,000 m\u00b3/ha)"
+      "rate_desc": "1,200 mm/season (12,000 m\u00b3/ha)"
     },
     {
-      "category": "Paddy (Pishanam Season)",
-      "water_mcm": 16.75,
-      "area_ha": 1396.1,
-      "pct": 44.4,
+      "category": "Pishanam Paddy (Main Monsoon)",
+      "water_mcm": 143.61,
+      "area_ha": 11967.9,
+      "pct": 41.2,
       "color": "#457B9D",
-      "rate_desc": "1,200 mm (12,000 m\u00b3/ha)"
+      "rate_desc": "1,200 mm/season (12,000 m\u00b3/ha)"
     },
     {
-      "category": "Banana (Annual Perennial)",
-      "water_mcm": 0.83,
-      "area_ha": 41.7,
-      "pct": 2.2,
+      "category": "Perennial Banana (Year-round)",
+      "water_mcm": 7.4,
+      "area_ha": 369.9,
+      "pct": 2.1,
       "color": "#2E6B3F",
-      "rate_desc": "2,000 mm (20,000 m\u00b3/ha/yr)"
+      "rate_desc": "2,000 mm/yr (20,000 m\u00b3/ha/yr)"
     },
     {
-      "category": "Other Crops / Pulses",
-      "water_mcm": 9.24,
-      "area_ha": 1847.5,
-      "pct": 24.5,
+      "category": "Other Cropland / Pulses",
+      "water_mcm": 79.74,
+      "area_ha": 15947.5,
+      "pct": 22.9,
       "color": "#BFCB8F",
-      "rate_desc": "500 mm (5,000 m\u00b3/ha)"
+      "rate_desc": "500 mm/season (5,000 m\u00b3/ha)"
     }
   ],
   "legend": [
     {
-      "id": "Paddy (Kar Season)",
-      "label": "Paddy (Kar Season) (28.9%)",
+      "id": "Kar Paddy (Short-duration)",
+      "label": "Kar Paddy (Short-duration) (117.76 MCM, 33.8%)",
       "color": "#8DB33F"
     },
     {
-      "id": "Paddy (Pishanam Season)",
-      "label": "Paddy (Pishanam Season) (44.4%)",
+      "id": "Pishanam Paddy (Main Monsoon)",
+      "label": "Pishanam Paddy (Main Monsoon) (143.61 MCM, 41.2%)",
       "color": "#457B9D"
     },
     {
-      "id": "Banana (Annual Perennial)",
-      "label": "Banana (Annual Perennial) (2.2%)",
+      "id": "Perennial Banana (Year-round)",
+      "label": "Perennial Banana (Year-round) (7.4 MCM, 2.1%)",
       "color": "#2E6B3F"
     },
     {
-      "id": "Other Crops / Pulses",
-      "label": "Other Crops / Pulses (24.5%)",
+      "id": "Other Cropland / Pulses",
+      "label": "Other Cropland / Pulses (79.74 MCM, 22.9%)",
       "color": "#BFCB8F"
     }
   ],
-  "method": "area \u00d7 standard seasonal water requirement (config values, to be verified against TNAU/FAO-56); rainfall offset not applied. Wetland paddy: 1,200 mm/season; perennial banana: 2,000 mm/year; other crops: 500 mm.",
+  "method": "Standard seasonal crop evapotranspiration coefficients: Wetland paddy (1,200 mm/season), perennial banana (2,000 mm/year), and pulses/other crops (500 mm/season). Reconciled directly with Module 02 seasonal transplanting acreage.",
   "limitations": "Rainfall offset (effective precipitation during Northeast Monsoon) and groundwater conjunctive use are not subtracted in this gross baseline estimate.",
   "csv_url": "/api/insights/water_demand/csv?study_area=taluks",
   "png_url": "/api/insights/water_demand/png?study_area=taluks"
