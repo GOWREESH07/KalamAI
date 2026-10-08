@@ -1,9 +1,9 @@
 category,area_ha,pct,month,season,season_total_ha,is_median,color
-Kar Season — May,1370.7,79.3,May,Kar,1728.1,True,#E9D8A6
-Kar Season — Jun,265.6,15.4,Jun,Kar,1728.1,False,#EE9B00
-Kar Season — Jul,45.5,2.6,Jul,Kar,1728.1,False,#CA6702
-Kar Season — Aug,46.3,2.7,Aug,Kar,1728.1,False,#BB3E03
-Pishanam Season — Sep,139.8,8.1,Sep,Pishanam,1728.1,False,#0A9396
-Pishanam Season — Oct,158.5,9.2,Oct,Pishanam,1728.1,False,#94D2BD
-Pishanam Season — Nov,1220.9,70.6,Nov,Pishanam,1728.1,True,#005F73
-Pishanam Season — Dec,208.8,12.1,Dec,Pishanam,1728.1,False,#0A2472
+Kar Season — May,61.2,3.5,May,Kar,1728.1,False,#E9D8A6
+Kar Season — Jun,321.7,18.6,Jun,Kar,1728.1,False,#EE9B00
+Kar Season — Jul,961.6,55.6,Jul,Kar,1728.1,True,#CA6702
+Kar Season — Aug,383.6,22.2,Aug,Kar,1728.1,False,#BB3E03
+Pishanam Season — Sep,114.2,6.6,Sep,Pishanam,1728.1,False,#0A9396
+Pishanam Season — Oct,122.5,7.1,Oct,Pishanam,1728.1,False,#94D2BD
+Pishanam Season — Nov,1323.9,76.6,Nov,Pishanam,1728.1,True,#005F73
+Pishanam Season — Dec,167.5,9.7,Dec,Pishanam,1728.1,False,#0A2472

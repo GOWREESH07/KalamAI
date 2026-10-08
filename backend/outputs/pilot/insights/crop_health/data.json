@@ -7,11 +7,11 @@
   "model_type": "16-month",
   "analysed_ha": 3346.5,
   "canonical_analysed_ha": 3346.5,
-  "key_finding": "55.0% of analyzed cropland displays normal or above-normal vegetative vigour. Vegetative moisture/vigour stress is observed across 45.1% (1165.6 ha) of cultivated area.",
+  "key_finding": "98.6% of analyzed cropland displays normal or above-normal vegetative vigour. Vegetative moisture/vigour stress is observed across 1.4% (35.6 ha) of cultivated area.",
   "total_cropland_ha": 2585.7,
-  "healthy_share_pct": 55.0,
-  "stressed_share_pct": 45.1,
-  "stressed_area_ha": 1165.6,
+  "healthy_share_pct": 98.6,
+  "stressed_share_pct": 1.4,
+  "stressed_area_ha": 35.6,
   "selected_month_idx": -1,
   "available_months": [
     {
@@ -178,71 +178,71 @@
   "denominator_label": "total analyzed cropland within mask (2,585.7 ha)",
   "stats": {
     "Severe Stress": {
-      "area_ha": 530.1,
-      "pct": 20.5,
+      "area_ha": 8.3,
+      "pct": 0.3,
       "color": "#B4554B"
     },
     "Stressed": {
-      "area_ha": 635.5,
-      "pct": 24.6,
+      "area_ha": 27.3,
+      "pct": 1.1,
       "color": "#E76F51"
     },
     "Normal Vigour": {
-      "area_ha": 1366.7,
-      "pct": 52.9,
+      "area_ha": 2546.2,
+      "pct": 98.5,
       "color": "#8DB33F"
     },
     "Above Normal": {
-      "area_ha": 53.4,
-      "pct": 2.1,
+      "area_ha": 3.9,
+      "pct": 0.1,
       "color": "#2E6B3F"
     }
   },
   "chart_data": [
     {
       "category": "Severe Stress",
-      "area_ha": 530.1,
-      "pct": 20.5,
+      "area_ha": 8.3,
+      "pct": 0.3,
       "color": "#B4554B"
     },
     {
       "category": "Stressed",
-      "area_ha": 635.5,
-      "pct": 24.6,
+      "area_ha": 27.3,
+      "pct": 1.1,
       "color": "#E76F51"
     },
     {
       "category": "Normal Vigour",
-      "area_ha": 1366.7,
-      "pct": 52.9,
+      "area_ha": 2546.2,
+      "pct": 98.5,
       "color": "#8DB33F"
     },
     {
       "category": "Above Normal",
-      "area_ha": 53.4,
-      "pct": 2.1,
+      "area_ha": 3.9,
+      "pct": 0.1,
       "color": "#2E6B3F"
     }
   ],
   "legend": [
     {
       "id": "1",
-      "label": "Severe Stress (530.1 ha, 20.5%)",
+      "label": "Severe Stress (8.3 ha, 0.3%)",
       "color": "#B4554B"
     },
     {
       "id": "2",
-      "label": "Stressed (635.5 ha, 24.6%)",
+      "label": "Stressed (27.3 ha, 1.1%)",
       "color": "#E76F51"
     },
     {
       "id": "3",
-      "label": "Normal Vigour (1366.7 ha, 52.9%)",
+      "label": "Normal Vigour (2546.2 ha, 98.5%)",
       "color": "#8DB33F"
     },
     {
       "id": "4",
-      "label": "Above Normal (53.4 ha, 2.1%)",
+      "label": "Above Normal (3.9 ha, 0.1%)",
       "color": "#2E6B3F"
     }
   ],

@@ -175,13 +175,17 @@ def compute_crop_change(
         dst.write(transition_map, 1)
 
     png_path = out_dir / "crop_change.png"
-    rgb = np.zeros((ny, nx, 3), dtype=np.uint8)
+    rgba = np.zeros((ny, nx, 4), dtype=np.uint8)
     for k, tinfo in TRANSITION_TYPES.items():
         h = tinfo["color"].lstrip("#")
         c_rgb = [int(h[i:i+2], 16) for i in (0, 2, 4)]
-        rgb[transition_map == k] = c_rgb
+        m = (transition_map == k)
+        rgba[m, 0] = c_rgb[0]
+        rgba[m, 1] = c_rgb[1]
+        rgba[m, 2] = c_rgb[2]
+        rgba[m, 3] = 255
 
-    Image.fromarray(rgb).save(png_path)
+    Image.fromarray(rgba, "RGBA").save(png_path)
 
     p2b_ha = stats_by_transition["Candidate Paddy → Banana"]["area_ha"]
     p2b_pct = stats_by_transition["Candidate Paddy → Banana"]["pct"]

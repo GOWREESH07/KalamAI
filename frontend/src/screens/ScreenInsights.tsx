@@ -446,6 +446,26 @@ export default function ScreenInsights({ studyArea }: Props) {
                 </div>
               )}
 
+              {detail.id === 'irrigation_dependency' && (
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">Paddy within 500 m</div>
+                      <div className="metric-value" style={{ fontSize: 20, color: '#0077B6' }}>{detail.paddy_within_500m_pct}%</div>
+                    </div>
+                    <div className="metric-tile" style={{ padding: '8px 10px' }}>
+                      <div className="metric-label">Paddy within 1,000 m</div>
+                      <div className="metric-value" style={{ fontSize: 20, color: '#0096C7' }}>{detail.paddy_within_1000m_pct}%</div>
+                    </div>
+                  </div>
+                  {detail.network_summary && (
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 14, padding: '4px 8px', background: 'var(--bg)', borderRadius: 4 }}>
+                      <strong>Water network:</strong> {detail.network_summary}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {detail.id === 'water_demand' && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
                   <div className="metric-tile" style={{ padding: '8px 10px' }}>

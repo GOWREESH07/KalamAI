@@ -157,6 +157,9 @@ export interface InsightDetail {
   high_priority_parcels?: number
   village_count?: number
   villages?: any[]
+  network_summary?: string
+  paddy_within_500m_pct?: number
+  paddy_within_1000m_pct?: number
   total_water_mcm?: number
   paddy_water_mcm?: number
   banana_water_mcm?: number

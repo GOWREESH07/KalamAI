@@ -1,6 +1,6 @@
 """
 atlas.py — Multi-page Insights Atlas PDF generator for Kalam.
-Generates an executive cartographic report of all 9 agricultural insights.
+Generates an executive cartographic report of the 6 core agricultural insights.
 """
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def generate_insights_atlas_pdf(
     atlas_dir.mkdir(parents=True, exist_ok=True)
     pdf_path = atlas_dir / "kalam_insights_atlas.pdf"
 
-    # Gather data from all 6 insights
+    # Gather data from the 6 core insights
     insights_data = {}
     insight_ids = [
         "cropping_intensity", "transplanting_calendar",
