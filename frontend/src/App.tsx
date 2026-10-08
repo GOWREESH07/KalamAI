@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { Map, Layers, BarChart2, Tag, Download, Activity } from 'lucide-react'
+import { Map, Layers, BarChart2, Download, Activity, Sparkles } from 'lucide-react'
 import { api, StepStatus, StudyAreaType } from './api'
 import ScreenOverview from './screens/ScreenOverview'
 import ScreenStudyArea from './screens/ScreenStudyArea'
 import ScreenCropSignatures from './screens/ScreenCropSignatures'
-import ScreenTraining from './screens/ScreenTraining'
 import ScreenResults from './screens/ScreenResults'
 import ScreenExport from './screens/ScreenExport'
 import ScreenInsights from './screens/ScreenInsights'
-import { Sparkles } from 'lucide-react'
 
 const NAV_ITEMS = [
   { id: '01', label: 'Overview', icon: Activity },
   { id: '02', label: 'Study Area & Data', icon: Map },
   { id: '03', label: 'Crop Signatures', icon: BarChart2 },
-  { id: '04', label: 'Training Data', icon: Tag },
   { id: '05', label: 'Classification', icon: Layers },
   { id: '06', label: 'Export', icon: Download },
   { id: '07', label: 'Insights', icon: Sparkles },
@@ -24,7 +21,6 @@ const STEP_TO_NAV: Record<string, string> = {
   acquire: '02',
   preprocess: '02',
   features: '03',
-  labels: '04',
   segment: '05',
   classify: '05',
   export: '06',
@@ -168,7 +164,6 @@ export default function App() {
         {activeScreen === '01' && <ScreenOverview {...screenProps} onNavigate={setActiveScreen} />}
         {activeScreen === '02' && <ScreenStudyArea {...screenProps} />}
         {activeScreen === '03' && <ScreenCropSignatures {...screenProps} />}
-        {activeScreen === '04' && <ScreenTraining {...screenProps} />}
         {activeScreen === '05' && <ScreenResults {...screenProps} />}
         {activeScreen === '06' && <ScreenExport {...screenProps} />}
         {activeScreen === '07' && <ScreenInsights studyArea={studyArea} />}
