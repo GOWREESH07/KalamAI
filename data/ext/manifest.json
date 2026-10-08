@@ -1,0 +1,87 @@
+{
+  "dem": {
+    "source_url": "https://planetarycomputer.microsoft.com/dataset/cop-dem-glo-30",
+    "retrieved": "2026-10-08T23:34:10",
+    "status": "ok",
+    "note": "1 tiles, bilinear to mask grid"
+  },
+  "osm_roads": {
+    "source_url": "https://overpass-api.de/api/interpreter",
+    "retrieved": "2026-10-08T23:34:21",
+    "status": "ok",
+    "note": "13987 highway ways (out geom)",
+    "bbox": "8.480711933209584,77.11758603388046,8.935215795873408,77.71439651380436"
+  },
+  "osm_rail_power": {
+    "source_url": "https://overpass-api.de/api/interpreter",
+    "retrieved": "2026-10-08T23:34:35",
+    "status": "failed",
+    "note": "Overpass failed: HTTP 500"
+  },
+  "osm_places": {
+    "source_url": "https://overpass.private.coffee/api/interpreter",
+    "retrieved": "2026-10-08T23:34:50",
+    "status": "ok",
+    "note": "157 towns/cities/marketplaces within ~20 km",
+    "bbox": "8.330711933209585,76.96758603388045,9.085215795873406,77.86439651380437"
+  },
+  "soilgrids": {
+    "source_url": "https://maps.isric.org (ISRIC SoilGrids 2.0 WCS, 250 m)",
+    "retrieved": "2026-10-08T23:35:19",
+    "status": "ok",
+    "note": "depth-weighted mean 0\u201330 cm, bilinear to grid",
+    "example_url": "https://maps.isric.org/mapserv?map=/map/sand.map&SERVICE=WCS&VERSION=2.0.1&REQUEST=GetCoverage&COVERAGEID=sand_0-5cm_mean&FORMAT=image/tiff&SUBSET=long(77.15758603388045,77.67439651380437)&SUBSET=lat(8.520711933209585,8.895215795873407)&SUBSETTINGCRS=http://www.opengis.net/def/crs/EPSG/0/4326&OUTPUTCRS=http://www.opengis.net/def/crs/EPSG/0/4326"
+  },
+  "chirps": {
+    "source_url": "https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_annual/tifs/",
+    "retrieved": "2026-10-08T23:38:43",
+    "status": "ok",
+    "note": "annual mean of 2015\u20132024 (10 yrs), bilinear",
+    "years": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ]
+  },
+  "s1_flood": {
+    "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-1-rtc",
+    "retrieved": "2026-10-08T23:38:50",
+    "status": "ok",
+    "note": "median dB composites",
+    "pre_dates": [
+      "2023-11-06",
+      "2023-11-11",
+      "2023-11-18",
+      "2023-11-23"
+    ],
+    "post_dates": [
+      "2023-12-17",
+      "2023-12-29"
+    ]
+  },
+  "s2_dry": {
+    "source_url": "https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a",
+    "retrieved": "2026-10-08T23:47:12",
+    "status": "ok",
+    "note": "11 scenes Mar\u2013May 2026, SCL masked, monthly medians",
+    "dates": [
+      "2026-03-03",
+      "2026-03-08",
+      "2026-03-10",
+      "2026-03-20",
+      "2026-03-23",
+      "2026-03-28",
+      "2026-04-02",
+      "2026-04-09",
+      "2026-04-22",
+      "2026-05-27"
+    ]
+  }
+}

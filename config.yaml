@@ -149,3 +149,155 @@ insights:
 
 
 
+
+# ---------------------------------------------------------------------------
+# MODULE 07 — Groundwater & Recharge Intelligence
+# ---------------------------------------------------------------------------
+groundwater:
+  grid_note: "All layers on the canonical analysis-mask grid (EPSG:32643, 30 m)"
+  stream_threshold_km2: 0.5          # contributing area for stream initiation
+  density_window_m: 1000             # moving window for drainage / lineament density
+  lineaments:
+    hillshade_azimuths: [0, 45, 90, 135]
+    hillshade_altitude: 30
+    canny_sigma: 2.0
+    hough_threshold: 10
+    min_length_m: 300
+    line_gap_px: 2
+    manmade_buffer_m: 30             # drop segments within 30 m of roads / railways / canals
+    low_density_km_km2: 0.05         # median plains density below this => weight halved
+    low_density_weight_factor: 0.5
+  geomorphology:
+    tpi_radii_m: [300, 1000]
+    floodplain_max_slope_deg: 1.0
+    floodplain_max_river_dist_m: 1500
+    floodplain_max_tpi_m: 0.0
+    pediplain_max_slope_deg: 2.0
+    pediment_max_slope_deg: 5.0
+    hill_min_tpi_m: 15.0
+    scores: {floodplain: 5, pediplain: 4, pediment: 3, dissected_upland: 2, residual_hill: 1}
+  # score breaks: value < break[i] => scores[i]; last score for values >= last break
+  scores:
+    slope_deg:            {breaks: [1, 3, 5, 8],          scores: [5, 4, 3, 2, 1]}
+    drainage_density:     {breaks: [0.5, 1.0, 1.5, 2.5],  scores: [5, 4, 3, 2, 1]}   # high density = more runoff = LOWER
+    lineament_density:    {breaks: [0.05, 0.2, 0.4, 0.8], scores: [1, 2, 3, 4, 5]}
+    surface_water_dist_m: {breaks: [250, 500, 1000, 2000], scores: [5, 4, 3, 2, 1]}
+    rainfall: "quintiles within the analysed area (score 1 = driest quintile, 5 = wettest)"
+    landuse: {1: 5, 2: 4, 3: 4, 4: 1, 5: 5, 6: 3}      # paddy, banana, other veg, built-up, water, fallow
+    soil_texture_infiltration:
+      sand: 5
+      loamy_sand: 5
+      sandy_loam: 4
+      loam: 3
+      silt_loam: 3
+      silt: 3
+      sandy_clay_loam: 2
+      clay_loam: 2
+      silty_clay_loam: 2
+      sandy_clay: 1
+      silty_clay: 1
+      clay: 1
+    soil_texture_hsg: {sand: A, loamy_sand: A, sandy_loam: B, loam: B, silt_loam: B, silt: B,
+                       sandy_clay_loam: C, clay_loam: D, silty_clay_loam: D, sandy_clay: D, silty_clay: D, clay: D}
+  geology_dir: "data/geology"
+  geology_permeability: {alluvium: 5, sandstone: 4, laterite: 4, limestone: 4, charnockite: 2, gneiss: 2,
+                         granite: 2, quartzite: 1, khondalite: 2, default: 2}
+  # AHP: layers in priority order, upper triangle of the pairwise comparison matrix (row i vs columns i+1..n)
+  ahp:
+    layers: [geomorphology, lineament_density, slope, soil, drainage_density, rainfall, landuse, surface_water]
+    upper: [[2, 3, 4, 5, 6, 7, 8],
+            [2, 3, 4, 5, 6, 7],
+            [2, 3, 4, 5, 6],
+            [2, 3, 4, 5],
+            [2, 3, 4],
+            [2, 3],
+            [2]]
+    layers_with_geology: [geomorphology, geology, lineament_density, slope, soil, drainage_density, rainfall, landuse, surface_water]
+    upper_with_geology: [[2, 3, 4, 5, 6, 7, 8, 9],
+                         [2, 3, 4, 5, 6, 7, 8],
+                         [2, 3, 4, 5, 6, 7],
+                         [2, 3, 4, 5, 6],
+                         [2, 3, 4, 5],
+                         [2, 3, 4],
+                         [2, 3],
+                         [2]]
+    max_cr: 0.10
+  classes:
+    - {name: "Very High", color: "#1A7F37"}
+    - {name: "High",      color: "#74B53C"}
+    - {name: "Moderate",  color: "#E3C449"}
+    - {name: "Low",       color: "#E0873A"}
+    - {name: "Very Low",  color: "#B23B3B"}
+  jenks_sample: 20000
+  sensitivity_pct: 20
+  validation:
+    dry_months: [3, 4, 5]
+    ndvi_min: 0.5
+    min_months: 2
+    min_surface_water_dist_m: 1000
+  recharge:
+    weights: {slope: 0.20, soil: 0.15, lineament: 0.15, stream_proximity: 0.20, gwpi_need: 0.30}
+    stream_max_order: 4
+    stream_near_m: 200
+    stream_mid_m: 500
+    pathway_buffer_m: 300
+    classes:   # min score (0–1)
+      - {name: "Highly suitable", min: 0.75, color: "#1F5FA8"}
+      - {name: "Suitable",        min: 0.60, color: "#5FA3D9"}
+      - {name: "Marginal",        min: 0.45, color: "#C9DDEE"}
+      - {name: "Unsuitable",      min: 0.00, color: "#D9D4C7"}
+    min_site_ha: 0.5
+    top_n_sites: 50
+    structures:
+      check_dam:        {stream_orders: [2, 3, 4], slope_min: 1.0, slope_max: 5.0, stream_dist_m: 60}
+      percolation_pond: {stream_orders: [1, 2], slope_max: 2.0, min_infiltration: 4, landuse: [6], stream_dist_m: 200}
+      recharge_shaft:   {min_lineament_score: 4, min_clay_pct: 35}
+      tank_rehab:       {max_water_months: 4, tank_dist_m: 60}
+
+# ---------------------------------------------------------------------------
+# MODULE 08 — Geo-Economic Priority
+# ---------------------------------------------------------------------------
+geoeconomic:
+  parcel_unit_ha: 5.0                # SLIC target size for taluk-wide parcel units on the 30 m grid
+  cropland_classes: [1, 2, 3, 6]
+  norm_percentiles: [2, 98]
+  economics:   # INDICATIVE ONLY — every constant must be verified
+    paddy_yield_t_ha_season: {value: 4.5,   source: "VERIFY — TN Agriculture Dept season & crop report, Tirunelveli district"}
+    paddy_price_inr_t:       {value: 23690, source: "VERIFY — GoI MSP notification KMS 2025-26, paddy common (₹2,369/q)"}
+    banana_yield_t_ha_yr:    {value: 55.0,  source: "VERIFY — TNAU Agritech Portal / NHB horticulture statistics"}
+    banana_price_inr_t:      {value: 12000, source: "VERIFY — TN Agri Marketing Board farm-gate price, Tirunelveli"}
+    other_crops_inr_ha_yr:   {value: 60000, source: "VERIFY — TNAU cost of cultivation studies (pulses / millets)"}
+    fallow_inr_ha_yr:        {value: 0,     source: "fallow / bare land assumed no production"}
+  water_security_weights: {surface_water: 0.4, gwpi: 0.3, ndvi_stability: 0.3}
+  productivity_weights: {ndvi_integral: 0.6, cropping_intensity: 0.4}
+  flood:
+    pre_window: ["2023-11-01", "2023-11-30"]
+    post_window: ["2023-12-17", "2023-12-31"]
+    log_ratio_drop_db: 3.0
+    post_vv_max_db: -16.0
+    hand_max_m: 10.0
+    weights: {flooded_2023: 0.6, hand_susceptibility: 0.4}
+  market:
+    speeds_kmh: {motorway: 60, trunk: 50, primary: 50, secondary: 40, tertiary: 30, residential: 20,
+                 unclassified: 20, service: 15, track: 10, offroad: 4}
+    destination_radius_km: 20
+  infrastructure_weights: {road_density: 0.4, settlement_proximity: 0.4, power_proximity: 0.2}
+  rules:      # percentile thresholds over cropland parcels; evaluated in this ORDER
+    resilience: {V_min: 60, F_min: 70, W_max: 30}
+    protect:    {V_min: 60, P_min: 60, W_min: 40, F_max: 50}
+    optimize:   {P_min: 50, W_max: 50}
+    invest:     {gwpi_min_class: "High", infiltration_min: 3, P_max: 50, M_max: 40, I_max: 40}
+  sensitivity_shift_pct: 10
+  categories:
+    - {name: "RESILIENCE",       color: "#B23B3B"}
+    - {name: "PROTECT",          color: "#1A7F37"}
+    - {name: "OPTIMIZE",         color: "#D4A72C"}
+    - {name: "INVEST",           color: "#1F5FA8"}
+    - {name: "Stable / monitor", color: "#B9B4A8"}
+  actions:
+    PROTECT: "Maintain canal and tank supply; prevent conversion to non-farm use; prioritise for market linkage."
+    INVEST: "Recharge structures (see Groundwater module sites); irrigation extension; road connectivity; storage."
+    OPTIMIZE: "Water-efficient practices (AWD / SRI for paddy, drip for banana); scheduling based on the Transplanting Calendar."
+    RESILIENCE: "Drainage and flood bunds; PMFBY crop insurance enrolment; flood-tolerant varieties; early warning."
+    "Stable / monitor": "No priority intervention; continue routine monitoring."
+  top_n_clusters: 20
