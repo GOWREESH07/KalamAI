@@ -16,7 +16,7 @@
 kill -9 $(lsof -t -i:8000 -i:5173) 2>/dev/null || true
 
 # 2. Launch backend & frontend concurrently
-cd /Users/gowreesha/Mapathon/kalam
+cd "Your Directory"
 ./run.sh
 ```
 - **Landing Page & Web App:** `http://localhost:5173`
